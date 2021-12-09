@@ -4,7 +4,6 @@ function fish_prompt --description 'Write out the prompt'
         # icon
         set -l git_behind \U2B07
         set -l git_ahead \U2B06 
-        set -l git_diverged \U2753
         set -l git_dirty \U2718
         set -l git_clear \U2714
         # color palette
@@ -43,7 +42,7 @@ function fish_prompt --description 'Write out the prompt'
                     echo -n ""
                 else
                     set_color FFFF49
-                    echo -n " diverged"
+                    echo -n " ?"
                 end
             end
         end
