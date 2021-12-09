@@ -20,6 +20,7 @@ set -g fish_prompt_pwd_dir_length 0
     abbr -a gpl 'git pull'
     abbr -a gcl 'git clone'
     abbr -a gst 'git status'
+    abbr -a gdf 'git diff'
 # Apt
     abbr -a aud 'sudo apt-get update'
     abbr -a aug 'sudo apt-get upgrade -y'
