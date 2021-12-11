@@ -50,21 +50,21 @@ function fish_prompt --description 'Write out the prompt'
 
     set_color -o 38E1FF
     echo -n '[ '
-    set_color -o FF3838
+    set_color -o FF5A5A
     echo -n 'k'
     set_color -o FFBD38
     echo -n 'i'
     set_color -o FFFC57
     echo -n 'e'
-    set_color -o 4BFF48
+    set_color -o 7FED7F
     echo -n 'n'
     set_color -o 5FFAFF
     echo -n 'l'
     set_color -o 9BA9FF
     echo -n 'h'
-    set_color normal 
+    set_color 6B8BFF 
     echo -n '  '
-    set_color -o FF52E0
+    set_color FF6BB8
     echo -n (prompt_pwd)
     set_color -o 38E1FF
     echo -n ' ] '
