@@ -4,6 +4,12 @@ set -g fish_term24bit 1
 
 #----------------------------------- Abbreviations -----------------------------------#
 
+# General
+    abbr -a rmd 'rm -r'
+    abbr -a cpd 'cp -r'
+    abbr -a scpd 'scp -r'
+    abbr -a lsa 'ls -a'
+    abbr -a lla 'll -a'
 # Navigate folder
     abbr -a ... 'cd ../..'
     abbr -a ccf 'cd ~/.config/fish'                                 # cd config fish

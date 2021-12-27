@@ -4,6 +4,12 @@ set -g fish_term24bit 1
 
 #----------------------------------- Abbreviations -----------------------------------#
 
+# General
+    abbr -a rmd 'rm -r'
+    abbr -a cpd 'cp -r'
+    abbr -a scpd 'scp -r'
+    abbr -a lsa 'ls -a'
+    abbr -a lla 'll -a'
 # Navigate folder
     abbr -a ... 'cd ../..'
     abbr -a ccf 'cd ~/.config/fish'                                 # cd config fish
@@ -26,18 +32,15 @@ set -g fish_term24bit 1
     abbr -a gad 'git add'
     abbr -a gpom 'git push origin master'
 # Apt
-    abbr -a aud 'apt update'
-    abbr -a aug 'apt upgrade -y'
-    abbr -a ait 'apt install -y'
+    abbr -a aud 'apt-get update'
+    abbr -a aug 'apt-get upgrade -y'
+    abbr -a ait 'apt-get install -y'
     abbr -a aac 'apt autoclean'
     abbr -a aar 'apt autoremove'
     abbr -a arm 'apt remove'
-# Pkg
-    abbr -a pud 'pkg update'
-    abbr -a pug 'pkg upgrade -y'
-    abbr -a pit 'pkg install -y'
 
 #------------------------------------- Aliases -------------------------------------#
     alias q='exit'
     alias md='mkdir'
     alias cls='clear'
+    alias pls='sudo'
