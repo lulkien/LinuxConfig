@@ -12,6 +12,7 @@ set -g fish_term24bit 1
     abbr -a efc 'vim ~/.config/fish/config.fish'                    # edit fish config
     abbr -a efg 'vim ~/.config/fish/functions/fish_greeting.fish'
     abbr -a efp 'vim ~/.config/fish/functions/fish_prompt.fish'
+    abbr -a evi 'vim ~/.vimrc' 
 # Git
     abbr -a gco 'git checkout'
     abbr -a gcm 'git commit'
@@ -22,6 +23,7 @@ set -g fish_term24bit 1
     abbr -a gcl 'git clone'
     abbr -a gst 'git status'
     abbr -a gdf 'git diff'
+    abbr -a gad 'git add'
     abbr -a gpom 'git push origin master'
 # Apt
     abbr -a aud 'apt update'
