@@ -25,7 +25,7 @@ set -g fish_term24bit 1
     abbr -a gcm 'git commit'
     abbr -a gca 'git commit --amend'
     abbr -a grs 'git clean -f -d && git reset --hard HEAD^ && git pull'
-    abbr -a gpo 'git push origin '
+    abbr -a gpo 'git push origin'
     abbr -a gpl 'git pull'
     abbr -a gcl 'git clone'
     abbr -a gst 'git status'
