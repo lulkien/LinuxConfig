@@ -6,5 +6,9 @@ fu! auto_tags#UpdateTags()
     endif
 endf
 
+fu! TagThisFile()
+    let g:enable_tags = 'True'
+endf
+
 
 autocmd BufWritePost * call auto_tags#UpdateTags()
