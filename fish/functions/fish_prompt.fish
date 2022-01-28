@@ -1,8 +1,11 @@
 function fish_prompt --description 'Write out the prompt'
     # Variable
     set -g host_name        (prompt_hostname)
+    set -g path_str         (prompt_pwd)
     set -g prompt_name      "$USER@$host_name"
-    set -g prefix           '$'
+    set -g open_bracket     '[ '
+    set -g close_bracket    ' ] '
+    set -g prefix           ' $ '
 
     # Prompt color palette
     set -g color_bracket    '38E1FF'
@@ -70,11 +73,11 @@ function fish_prompt --description 'Write out the prompt'
         end
     end
 
-    set_color -o $color_bracket;    echo -n '[ '
-    set_color -o $color_name;       echo -n "$prompt_name  "
-    set_color $color_pwd;           echo -n (prompt_pwd)
-    set_color -o $color_bracket;    echo -n ' ] '
+    set_color -o $color_bracket; echo -n "$open_bracket"
+    set_color -o $color_name;    echo -n "$prompt_name  "
+    set_color    $color_pwd;     echo -n "$path_str" 
+    set_color -o $color_bracket; echo -n "$close_bracket"
     echo (branch_name)
-    set_color -o $color_prefix;     echo -n " $prefix "
-    set_color normal
+    set_color -o $color_prefix;  echo -n "$prefix"
+    set_color    normal 
 end
