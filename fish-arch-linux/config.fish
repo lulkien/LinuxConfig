@@ -1,11 +1,11 @@
-#------------------------------------- Variables -------------------------------------#
-set -g fish_color_valid_path
-set -g fish_prompt_pwd_dir_length 0         
-set -g fish_term24bit 1
+if status is-interactive
+    #===================================== Variables =====================================#
+    set -g fish_color_valid_path
+    set -g fish_prompt_pwd_dir_length 0
+    set -g fish_term24bit 1
 
-#----------------------------------- Abbreviations -----------------------------------#
-
-# General
+    #=================================== Abbreviations ===================================#
+    # General
     abbr -a rmd     'rm -r'
     abbr -a rrm     'sudo rm'
     abbr -a rrmd    'sudo rm -r'
@@ -17,16 +17,20 @@ set -g fish_term24bit 1
     abbr -a lla     'll -a'
     abbr -a rvim    'sudo vim'
     abbr -a rpac    'sudo pacman'
-# Navigate folder
+
+    # Navigate folder
     abbr -a ...     'cd ../..'
     abbr -a ccf     'cd ~/.config/fish'                                 # cd config fish
     abbr -a ccff    'cd ~/.config/fish/functions'
-# Fast edit config
+    abbr -a cwk     'cd ~/working'
+
+    # Fast edit config
     abbr -a efc     'vim ~/.config/fish/config.fish'                    # edit fish config
     abbr -a efg     'vim ~/.config/fish/functions/fish_greeting.fish'
     abbr -a efp     'vim ~/.config/fish/functions/fish_prompt.fish'
     abbr -a evi     'vim ~/.vimrc' 
-# Git
+
+    # Git
     abbr -a gco     'git checkout'
     abbr -a gcm     'git commit'
     abbr -a gca     'git commit --amend'
@@ -38,15 +42,18 @@ set -g fish_term24bit 1
     abbr -a gdf     'git diff'
     abbr -a gad     'git add'
     abbr -a gpom    'git push origin master'
-# Apt
+
+    # Package manager
     abbr -a pud     'sudo pacman -Sy'
-    abbr -a pug     'sudo pacman -Su'
-    abbr -a pit     'sudo pacman -S' 
+    abbr -a pug     'sudo pacman -Su --noconfirm'
+    abbr -a pit     'sudo pacman -S --noconfirm'
     abbr -a pcl     'sudo pacman -Rns (pacman -Qdt)' 
     abbr -a prm     'sudo pacman -Rns' 
+    abbr -a pss     'pacman -sS'
 
-#------------------------------------- Aliases -------------------------------------#
+    #===================================== Aliases =====================================#
     alias q='exit'
     alias md='mkdir'
     alias cls='clear'
     alias pls='sudo'
+end
