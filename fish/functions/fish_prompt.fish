@@ -6,6 +6,7 @@ function fish_prompt --description 'Write out the prompt'
     set -g open_bracket     '[ '
     set -g close_bracket    ' ] '
     set -g prefix           ' $ '
+    test "$USER" = 'root'; and set prefix ' # '
 
     # Prompt color palette
     set -g color_bracket    '38E1FF'
