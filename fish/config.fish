@@ -5,7 +5,6 @@ if status is-interactive
     set -g fish_term24bit 1
 
     #=================================== Abbreviations ===================================#
-
     # General
     abbr -a mkd     'mkdir'
     abbr -a rmkd    'sudo mkdir'
