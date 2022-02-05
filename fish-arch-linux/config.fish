@@ -47,7 +47,7 @@ if status is-interactive
     abbr -a pud     'sudo pacman -Sy'
     abbr -a pug     'sudo pacman -Su --noconfirm'
     abbr -a pit     'sudo pacman -S --noconfirm'
-    abbr -a pcl     'sudo pacman -Rns (pacman -Qdt)' 
+    abbr -a pcl     'sudo pacman -Rns (pacman -Qdtq)' 
     abbr -a prm     'sudo pacman -Rns' 
     abbr -a pss     'pacman -sS'
 
