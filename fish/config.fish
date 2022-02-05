@@ -5,6 +5,7 @@ if status is-interactive
     set -g fish_term24bit 1
 
     #=================================== Abbreviations ===================================#
+
     # General
     abbr -a mkd     'mkdir'
     abbr -a rmkd    'sudo mkdir'
@@ -26,7 +27,7 @@ if status is-interactive
     # Navigate folder
     abbr -a ...     'cd ../..'
     abbr -a ccf     'cd ~/.config/fish'                                 # cd config fish
-    abbr -a ccc     'cd $PREFIX'
+    abbr -a ccff    'cd ~/.config/fish/functions'
 
     # Fast edit config
     abbr -a efc     'vim ~/.config/fish/config.fish'                    # edit fish config
