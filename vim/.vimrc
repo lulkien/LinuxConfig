@@ -9,7 +9,8 @@ call plug#begin('~/.vim/bundle')
     Plug 'vim-airline/vim-airline-themes'
 
 " Systax highlighting
-    Plug 'dag/vim-fish'     " Fish vim
+    Plug 'dag/vim-fish'
+    Plug 'vim-python/python-syntax'
 
 " Intellisense
     Plug 'jiangmiao/auto-pairs'
