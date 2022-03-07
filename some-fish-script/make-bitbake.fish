@@ -91,6 +91,9 @@ function make-bitbake
         return 0
     end
 
+    # This function is used for getting the source code branch
+    # which currently apply on the meta-mango branch
+    # sometimes, they are different
     function get_source_code_branch
         logger $medium "[GET SOURCE CODE BRANCH]"
         cd $APP_RECIPES
@@ -119,6 +122,9 @@ function make-bitbake
         return 0
     end
 
+    # This function is used for creating new tag for the source code
+    # If no need to create, then it will be ignored automatically
+    # If no need to make commit, then the script will be aborted
     function make_tag
         logger $medium "[MAKE TAG]"
         cd $APP_PATH
@@ -164,6 +170,7 @@ function make-bitbake
         return 0
     end
 
+    # This function is used for pushing the new tag to git server
     function push_tag
         logger $medium "[PUSH TAG]"
         logger_one_line $good "LAST COMMIT IS TAGGED: "; echo $LAST_TAGGED
@@ -181,6 +188,7 @@ function make-bitbake
         return 0
     end
 
+    # This function is used for modify the bitbake repo (in this case: meta-mango)
     function modify_meta_mango
         logger $medium "[MODIFY META MANGO]"
         cd $BIT_BAKE_PATH/recipes-app/$APP_NAME
@@ -193,6 +201,7 @@ function make-bitbake
         return 0
     end
 
+    # This function create commit message and save somewhere
     function create_message
         logger $medium "[CREATE MESSAGE]"
         test -e "$COMMIT_MSG_FILE"; 
@@ -243,6 +252,7 @@ function make-bitbake
         return 0
     end
 
+    # This function commit all changed with the commit message created before
     function commit_changed
         logger $medium "[COMMIT CHANGED]"
         cd $APP_RECIPES
