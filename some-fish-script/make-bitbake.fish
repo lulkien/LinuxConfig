@@ -136,7 +136,7 @@ function make-bitbake
 
         # Extract tag
         set -l tmp_tag      (echo $CURRENT_TAG | cut -d'-' -f1)
-        logger_one_line $good "Newest tag: "; echo "$tmp_tag"
+        logger_one_line $good "Nearest tag: "; echo "$tmp_tag"
         test "$tmp_tag" = "$CURRENT_TAG"; 
             and begin; 
                 echo "Latest commit was tagged"; 
@@ -156,9 +156,9 @@ function make-bitbake
 
         set -l tag_number
         test "$SOURCE_BRANCH" = 'master';
-            and set tag_number  (echo $tmp_tag | cut -d'/' -f1);
+            and set tag_number  (echo $tmp_tag | cut -d'/' -f2);
             or  set tag_number  (echo $tmp_tag | tr '.' '\n' | tail -n1);
-        set tag_number  (math $TAG_NUMBER + 1)
+        set tag_number  (math $tag_number + 1)
         test $tag_number -lt 10; and set tag_number "0$tag_number"
         test "$SOURCE_BRANCH" = 'master';
             and set NEW_SUBMISSIONS "submissions/$tag_number"
@@ -258,7 +258,7 @@ function make-bitbake
         cd $APP_RECIPES
         git add $APP_NAME.bb; or return 1
         git commit --file=$COMMIT_MSG_FILE; or return 1
-        #git push origin HEAD:refs/for/$BRANCH; or return 1
+        git push origin HEAD:refs/for/$BRANCH; or return 1
         return 0
     end
 
