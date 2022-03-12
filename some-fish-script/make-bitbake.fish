@@ -21,6 +21,7 @@ function make-bitbake
     set -g LAST_TAGGED      'no'
     set -g LIST_ISSUES      ''
     set -g LIST_COMMITS     ''
+    set -g ASK_CHERRY_PICK  'no'
 
     # color palette
     set -g bad              'FF7676'
@@ -75,19 +76,19 @@ function make-bitbake
         # Check git installed
         test -e "$GIT_BINARY"; or begin; echo -e "Git is not installed.\nRun below command to install git:\n    sudo apt install git"; return 1; end
         # Check app path exist
-        test -d "$APP_PATH"; 
-        and logger $good "$APP_PATH -----> OK"
-        or begin
-            logger $bad "$APP_PATH -----> NOK"
-            return 1
-        end
+        test -d "$APP_PATH"
+            and logger $good "$APP_PATH -----> OK"
+            or begin
+                logger $bad "$APP_PATH -----> NOK"
+                return 1
+            end
         # Check meta-mango exist
-        test -d "$BIT_BAKE_PATH"; 
-        and logger $good "$BIT_BAKE_PATH -----> OK"
-        or begin
-            logger $bad "$BIT_BAKE_PATH ----> NOK"
-            return 1
-        end
+        test -d "$BIT_BAKE_PATH"
+            and logger $good "$BIT_BAKE_PATH -----> OK"
+            or begin
+                logger $bad "$BIT_BAKE_PATH ----> NOK"
+                return 1
+            end
         return 0
     end
 
@@ -98,7 +99,6 @@ function make-bitbake
         logger $medium "[GET_SOURCE_CODE_BRANCH]"
         cd $APP_RECIPES
         git_reset $BRANCH; or return 1
-
         set -l tmp_branch   (grep PAP_VERSION $APP_NAME.bb | sed 's/"//g' | cut -d'-' -f2 | cut -d'_' -f1)
         is_number $tmp_branch; 
             and begin
@@ -129,15 +129,13 @@ function make-bitbake
         logger $medium "[MAKE_TAG]"
         cd $APP_PATH
         git_reset $SOURCE_BRANCH; or return 1
-
         # Get current tag
         set CURRENT_TAG     (git describe)
         logger_one_line $good "Current git describe: "; echo "$CURRENT_TAG"
-
         # Extract tag
-        set -l tmp_tag      (echo $CURRENT_TAG | cut -d'-' -f1)
-        logger_one_line $good "Nearest tag: "; echo "$tmp_tag"
-        test "$tmp_tag" = "$CURRENT_TAG"; 
+        set -l nearest_tag  (echo $CURRENT_TAG | cut -d'-' -f1)
+        logger_one_line $good "Nearest tag: "; echo "$nearest_tag"
+        test "$nearest_tag" = "$CURRENT_TAG"; 
             and begin; 
                 echo "Latest commit was tagged"; 
                 set LAST_TAGGED     'yes'
@@ -154,17 +152,23 @@ function make-bitbake
                 set LAST_TAGGED 'no'
             end
 
-        set -l tag_number
+        # Get the nearest tag number
+        set -l nearest_tag_number
         test "$SOURCE_BRANCH" = 'master';
-            and set tag_number  (echo $tmp_tag | cut -d'/' -f2);
-            or  set tag_number  (echo $tmp_tag | tr '.' '\n' | tail -n1);
-        set tag_number  (math $tag_number + 1)
-        test $tag_number -lt 10; and set tag_number "0$tag_number"
-        test "$SOURCE_BRANCH" = 'master';
-            and set NEW_SUBMISSIONS "submissions/$tag_number"
+            and set nearest_tag_number  (echo $nearest_tag | cut -d'/' -f2);
+            or  set nearest_tag_number  (echo $nearest_tag | tr '.' '\n' | tail -n1);
+        # Make new tag number by add 1
+        set -l new_tag_number  (math $nearest_tag_number + 1)
+        # If new tag number < 10 -> new_tag_number = "0" + new_tag_number
+        test $new_tag_number -lt 10; 
+            and set new_tag_number "0$new_tag_number"
+
+        # Make new submissions for master or another branch
+        test "$SOURCE_BRANCH" = 'master'
+            and set NEW_SUBMISSIONS "submissions/$new_tag_number"
             or begin
                 set -l br (echo $BRANCH | sed 's/@//')
-                set NEW_SUBMISSIONS "submissions/$br.$tag_number"
+                set NEW_SUBMISSIONS "submissions/$br.$new_tag_number"
             end
         logger_one_line $good "Created new tag: "; echo "$NEW_SUBMISSIONS"
         return 0
@@ -174,11 +178,11 @@ function make-bitbake
     function push_tag
         logger $medium "[PUSH_TAG]"
         logger_one_line $good "LAST COMMIT IS TAGGED: "; echo $LAST_TAGGED
-        test "$LAST_TAGGED" = 'no';
-        and begin;
-            git tag -a $NEW_SUBMISSIONS -m $NEW_SUBMISSIONS; or return 1
-            git push origin $NEW_SUBMISSIONS; or return 1
-        end
+        test "$LAST_TAGGED" = 'no'
+            and begin
+                git tag -a $NEW_SUBMISSIONS -m $NEW_SUBMISSIONS; or return 1
+                git push origin $NEW_SUBMISSIONS; or return 1
+            end
         set NEW_TAG_REF (git show-ref (git describe) | cut -d' ' -f1)
         set OLD_TAG_REF (git show-ref $OLD_SUBMISSIONS | cut -d' ' -f1)
         logger_one_line $good "Old tag ref: "; echo $OLD_TAG_REF
