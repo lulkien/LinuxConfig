@@ -76,14 +76,14 @@ function make-bitbake
         test -e "$GIT_BINARY"; or begin; echo -e "Git is not installed.\nRun below command to install git:\n    sudo apt install git"; return 1; end
         # Check app path exist
         test -d "$APP_PATH"; 
-        and logger $good "$APP_PATH -----> OK"; 
+        and logger $good "$APP_PATH -----> OK"
         or begin
             logger $bad "$APP_PATH -----> NOK"
             return 1
         end
         # Check meta-mango exist
         test -d "$BIT_BAKE_PATH"; 
-        and logger $good "$BIT_BAKE_PATH -----> OK"; 
+        and logger $good "$BIT_BAKE_PATH -----> OK"
         or begin
             logger $bad "$BIT_BAKE_PATH ----> NOK"
             return 1
@@ -95,7 +95,7 @@ function make-bitbake
     # which currently apply on the meta-mango branch
     # sometimes, they are different
     function get_source_code_branch
-        logger $medium "[GET SOURCE CODE BRANCH]"
+        logger $medium "[GET_SOURCE_CODE_BRANCH]"
         cd $APP_RECIPES
         git_reset $BRANCH; or return 1
 
@@ -126,7 +126,7 @@ function make-bitbake
     # If no need to create, then it will be ignored automatically
     # If no need to make commit, then the script will be aborted
     function make_tag
-        logger $medium "[MAKE TAG]"
+        logger $medium "[MAKE_TAG]"
         cd $APP_PATH
         git_reset $SOURCE_BRANCH; or return 1
 
@@ -172,7 +172,7 @@ function make-bitbake
 
     # This function is used for pushing the new tag to git server
     function push_tag
-        logger $medium "[PUSH TAG]"
+        logger $medium "[PUSH_TAG]"
         logger_one_line $good "LAST COMMIT IS TAGGED: "; echo $LAST_TAGGED
         test "$LAST_TAGGED" = 'no';
         and begin;
@@ -190,7 +190,7 @@ function make-bitbake
 
     # This function is used for modify the bitbake repo (in this case: meta-mango)
     function modify_meta_mango
-        logger $medium "[MODIFY META MANGO]"
+        logger $medium "[MODIFY_META_MANGO]"
         cd $BIT_BAKE_PATH/recipes-app/$APP_NAME
 
         # Modify bitbake
@@ -203,7 +203,7 @@ function make-bitbake
 
     # This function create commit message and save somewhere
     function create_message
-        logger $medium "[CREATE MESSAGE]"
+        logger $medium "[CREATE_MESSAGE]"
         test -e "$COMMIT_MSG_FILE"; 
             and begin
                 rm $COMMIT_MSG_FILE
@@ -254,7 +254,7 @@ function make-bitbake
 
     # This function commit all changed with the commit message created before
     function commit_changed
-        logger $medium "[COMMIT CHANGED]"
+        logger $medium "[COMMIT_CHANGED]"
         cd $APP_RECIPES
         git add $APP_NAME.bb; or return 1
         git commit --file=$COMMIT_MSG_FILE; or return 1
