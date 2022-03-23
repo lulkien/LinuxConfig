@@ -24,6 +24,8 @@ if status is-interactive
     abbr -a lsa     'ls -a'
     abbr -a lla     'll -a'
 
+    abbr -a nh      'nohup'
+
     # Navigate folder
     abbr -a ...     'cd ../..'
     abbr -a ccf     'cd ~/.config/fish'                                 # cd config fish

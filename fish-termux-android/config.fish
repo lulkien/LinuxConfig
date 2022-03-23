@@ -12,6 +12,7 @@ if status is-interactive
     abbr -a scpd    'scp -r'
     abbr -a lsa     'ls -a'
     abbr -a lla     'll -a'
+    abbr -a nh      'nohup'
 
     # Navigate folder
     abbr -a ...     'cd ../..'

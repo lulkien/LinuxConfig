@@ -17,6 +17,7 @@ if status is-interactive
     abbr -a lla     'll -a'
     abbr -a rvim    'sudo vim'
     abbr -a rpac    'sudo pacman'
+    abbr -a nh      'nohup'
 
     # Navigate folder
     abbr -a ...     'cd ../..'
