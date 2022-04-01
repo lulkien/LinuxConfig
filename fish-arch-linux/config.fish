@@ -47,8 +47,9 @@ if status is-interactive
     # Package manager
     abbr -a pud     'sudo pacman -Sy'
     abbr -a pug     'sudo pacman -Su --noconfirm'
+    abbr -a puf     'sudo pacman -Syyu'
     abbr -a pit     'sudo pacman -S --noconfirm'
-    abbr -a pcl     'sudo pacman -Rns (pacman -Qdtq)' 
+    abbr -a pcl     'sudo pacman -Rns (pacman -Qdttq) 2>/dev/null'
     abbr -a prm     'sudo pacman -Rns' 
     abbr -a pss     'pacman -sS'
 
