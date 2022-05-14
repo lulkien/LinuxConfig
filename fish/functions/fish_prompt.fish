@@ -39,7 +39,7 @@ function fish_prompt --description 'Write out the prompt'
         set -l color_akw    'FFFF49'
         
         # Branch name checking
-        set -l branch (fish_git_prompt | sed -e 's/ (//g' -e 's/)//g')
+        set -l branch (git branch --show-current)
         test -z "$branch"; and return   # break if not git directory
 
         # additional variables
