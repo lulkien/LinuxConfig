@@ -23,11 +23,14 @@ if status is-interactive
     abbr -a ccf     'cd ~/.config/fish'                                 # cd config fish
     abbr -a ccff    'cd ~/.config/fish/functions'
 
+    # change mode
+    abbr -a chmox   'chmod +x'
+
     # Fast edit config
     abbr -a efc     'vim ~/.config/fish/config.fish'                    # edit fish config
     abbr -a efg     'vim ~/.config/fish/functions/fish_greeting.fish'
     abbr -a efp     'vim ~/.config/fish/functions/fish_prompt.fish'
-    abbr -a evi     'vim ~/.vimrc' 
+    abbr -a evi     'vim ~/.vimrc'
 
     # Git
     abbr -a gco     'git checkout'
