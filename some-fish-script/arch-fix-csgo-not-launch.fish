@@ -1,6 +1,6 @@
 #!/usr/bin/fish
 
-set -g lib_name         'libtcmalloc_minimal.so.4.5.9'
+set -g lib_name         'libtcmalloc_minimal.so.*'
 
 # color palette
 set -g bad              'FF7676'
@@ -28,11 +28,11 @@ end
 function check_libtcmalloc_minimal
     test -e /usr/lib/$lib_name
     and begin #{
-        logger_nl   $good   "[check_libtcmalloc_minimal] libffmpeg.so is existed"
+        logger_nl   $good   "[check_libtcmalloc_minimal] libtcmalloc_minimal.so is existed"
         return 0
     end #}
     or begin #{
-        logger_nl   $bad    "[check_libtcmalloc_minimal] libffmpeg.so is not existed"
+        logger_nl   $bad    "[check_libtcmalloc_minimal] libtcmalloc_minimal.so is not existed"
         logger      $bad    "[check_libtcmalloc_minimal]"
         logger_nl   $norm   "Please run: sudo pacman -S gperftools"
         return 1
@@ -40,7 +40,8 @@ function check_libtcmalloc_minimal
 end
 
 function process
-    cp /usr/lib/libtcmalloc_minimal.so.4.5.9 '/media/Storage/SteamLibrary/steamapps/common/Counter-Strike Global Offensive/bin/libtcmalloc_minimal.so.0' 
+    #cp /usr/lib/libtcmalloc_minimal.so.4.5.9 '/media/Storage/SteamLibrary/steamapps/common/Counter-Strike Global Offensive/bin/libtcmalloc_minimal.so.0' 
+    logger_nl $medium "Now find the libtcmalloc_minimal.so.* in directory /usr/lib and copy it to [steam_common_dir]/Counter-Strike Global Offensive/bin"
 end
 
 function main
