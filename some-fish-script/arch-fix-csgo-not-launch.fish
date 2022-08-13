@@ -9,14 +9,6 @@ set -g medium           'EBE769'
 set -g good             '84FF76'
 set -g norm             'CACACA'
 
-function logger_nl
-    set_color $argv[1]; echo $argv[2]; set_color normal;
-end
-
-function logger
-    set_color $argv[1]; echo -n $argv[2]; set_color normal;
-end
-
 function log
     set -l  func_name   $argv[1]
     set -l  log_color   $argv[2]
@@ -78,12 +70,12 @@ function make_symbolic_link
 
     if [ -z "$fullib" ]
         log "make_symbolic_link" $bad "Enter the lib's name god dammit!"
-        return 0
+        return 1
     end
 
     if [ ! -e "/usr/lib/$fullib" ]
         log "make_symbolic_link" $bad "Can you enter the correct lib's name asshole?"
-        return 1
+        return 2
     end
 
     log "make_symbolic_link" $norm "ln -sf /usr/lib/$fullib \"$CSGO_PATH/bin/libtcmalloc_minimal.so.0\""
