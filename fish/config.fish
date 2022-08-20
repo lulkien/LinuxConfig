@@ -23,8 +23,9 @@ if status is-interactive
     abbr -a ccf     'cd ~/.config/fish'                                 # cd config fish
     abbr -a ccff    'cd ~/.config/fish/functions'
 
-    # change mode
+    # quick command
     abbr -a chmox   'chmod +x'
+    abbr -a rfc     'rm ~/.config/fish/fish_variables'
 
     # Fast edit config
     abbr -a efc     'vim ~/.config/fish/config.fish'                    # edit fish config
