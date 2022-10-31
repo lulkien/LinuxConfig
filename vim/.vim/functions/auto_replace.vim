@@ -1,4 +1,7 @@
 " Auto replace word in git commit
+fu! auto_replace#media()
+    execute ':%s/<a>/MediaPlayer/g'
+endf
 
 fu! auto_replace#home()
     execute ':%s/<a>/AppHomeScreen/g'
