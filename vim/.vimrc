@@ -1,4 +1,4 @@
-"----------------------- PLUGINS -----------------------"
+" PLUGINS
 call plug#begin('~/.vim/bundle')
 
 " Icons
@@ -20,16 +20,23 @@ call plug#begin('~/.vim/bundle')
 
 call plug#end()
 
-"----------------------- SETTING -----------------------"
-
+" SETTING 
 " Theme
 colorscheme onedark
+
+" Highlight the current line
+set cursorline
+:highlight Cursorline cterm=bold ctermbg=black
+
+" highlight search pattern
+set hlsearch
 
 " Path include
 set path+=**
 
 " General Setting
 set number
+set relativenumber
 set encoding=utf-8
 set autoindent
 set ignorecase
@@ -38,6 +45,12 @@ set ignorecase
 set tabstop=4
 set shiftwidth=4
 set expandtab
+
+" Disable arrow keys
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
 
 " Disable backup
 set nobackup
