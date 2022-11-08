@@ -3,11 +3,12 @@ function make-bitbake
     # init variables
     set -g APP_NAME         $argv[1]
     set -g BRANCH           $argv[2]
-    set -g SOURCE_PATH      '/media/Storage/KienLH4/source-code'
-    set -g BIT_BAKE_PATH    '/media/Storage/KienLH4/source-code/meta-mango2'
+    set -g PUSH_OPTION      $argv[3]
+    set -g SOURCE_PATH      "/drive/Storage/$USER/source-code"
+    set -g BIT_BAKE_PATH    "$SOURCE_PATH/meta-mango2"
     set -g APP_PATH         "$SOURCE_PATH/$APP_NAME"
     set -g APP_RECIPES      "$BIT_BAKE_PATH/recipes-app/$APP_NAME"
-    set -g COMMIT_MSG_FILE  '/home/kienlh4/.cache/tmp-commit-msg.txt'
+    set -g COMMIT_MSG_FILE  "/home/$USER/.cache/tmp-commit-msg.txt"
     set -g GIT_BINARY       '/usr/bin/git'
 
     # runtime variables
@@ -21,7 +22,6 @@ function make-bitbake
     set -g LAST_TAGGED      'no'
     set -g LIST_ISSUES      ''
     set -g LIST_COMMITS     ''
-    set -g ASK_CHERRY_PICK  'no'
 
     # color palette
     set -g bad              'FF7676'
@@ -111,7 +111,7 @@ function make-bitbake
             or begin
                 set -l tmp_tag_number   (echo $tmp_branch | tr '.' '\n' | tail -n1)
                 set OLD_SUBMISSIONS     "submissions/$tmp_branch"
-                set SOURCE_BRANCH       "@"(echo $tmp_branch | sed "s/.$tmp_tag_number//g")
+                set SOURCE_BRANCH       "@"(echo $tmp_branch | sed "s/\.$tmp_tag_number//g")
                 set IS_MASTER           'no'
                 logger_one_line $good "Is master branch: "  ; echo "$IS_MASTER"
                 logger_one_line $good "Source code branch: "; echo "$SOURCE_BRANCH"
@@ -135,7 +135,7 @@ function make-bitbake
         # Extract tag
         set -l nearest_tag  (echo $CURRENT_TAG | cut -d'-' -f1)
         logger_one_line $good "Nearest tag: "; echo "$nearest_tag"
-        test "$nearest_tag" = "$CURRENT_TAG"; 
+        test "$nearest_tag" = "$CURRENT_TAG"
             and begin; 
                 echo "Latest commit was tagged"; 
                 set LAST_TAGGED     'yes'
@@ -167,7 +167,7 @@ function make-bitbake
         test "$SOURCE_BRANCH" = 'master'
             and set NEW_SUBMISSIONS "submissions/$new_tag_number"
             or begin
-                set -l br (echo $BRANCH | sed 's/@//')
+                set -l br (echo $SOURCE_BRANCH | sed 's/@//')
                 set NEW_SUBMISSIONS "submissions/$br.$new_tag_number"
             end
         logger_one_line $good "Created new tag: "; echo "$NEW_SUBMISSIONS"
@@ -222,7 +222,7 @@ function make-bitbake
         set -l short_submissions    (echo $NEW_SUBMISSIONS | cut -d'/' -f2)
         # get title
         set -l msg_title            ''
-        test $SOURCE_BRANCH = 'master';
+        test $BRANCH = 'master';
             and set msg_title "$APP_NAME=$short_submissions"
             or  set msg_title "[PGEN5][$APP_NAME][EV_ONLY][M_A] $APP_NAME=$short_submissions"
         
@@ -259,6 +259,16 @@ function make-bitbake
     # This function commit all changed with the commit message created before
     function commit_changed
         logger $medium "[COMMIT_CHANGED]"
+        set -l push_opt_list    '-lc' '--local'
+        contains -- "$PUSH_OPTION" $push_opt_list;
+        if test $status -eq 0
+            logger $good "Local commit !!! This is the message:"
+            cat $COMMIT_MSG_FILE
+            return 0
+        else
+            logger $good "Push all changed to git server."
+        end
+
         cd $APP_RECIPES
         git add $APP_NAME.bb; or return 1
         git commit --file=$COMMIT_MSG_FILE; or return 1
