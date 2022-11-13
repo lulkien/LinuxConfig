@@ -23,6 +23,7 @@ call plug#end()
 " SETTING 
 " Theme
 colorscheme onedark
+let g:python_highlight_all = 1
 
 " Highlight the current line
 set cursorline
