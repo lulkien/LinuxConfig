@@ -1,0 +1,23 @@
+pkgname=vktablet
+pkgver=1.2.1
+pkgrel=3
+arch=('x86_64')
+pkgdesc="Veikk tablet driver retrieved from official veikk website"
+url="https://www.veikk.com"
+license=("GPLv3")
+
+makedepends=("unzip")
+source=("${pkgname}-${pkgver}-${pkgrel}.${arch}.zip")
+sha256sums=('SKIP')
+
+build() {
+    cd "$srcdir"
+    unzip "${pkgname}-${pkgver}-${pkgrel}.${arch}.zip"
+    bsdtar -xvf "${pkgname}-${pkgver}-${pkgrel}.${arch}.rpm"
+}
+
+package() {
+    cp -r "${srcdir}/etc" "${pkgdir}"
+    cp -r "${srcdir}/usr" "${pkgdir}"
+    cp -r "${srcdir}/lib" "${pkgdir}/usr"
+}
