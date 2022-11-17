@@ -32,17 +32,21 @@ function configure_driver
     if [ "$DM" = "sddm" ]
         echo "Configure for SDDM"
         if [ "$flag" = "debug" ]
+            echo "cp 10-nvidia-drm-outputclass.conf /etc/X11/xorg.conf.d"
             echo "cat Xsetup >> /usr/share/sddm/scripts/Xsetup"
         else
+            sudo bash -c "cp 10-nvidia-drm-outputclass.conf /etc/X11/xorg.conf.d"
             sudo bash -c "cat Xsetup >> /usr/share/sddm/scripts/Xsetup"; or return 1
         end
         return 0
     else
         echo "Configure for GDM"
         if [ "$flag" = "debug" ]
+            echo "cp 10-nvidia-drm-outputclass.conf /etc/X11/xorg.conf.d"
             echo "cp optimus.desktop /usr/share/gdm/greeter/autostart"
             echo "cp optimus.desktop /etc/xdg/autostart"
         else
+            sudo bash -c "cp 10-nvidia-drm-outputclass.conf /etc/X11/xorg.conf.d"
             sudo bash -c "cp optimus.desktop /usr/share/gdm/greeter/autostart"; or return 1
             sudo bash -c "cp optimus.desktop /etc/xdg/autostart"; or return 1
         end
