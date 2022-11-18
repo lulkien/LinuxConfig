@@ -34,7 +34,7 @@ let g:python_highlight_all = 1
 
 " Highlight the current line
 set cursorline
-:highlight Cursorline cterm=bold ctermbg=black
+:highlight Cursorline cterm=bold " ctermbg=black
 
 " highlight search pattern
 set hlsearch
