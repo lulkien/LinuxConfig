@@ -41,6 +41,7 @@ set relativenumber
 set encoding=utf-8
 set autoindent
 set ignorecase
+set textwidth=170
 
 " Tab width
 set tabstop=4
@@ -58,10 +59,14 @@ set nobackup
 set noswapfile
 set nowb
 
-" Disable auto comment in newline
-autocmd Filetype * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-
 " Other function
 for funct_file in split(glob('~/.vim/functions/*.vim'))
     execute 'source' funct_file
 endfor
+
+" Disable auto comment in newline
+autocmd Filetype * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" Config for fish script
+autocmd FileType fish setlocal foldmethod=expr
+autocmd Filetype fish setlocal compiler fish
