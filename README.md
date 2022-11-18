@@ -1,1 +1,1 @@
-# fish-config
+# LinuxConfig
