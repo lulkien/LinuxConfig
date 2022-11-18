@@ -98,13 +98,6 @@ function fish_prompt --description 'Write out the prompt'
         end
     end
 
-    function git_data
-        timeout 0.5s echo (branch_name)
-        if test ! $status -eq 0
-            echo ""
-        end
-    end
-
     # Main process
     set_color -o $color_bracket; echo -n "$open_bracket"
     set_color    normal

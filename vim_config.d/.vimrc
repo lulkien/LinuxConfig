@@ -1,4 +1,10 @@
-" PLUGINS
+" ------------------------------------------ PRE_CONFIG ------------------------------------------
+if &shell =~# 'fish$'
+    set shell=sh
+endif
+" ------------------------------------------ END PRE_CONFIG ------------------------------------------
+
+" ------------------------------------------ PLUGINS ------------------------------------------
 call plug#begin('~/.vim/bundle')
 
 " Icons
@@ -19,8 +25,9 @@ call plug#begin('~/.vim/bundle')
     Plug 'joshdick/onedark.vim'
 
 call plug#end()
+" ------------------------------------------ END PLUGINS ------------------------------------------
 
-" SETTING 
+" ------------------------------------------ POST_CONFIG ------------------------------------------
 " Theme
 colorscheme onedark
 let g:python_highlight_all = 1
@@ -67,6 +74,4 @@ endfor
 " Disable auto comment in newline
 autocmd Filetype * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
-" Config for fish script
-autocmd FileType fish setlocal foldmethod=expr
-autocmd Filetype fish setlocal compiler fish
+" ------------------------------------------ END POST_CONFIG ------------------------------------------

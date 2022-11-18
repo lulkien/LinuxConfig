@@ -37,6 +37,7 @@ if status is-interactive
     abbr -a gco     'git checkout'
     abbr -a gcm     'git commit'
     abbr -a gca     'git commit --amend'
+    abbr -a gcn     'git commit --amend --no-edit'
     abbr -a grs     'git clean -f -d && git reset --hard HEAD^ && git pull'
     abbr -a gpo     'git push origin'
     abbr -a gpl     'git pull'
@@ -44,6 +45,7 @@ if status is-interactive
     abbr -a gst     'git status'
     abbr -a gdf     'git diff'
     abbr -a gad     'git add'
+    abbr -a glo     'git log --oneline'
     abbr -a gpom    'git push origin master'
 
     #===================================== Aliases =====================================#

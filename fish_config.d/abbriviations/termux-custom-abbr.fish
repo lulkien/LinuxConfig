@@ -1,8 +1,8 @@
 # Advanced Package Tools
-abbr -a aud     'apt-get update'
-abbr -a aug     'apt-get upgrade -y'
-abbr -a auf     'apt-get update && apt-get upgrade -y'
-abbr -a ait     'apt-get install -y'
+abbr -a aud     'apt update'
+abbr -a aug     'apt upgrade -y'
+abbr -a auf     'apt update && apt-get upgrade -y'
+abbr -a ait     'apt install -y'
 abbr -a acl     'apt autoremove && apt autoclean'
 abbr -a arm     'apt remove --purge'
 abbr -a asr     'apt-cache search'
