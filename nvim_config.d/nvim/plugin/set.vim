@@ -14,7 +14,6 @@ set number
 set relativenumber
 set smartindent
 set scrolloff=8
-set completeopt=menuone,noinsert
 
 " Disable backup
 set nowritebackup
@@ -26,3 +25,6 @@ set hlsearch
 set incsearch
 set ignorecase
 set smartcase
+
+" Evironments
+set path+=**
