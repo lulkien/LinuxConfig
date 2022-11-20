@@ -43,13 +43,3 @@ for _, server in pairs(servers) do
         capabilities = capabilities,
     }
 end
-
-require'lspconfig'.sumneko_lua.setup {
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = {'vim'},
-      },
-    },
-  },
-}
