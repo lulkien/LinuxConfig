@@ -16,7 +16,6 @@ option.scrolloff = 8
 -- Better editor UI
 option.number = true
 option.relativenumber = true
-option.cursorline = true
 
 -- Better editing
 option.smartindent = true
@@ -36,6 +35,12 @@ option.hlsearch = true
 option.incsearch = true
 option.ignorecase = true
 option.smartcase = true
+
+-- Highlight
+vim.cmd.highlight('CursorLine', 'term=bold, cterm=none, gui=bold')
+
+-- Mapleader
+global.mapleader = ' ' 
 
 -- Add path
 --option.path += **

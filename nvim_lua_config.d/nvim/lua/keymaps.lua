@@ -1,6 +1,6 @@
 -- Function declaration
 local function map(mode, key, action)
-    vim.keymap.set(mode, key, action, { silent = true })
+    vim.api.nvim_set_keymap(mode, key, action, { noremap = true, silent = true })
 end
 
 -- Keymap
@@ -21,8 +21,10 @@ map('n', '<Leader>wq',  '<cmd>wq!<CR>')
 map('n', '<Leader>cq',  '<cmd>cclose<CR>')
 
 -- Mimic shell movements
-map('i', '<C-h>',   '<C-o>^')
-map('i', '<C-e>',   '<C-o>$')
+map('i', '<A-h>',   '<C-o>^')
+map('i', '<A-l>',   '<C-o>$')
+map('n', '<A-h>',   '^')
+map('n', '<A-l>',   '$')
 
 -- Quickly save the current buffer or all buffers
 map('n', '<leader>w',   '<CMD>update<CR>')
