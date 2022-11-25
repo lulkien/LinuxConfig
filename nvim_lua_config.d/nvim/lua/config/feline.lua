@@ -6,9 +6,6 @@ local MID = 2
 local RIGHT = 3
 local api = vim.api
 
--- Init
-local used_theme = ONEDARK
-
 -- Color palette
 local MODE_COLORS = {
     ['NORMAL']      =   '#87D787',
@@ -43,6 +40,9 @@ local ONEDARK = {
     red         =   '#E06C75',
     white       =   '#ABB2BF',
 }
+
+-- Init
+local used_theme = ONEDARK
 
 -- Function declaration
 function get_filename()
