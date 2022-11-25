@@ -21,12 +21,6 @@ else
     end
 end
 
-# Copy vim-plug if not exist
-if ! test -e ~/.config/nvim/autoload/plug.vim
-    echo "Copy vim-plug"
-    cp -r $nvim_lua_cfg_dir/nvim/autoload ~/.config/nvim
-end
-
 # Copy everything else
 if test -e ~/.config/nvim/init.lua
     echo "Remove old init.lua file"
