@@ -44,3 +44,7 @@ global.mapleader = ' '
 
 -- Add path
 --option.path += **
+
+-- Disable mouse
+option.mouse = nil
+option.ttymouse = nil

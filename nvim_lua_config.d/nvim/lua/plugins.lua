@@ -35,8 +35,12 @@ return require('packer').startup(function()
                 'plenary.nvim',
                 'telescope-fzf-native.nvim',
             },
-            setup   = [[require('config.telescope_setup')]],
-            config  = [[require('config.telescope_config')]],
+            setup   = function()
+                require('config.telescope_setup')
+            end,
+            config  = function()
+                require('config.telescope_config')
+            end,
             cmd     = 'Telescope',
             module  = 'telescope',
         },
@@ -50,22 +54,19 @@ return require('packer').startup(function()
     use 
     {
         'feline-nvim/feline.nvim',
-        requires = {
-            'nvim-tree/nvim-web-devicons',
-            opt = true,
-        },
-        wants = {
-            'nvim-web-devicons',
-        },
         config = function()
-            require('config.feline_toufyx')
+            --require('config.feline_toufyx')
+            -- require('config.feline_crivotz')
+            require('config.feline')
         end
     }
 
     use 
     {
         'joshdick/onedark.vim',
-        config = [[require('config.theme_config')]]
+        config = function()
+            require('config.theme_config')
+        end
     }
 
     -- For bootstrap
