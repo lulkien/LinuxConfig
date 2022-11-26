@@ -12,12 +12,58 @@ end
 local packer_bootstrap = ensure_packer()
 
 -- Packer startup
-return require('packer').startup(function()
+return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
   -- Intellisense
   use 'jiangmiao/auto-pairs'
+
+  --Tree-sitter and parsers
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    run = ':TSUpdate'
+  }
+  use {
+    {
+      'yuja/tree-sitter-qmljs',
+      after = 'nvim-treesitter',
+    }, {
+      'MunifTanjim/tree-sitter-lua',
+      after = 'nvim-treesitter',
+    }
+  }
+
+  -- Completion and LSP
+  use {
+    'hrsh7th/nvim-cmp',
+    requires = { 'hrsh7th/vim-vsnip' },
+    config = function()
+      require('config.cmp')
+    end,
+  }
+  use {
+    { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' },
+    { 'hrsh7th/cmp-vsnip', after = 'nvim-cmp' },
+    { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
+    { 'hrsh7th/cmp-nvim-lua', after = 'nvim-cmp' },
+    { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' },
+  }
+  use {
+    'neovim/nvim-lspconfig',
+    after = 'cmp-nvim-lsp',
+    config = function()
+      require('config.lspconfig')
+    end
+  }
+  use {
+    'williamboman/nvim-lsp-installer',
+    requires = 'nvim-lspconfig',
+    after = 'nvim-lspconfig',
+    config = function()
+      require('config.lsp_installer')
+    end,
+  }
 
   -- Search
   use {
@@ -60,6 +106,10 @@ return require('packer').startup(function()
     config = function()
       require('config.theme_config')
     end
+  }
+  use {
+    "catppuccin/nvim",
+    as = "catppuccin",
   }
 
   -- For bootstrap
