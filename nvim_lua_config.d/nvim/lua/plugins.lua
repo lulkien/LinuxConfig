@@ -44,10 +44,10 @@ return require('packer').startup(function(use)
   }
   use {
     { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' },
-    { 'hrsh7th/cmp-vsnip', after = 'nvim-cmp' },
-    { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
+    { 'hrsh7th/cmp-vsnip',    after = 'nvim-cmp' },
+    { 'hrsh7th/cmp-path',     after = 'nvim-cmp' },
     { 'hrsh7th/cmp-nvim-lua', after = 'nvim-cmp' },
-    { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' },
+    { 'hrsh7th/cmp-cmdline',  after = 'nvim-cmp' },
   }
   use {
     'neovim/nvim-lspconfig',
