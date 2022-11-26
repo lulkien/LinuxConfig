@@ -41,3 +41,9 @@ map('x', '<A-k>',   ":move '<-2<CR>gv=gv")
 -- Splitscreen
 -- map('n', '<C-A-h>',     '<cmd>split<CR>')
 -- map('n', '<C-A-v>',     '<cmd>vsplit<CR>')
+
+-- Disable Ctrl-C
+map('n', '<C-c>', '<Esc><Esc><Esc>')
+map('x', '<C-c>', '<Esc><Esc><Esc>')
+map('i', '<C-c>', '<Esc><Esc><Esc>')
+

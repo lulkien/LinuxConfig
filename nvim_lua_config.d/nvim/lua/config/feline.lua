@@ -50,7 +50,8 @@ function get_filename()
     if filename == '' then
         filename = '[no name]'
     end
-    return filename
+    return vim.fn.fnamemodify(filename, ':~:.')
+    --return filename
 end
 
 function get_posision(arg)
@@ -99,6 +100,7 @@ local components = {
     },
     inactive = {
         {}, --Left
+        {}, --Mid
         {}, --Right
     }
 }
