@@ -42,8 +42,9 @@ map('x', '<A-k>',   ":move '<-2<CR>gv=gv")
 -- map('n', '<C-A-h>',     '<cmd>split<CR>')
 -- map('n', '<C-A-v>',     '<cmd>vsplit<CR>')
 
--- Disable Ctrl-C
+-- Disable unwant keys
 map('n', '<C-c>', '<Esc><Esc><Esc>')
 map('x', '<C-c>', '<Esc><Esc><Esc>')
 map('i', '<C-c>', '<Esc><Esc><Esc>')
+map('n', '<BS>' , '<Nop>')
 

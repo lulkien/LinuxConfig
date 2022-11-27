@@ -16,22 +16,21 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  -- Intellisense
+  -- Intellisense and syntax highlighter
   use 'jiangmiao/auto-pairs'
+  use {
+    'peterhoeg/vim-qml',
+    event = "BufRead",
+    ft = { "qml" },
+  }
 
   --Tree-sitter and parsers
   use {
     'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate'
-  }
-  use {
-    {
-      'yuja/tree-sitter-qmljs',
-      after = 'nvim-treesitter',
-    }, {
-      'MunifTanjim/tree-sitter-lua',
-      after = 'nvim-treesitter',
-    }
+    run = ':TSUpdate',
+    config = function()
+      require('config.treesitter')
+    end,
   }
 
   -- Completion and LSP
