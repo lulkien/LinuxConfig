@@ -22,16 +22,9 @@ else
 end
 
 # Copy everything else
-if test -e ~/.config/nvim/init.lua
-    echo "Remove old init.lua file"
-    rm ~/.config/nvim/init.lua 
+echo "Copy nvim to config folder"
+if test -d ~/.config/nvim
+    rm -rf ~/.config/nvim
+    cp -r $nvim_lua_cfg_dir/nvim ~/.config
 end
 
-if test -d ~/.config/nvim/lua
-    echo "Remove old lua scripts folder"
-    rm -r ~/.config/nvim/lua
-end
-
-echo "Copy new init.lua and lua script folder"
-cp $nvim_lua_cfg_dir/nvim/init.lua ~/.config/nvim
-cp -r $nvim_lua_cfg_dir/nvim/lua ~/.config/nvim

@@ -33,6 +33,13 @@ return require('packer').startup(function(use)
     end,
   }
 
+  use {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end
+  }
+
   -- Completion and LSP
   use {
     'hrsh7th/nvim-cmp',
