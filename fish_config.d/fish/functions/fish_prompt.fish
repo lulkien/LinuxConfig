@@ -52,6 +52,18 @@ function fish_prompt --description 'Write out the prompt'
         set -l branch   (git branch --show-current 2>/dev/null)
         set -l detached (git branch 2>/dev/null | grep 'detached' | sed -r 's/\* |\(|\)//g')
         #set -l detached (git branch 2>/dev/null | grep 'detached' | sed -r 's/\* |\(|\)//g' | tr ' ' '\n' | tail -n1)
+
+        # In case of not enable full git info
+        if test -z "$GIT_INFO_ENABLED"
+            if test -z "$branch"
+                return
+            end
+            set_color $color_label;     echo -n '(git:';
+            set_color $color_branch;    echo -n $branch;
+            set_color $color_label;     echo -n ')';
+            return
+        end
+
         if test ! -z "$branch"
             set -l after_head   (git rev-list --count @{u}..HEAD 2>/dev/null)
             set -l before_head  (git rev-list --count HEAD..@{u} 2>/dev/null)
