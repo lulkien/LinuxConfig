@@ -30,16 +30,18 @@ function fish_prompt --description 'Write out the prompt'
     end
 
     function branch_name
-        # validate git directory 
+        # Validate git directory
         if test "$git_installed" != 'true'
             return   # break if git is not installed
         end
+
         # icon
         set -l git_bh       '-'
         set -l git_ah       '+'
         set -l git_dirty    '[!]'
-        set -l git_clear    '[OK]'
+        set -l git_clean    '[OK]'
         set -l git_awk      '[?]'
+
         # color palette
         set -l color_label  'FC8484'
         set -l color_branch '66FACB'
@@ -48,44 +50,39 @@ function fish_prompt --description 'Write out the prompt'
         set -l color_ahead  '51FF49'
         set -l color_behind '49AAFF'
         set -l color_akw    'FFFF49'
+
         # Branch name checking
         set -l branch   (git branch --show-current 2>/dev/null)
         set -l detached (git branch 2>/dev/null | grep 'detached' | sed -r 's/\* |\(|\)//g')
         #set -l detached (git branch 2>/dev/null | grep 'detached' | sed -r 's/\* |\(|\)//g' | tr ' ' '\n' | tail -n1)
 
-        # In case of not enable full git info
-        if test -z "$GIT_INFO_ENABLED"
-            if test -z "$branch"
-                return
-            end
-            set_color $color_label;     echo -n '(git:';
-            set_color $color_branch;    echo -n $branch;
-            set_color $color_label;     echo -n ')';
-            return
-        end
-
         if test ! -z "$branch"
-            set -l after_head   (git rev-list --count @{u}..HEAD 2>/dev/null)
-            set -l before_head  (git rev-list --count HEAD..@{u} 2>/dev/null)
-            set -l git_status   (git status --short 2>/dev/null)
             # Write branch name
             set_color $color_label;     echo -n '(git:';
             set_color $color_branch;    echo -n $branch;
             set_color $color_label;     echo -n ')';
+
             # Write status
+            set -l git_status   (git status --short 2>/dev/null)
             if test -z "$git_status"
-                set_color $color_clear;  echo -n " $git_clear";
+                set_color $color_clear;  echo -n " $git_clean";
             else
                 set_color $color_dirty;  echo -n " $git_dirty";
             end
-            if test $after_head -gt 0 -a $before_head -eq 0
-                set_color $color_ahead; echo -n "[$git_ah$after_head]"
-            else if test $after_head -eq 0 -a $before_head -gt 0
-                set_color $color_behind; echo -n "[$git_bh$before_head]"
-            else if test $after_head -eq 0 -a $before_head -eq 0
-                echo -n ''
-            else
-                set_color $color_akw; echo -n "$git_awk"
+
+            # In case of not enable full git info
+            if test ! -z "$GIT_INFO_ENABLED"
+                set -l after_head   (git rev-list --count @{u}..HEAD 2>/dev/null)
+                set -l before_head  (git rev-list --count HEAD..@{u} 2>/dev/null)
+                if test $after_head -gt 0 -a $before_head -eq 0
+                    set_color $color_ahead; echo -n "[$git_ah$after_head]"
+                else if test $after_head -eq 0 -a $before_head -gt 0
+                    set_color $color_behind; echo -n "[$git_bh$before_head]"
+                else if test $after_head -eq 0 -a $before_head -eq 0
+                    echo -n ''
+                else
+                    set_color $color_akw; echo -n "$git_awk"
+                end
             end
             return
         else if test ! -z "$detached"
@@ -107,6 +104,7 @@ function fish_prompt --description 'Write out the prompt'
             return
         else
             # do nothing
+            return
         end
     end
 
