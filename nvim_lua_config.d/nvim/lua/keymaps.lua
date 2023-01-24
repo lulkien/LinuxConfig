@@ -26,6 +26,12 @@ map('i', '<A-l>',   '<C-o>$')
 map('n', '<A-h>',   '^')
 map('n', '<A-l>',   '$')
 
+map('n', '<C-h>',   'b')
+map('n', '<C-l>',   'e')
+map('n', '<C-L>',   'w')
+map('n', '<C-j>',   '<C-d>')
+map('n', '<C-k>',   '<C-u>')
+
 -- Quickly save the current buffer or all buffers
 map('n', '<leader>w',   '<CMD>update<CR>')
 map('n', '<leader>W',   '<CMD>wall<CR>')
@@ -43,8 +49,13 @@ map('x', '<A-k>',   ":move '<-2<CR>gv=gv")
 -- map('n', '<C-A-v>',     '<cmd>vsplit<CR>')
 
 -- Disable unwant keys
-map('n', '<C-c>', '<Esc><Esc><Esc>')
-map('x', '<C-c>', '<Esc><Esc><Esc>')
-map('i', '<C-c>', '<Esc><Esc><Esc>')
-map('n', '<BS>' , '<Nop>')
+map('n', '<C-c>',   '<Esc><Esc><Esc>')
+map('x', '<C-c>',   '<Esc><Esc><Esc>')
+map('i', '<C-c>',   '<Esc><Esc><Esc>')
+map('n', '<BS>' ,   '<Nop>')
 
+-- Fix some shits nvim alacritty
+map('n', '<Esc>h',  '<Nop>')
+map('n', '<Esc>j',  '<Nop>')
+map('n', '<Esc>k',  '<Nop>')
+map('n', '<Esc>l',  '<Nop>')
