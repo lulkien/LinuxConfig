@@ -31,32 +31,32 @@ window:
   startup_mode: Maximized
 
   # Background opacity
-  opacity: 0.85
+  opacity: 0.9
 
 # Font configurations
 font:
   # The regular font face
   normal:
-    family: monospace
+    family: hack
     style: Regular
 
   # The bold font face
   bold:
-    family: monospace
+    family: hack
     style: Bold
 
   # The italic font face
   italic:
-    family: monospace
+    family: hack
     style: Italic
 
   # The bold italic font face
   bold_italic:
-    family: monospace
+    family: hack
     style: Bold Italic
 
   # Font size
-  size: 8
+  size: 10
 
   # Offset is the extra space around each character. offset.y can be thought of
   # as modifying the linespacing, and offset.x as modifying the letter spacing.
@@ -289,10 +289,16 @@ key_bindings:
   - { key: W,           mods: Control|Shift,                                  chars: "\x02&"                          }  # close tab (kill)
   - { key: T,           mods: Control|Shift,                                  chars: "\x02c"                          }  # new tab
   - { key: F,           mods: Control|Shift,                                  chars: "\x02/"                          }  # search (upwards) (see tmux.conf)
-  - { key: PageUp,      mods: Control,                                        chars: "\x02p"                          }  # select previous tab
   - { key: PageDown,    mods: Control,                                        chars: "\x02n"                          }  # select next tab
+  - { key: PageUp,      mods: Control,                                        chars: "\x02p"                          }  # select previous tab
+  - { key: Tab,         mods: Control,                                        chars: "\x02n"                          }  # select next tab
+  - { key: Tab,         mods: Control|Shift,                                  chars: "\x02p"                          }  # select previous tab
+  # tmux panel controller
   - { key: RBracket,    mods: Control,                                        chars: "\x02o"                          }  # select next pane
   - { key: LBracket,    mods: Control,                                        chars: "\x02;"                          }  # select last (previously used) pane
+  - { key: V,           mods: Control|Alt,                                    chars: "\x02\""                         }  # split panel vertical
+  - { key: H,           mods: Control|Alt,                                    chars: "\x02%"                          }  # split panel horizontal
+  - { key: Return,      mods: Control,                                        chars: "\x02q"                          }  # show panel number
 
 mouse:
   # Click settings

@@ -53,9 +53,3 @@ map('n', '<C-c>',   '<Esc><Esc><Esc>')
 map('x', '<C-c>',   '<Esc><Esc><Esc>')
 map('i', '<C-c>',   '<Esc><Esc><Esc>')
 map('n', '<BS>' ,   '<Nop>')
-
--- Fix some shits nvim alacritty
-map('n', '<Esc>h',  '<Nop>')
-map('n', '<Esc>j',  '<Nop>')
-map('n', '<Esc>k',  '<Nop>')
-map('n', '<Esc>l',  '<Nop>')
