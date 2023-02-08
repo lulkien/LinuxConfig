@@ -11,8 +11,8 @@ window:
   # Blank space added around the window in pixels. This padding is not scaled by
   # DPI and the specified value is always added at both opposing sides.
   padding:
-    x: 0
-    y: 0
+    x: 10
+    y: 10
 
   # Spread additional padding evenly around the terminal content.
   dynamic_padding: false
@@ -21,14 +21,17 @@ window:
   # Available values:
   # - full: borders and title bar
   # - none: neither borders nor title bar
-  decorations: full
+  decorations: none
+  # decorations: full
 
   # Startup Mode (changes require restart)
   # Values for `startup_mode`:
   #   - Windowed
   #   - Maximized
   #   - Fullscreen
-  startup_mode: Maximized
+  # startup_mode: Maximized
+  startup_mode: Windowed
+  # startup_mode: Fullscreen
 
   # Background opacity
   opacity: 0.9
@@ -403,5 +406,3 @@ debug:
 # Entries in shell.args are passed unmodified as arguments to the shell.
 shell:
   program: /usr/bin/fish
-  args:
-    - --command=tmux
