@@ -1,5 +1,6 @@
 #!/usr/bin/fish
 
+sudo pacman -S --needed fd ripgrep
 set nvim_lua_cfg_dir    (dirname (status --current-filename))
 
 # Make config dir
