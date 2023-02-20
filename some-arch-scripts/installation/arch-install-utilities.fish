@@ -17,10 +17,9 @@ sudo pacman -S --needed ttf-liberation noto-fonts-cjk
 sudo pacman -S --needed fish git vim alacritty vlc htop neofetch unzip 
 
 # Some services
-sudo pacman -S --needed openssh dhcpcd blueman bluez ibus
+sudo pacman -S --needed openssh blueman bluez ibus
 
 # Enable services
-sudo systemctl enable --now dhcpcd
 sudo systemctl enable --now sshd
 sudo systemctl enable --now bluetooth
 
