@@ -1,4 +1,5 @@
 function cd
+    set -l cd_status 0
     # Import
     set -l import_dir $HOME/.config/fish/addons/include/cd
     for file in $import_dir/*.fish
@@ -31,6 +32,7 @@ function cd
         end
         return 0
     else if set -q _flag_index  # If using index option
+        set _flag_index (string trim -c ' ' $_flag_index)
         if not is_integer $_flag_index
             echo "cd: $_flag_index is not an integer"
             return 1
@@ -43,12 +45,23 @@ function cd
         set -l list_dir (string split ' ' $cd_history)
         set argv $list_dir[$_flag_index]
     else # default case
-        set argv (set_explicit_path "$argv")
-        set argv (remove_trailing_slash "$argv")
+        if not test $argv = '-'
+            set argv (set_explicit_path "$argv")
+        else
+            __fish_cd -
+            set cd_status $status
+            if test $cd_status -eq 0
+                set -l dir (pwd)
+                set cd_history (remove_existed "$dir" "$cd_history")
+                set cd_history "$dir $cd_history"
+                set cd_history (string trim -c ' ' $cd_history)
+            end
+            return $cd_status
+        end
     end
 
     __fish_cd $argv
-    set -l cd_status $status
+    set cd_status $status
     if test $cd_status -eq 0
         set cd_history (remove_existed "$argv" "$cd_history")
         set cd_history "$argv $cd_history"

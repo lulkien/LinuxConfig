@@ -1,6 +1,5 @@
 function set_explicit_path
     string length -q "$argv"; or set argv "$HOME"
-    test "$argv" = '.'; and set argv (realpath .)
-    test "$argv" = '..'; and set argv (realpath ..)
+    set argv (realpath $argv)
     echo $argv
 end
