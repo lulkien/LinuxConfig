@@ -10,6 +10,10 @@ if status is-interactive
     set -g fish_prompt_pwd_dir_length 0
     set -g fish_term24bit 1
 
+    if command -sq nvim
+        alias vim nvim
+    end
+
     #=================================== Abbreviations ===================================#
     # General
     abbr -a rmd     'rm -r'
