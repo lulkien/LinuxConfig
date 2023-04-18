@@ -5,10 +5,10 @@ local lspconfig = require "lspconfig"
 local servers = { "pylsp", "rust_analyzer" }
 
 for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-  }
+    lspconfig[lsp].setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+    }
 end
 
 -- Without the loop, you would have to manually set up each LSP 
@@ -23,11 +23,11 @@ end
 --   capabilities = capabilities,
 -- }
 lspconfig.rust_analyzer.setup{
-  settings = {
-    ['rust-analyzer'] = {
-      diagnostics = {
-        enable = false;
-      }
+    settings = {
+        ['rust-analyzer'] = {
+            diagnostics = {
+                enable = false;
+            }
+        }
     }
-  }
 }
