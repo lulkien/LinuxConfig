@@ -1,9 +1,12 @@
 local on_attach = require("plugins.configs.lspconfig").on_attach
 local capabilities = require("plugins.configs.lspconfig").capabilities
+local lspconfig = require("lspconfig")
+local util = require("lspconfig/util")
 
-local lspconfig = require "lspconfig"
-local servers = { "pylsp", "rust_analyzer" }
+-- Table of LSP servers
+local servers = { "pylsp" }
 
+-- Default configs for lsp
 for _, lsp in ipairs(servers) do
     lspconfig[lsp].setup {
         on_attach = on_attach,
@@ -11,23 +14,21 @@ for _, lsp in ipairs(servers) do
     }
 end
 
--- Without the loop, you would have to manually set up each LSP 
--- 
--- lspconfig.html.setup {
---   on_attach = on_attach,
---   capabilities = capabilities,
--- }
---
--- lspconfig.cssls.setup {
---   on_attach = on_attach,
---   capabilities = capabilities,
--- }
-lspconfig.rust_analyzer.setup{
-    settings = {
-        ['rust-analyzer'] = {
-            diagnostics = {
-                enable = false;
-            }
-        }
-    }
-}
+-- Manual additional configs
+-- Example:
+-- lspconfig.rust_analyzer.setup({
+--     filetypes = { "rust" },
+--     root_dir = util.root_pattern("Cargo.toml"),
+--     settings = {
+--         ['rust-analyzer'] = {
+--             cmd = { "rust-analyzer" },
+--             cargo = {
+--                 allFeatures = true;
+--             },
+--             diagnostics = {
+--                 enable = false;
+--             },
+--         }
+--     }
+-- })
+-- It's just an example, DO NOT uncomment the code
