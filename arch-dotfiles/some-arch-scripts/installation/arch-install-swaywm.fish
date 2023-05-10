@@ -30,6 +30,9 @@ echo "Enable services"
 sudo systemctl enable --now dhcpcd
 sudo systemctl enable --now bluetooth
 
+echo "Install xdg-desktop-portal-wlr"
+sudo pacman -S xdg-desktop-portal-wlr
+
 echo "Clone configurations"
 # kitty
 rm -r ~/.config/kitty
