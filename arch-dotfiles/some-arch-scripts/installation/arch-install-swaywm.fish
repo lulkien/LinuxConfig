@@ -13,7 +13,7 @@ echo "Install sway"
 sudo pacman -S sway swayidle swaybg
 
 echo "Install fonts"
-sudo pacman -S ttf-jetbrains-mono-nerd ttf-liberation noto-fonts-cjk noto-fonts-emoji
+sudo pacman -S ttf-jetbrains-mono-nerd ttf-liberation noto-fonts-cjk noto-fonts-emoji otf-codenewroman-nerd
 
 echo "Install audio controller"
 sudo pacman -S pamixer
