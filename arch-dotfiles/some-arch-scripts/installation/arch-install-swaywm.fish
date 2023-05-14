@@ -25,7 +25,7 @@ echo "Install credentials manager"
 sudo pacman -S --needed gnome-keyring seahorse
 
 echo "Install services and applications"
-sudo pacman -S --needed kitty rofi ffmpeg grim python python-pip bluez bluez-utils htop dhcpcd iwd firefox neovim xorg-xrandr xorg-xwayland
+sudo pacman -S --needed kitty rofi ffmpeg grim python python-pip bluez bluez-utils htop dhcpcd iwd firefox neovim xorg-xrandr xorg-xwayland lxappearance
 
 echo "Install imagemagick and its dependencies"
 sudo pacman -S --needed imagemagick ghostscript libheif libjxl libraw librsvg libwebp libwmf libxml2 libzip ocl-icd openexr openjpeg2 djvulibre pango
