@@ -10,28 +10,28 @@ sudo systemctl enable --now seatd
 echo "Please add user to group seat"
 
 echo "Install sway"
-sudo pacman -S sway swayidle swaybg
+sudo pacman -S --needed sway swayidle swaybg
 
 echo "Install fonts"
-sudo pacman -S ttf-jetbrains-mono-nerd ttf-liberation noto-fonts-cjk noto-fonts-emoji otf-codenewroman-nerd
+sudo pacman -S --needed ttf-jetbrains-mono-nerd ttf-liberation noto-fonts-cjk noto-fonts-emoji otf-codenewroman-nerd
 
 echo "Install audio controller"
-sudo pacman -S pamixer
+sudo pacman -S --needed pamixer
 
 echo "Install ranger and optional"
-sudo pacman -S ranger
+sudo pacman -S --needed ranger
 
 echo "Install credentials manager"
-sudo pacman -S gnome-keyring seahorse
+sudo pacman -S --needed gnome-keyring seahorse
 
 echo "Install services and applications"
-sudo pacman -S kitty rofi python python-pip bluez bluez-utils htop dhcpcd iwd firefox neovim xorg-xrandr xorg-xwayland
+sudo pacman -S --needed kitty rofi grim python python-pip bluez bluez-utils htop dhcpcd iwd firefox neovim xorg-xrandr xorg-xwayland
 echo "Enable services"
 sudo systemctl enable --now dhcpcd
 sudo systemctl enable --now bluetooth
 
 echo "Install xdg-desktop-portal (base and wlr)"
-sudo pacman -S xdg-desktop-portal xdg-desktop-portal-wlr
+sudo pacman -S --needed xdg-desktop-portal xdg-desktop-portal-wlr
 
 echo "Clone configurations"
 # kitty
