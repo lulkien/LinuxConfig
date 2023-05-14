@@ -4,7 +4,7 @@ echo "Update database"
 sudo pacman -Sy
 
 echo "Install seatd"
-sudo pacman -S seatd
+sudo pacman -S --needed seatd
 echo "Enable seatd"
 sudo systemctl enable --now seatd
 echo "Please add user to group seat"
@@ -26,6 +26,10 @@ sudo pacman -S --needed gnome-keyring seahorse
 
 echo "Install services and applications"
 sudo pacman -S --needed kitty rofi grim python python-pip bluez bluez-utils htop dhcpcd iwd firefox neovim xorg-xrandr xorg-xwayland
+
+echo "Install imagemagick and its dependencies"
+sudo pacman -S --needed imagemagick ghostscript libheif libjxl libraw librsvg libwebp libwmf libxml2 libzip ocl-icd openexr openjpeg2 djvulibre pango
+
 echo "Enable services"
 sudo systemctl enable --now dhcpcd
 sudo systemctl enable --now bluetooth
