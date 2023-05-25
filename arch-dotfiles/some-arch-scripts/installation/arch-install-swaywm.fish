@@ -36,3 +36,10 @@ sudo systemctl enable --now bluetooth
 
 echo "Install xdg-desktop-portal (base and wlr)"
 sudo pacman -S --needed xdg-desktop-portal xdg-desktop-portal-wlr
+
+cd ~
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+
+yay -S swaylock-effects
