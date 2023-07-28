@@ -12,7 +12,7 @@ sudo pacman -S --needed plasma plasma-wayland-session sddm
 sudo pacman -S --needed konsole dolphin kwallet kwalletmanager kate spectacle kdeconnect elisa gwenview ark partitionmanager
 
 # Install other appliactions
-sudo pacman -S --needed firefox htop curl wget pipewire pipewire-pulse lib32-pipewire wireplumber flatpak git base-devel openssh neofetch htop kitty
+sudo pacman -S --needed firefox htop curl wget pipewire pipewire-pulse lib32-pipewire wireplumber flatpak git base-devel openssh neofetch htop kitty lsb-release neovim vim
 
 # Install fonts
 sudo pacman -S --needed ttf-jetbrains-mono-nerd ttf-liberation noto-fonts-cjk noto-fonts-emoji otf-codenewroman-nerd
