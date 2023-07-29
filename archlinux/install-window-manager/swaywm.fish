@@ -42,8 +42,10 @@ sudo pacman -S --needed \
     wl-color-picker grim slurp ffmpeg \
     pipewire pipewire-pulse lib32-pipewire wireplumber \
     xorg-xrandr xorg-xwayland \
-    xdg-desktop-portal xdg-desktop-portal-wlr \
-    python python-pip base-devel cargo \
+    xdg-desktop-portal xdg-desktop-portal-wlr
+
+set_color ECEB7B; echo "[Install development tools]"; set_color normal
+sudo pacman -S --needed python python-pip base-devel cargo
 
 set_color ECEB7B; echo "[Install imagemagick and its dependencies]"; set_color normal
 sudo pacman -S --needed imagemagick ghostscript libheif libjxl libraw librsvg libwebp libwmf libxml2 libzip ocl-icd openexr openjpeg2 djvulibre pango

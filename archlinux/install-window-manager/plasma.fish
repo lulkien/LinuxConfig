@@ -19,7 +19,10 @@ set_color ECEB7B; echo "[Install some GUI appliactions, some CLI appliactions, s
 sudo pacman -S --needed firefox kitty flatpak \
     htop wget curl git openssh neofetch lsb-release neovim vim gamemode \
     pipewire pipewire-pulse lib32-pipewire wireplumber \
-    python python-pip base-devel cargo
+
+# Install development tools
+set_color ECEB7B; echo "[Install development tools]"; set_color normal
+sudo pacman -S --needed python python-pip base-devel rustup
 
 # Install fonts
 set_color ECEB7B; echo "[Install some good nerdfonts]"; set_color normal
