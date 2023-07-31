@@ -15,3 +15,6 @@ vim.opt.textwidth = 180
 -- Number
 vim.opt.number = true
 vim.opt.relativenumber = true
+
+-- Scroll Offset
+vim.opt.scrolloff = 999
