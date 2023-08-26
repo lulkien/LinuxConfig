@@ -25,27 +25,28 @@ sudo pacman -S --needed seatd
 sudo systemctl enable --now seatd
 sudo usermod -aG seat $USER
 
-# Install sway applications
-set_color ECEB7B; echo "[Install swaywm and some sway applications]"; set_color normal
-sudo pacman -S --needed sway swayidle swaybg
-yay -S swaylock-effects
+#Install Hyprland
+set_color ECEB7B; echo "[Install hyprland window manager]"; set_color normal
+sudo pacman -S --needed hyprland
 
 # Install fonts
 set_color ECEB7B; echo "[Install some good nerdfonts]"; set_color normal
 sudo pacman -S --needed ttf-jetbrains-mono-nerd ttf-liberation noto-fonts-cjk noto-fonts-emoji otf-codenewroman-nerd
 
 set_color ECEB7B; echo "[Install other applications]"; set_color normal
-sudo pacman -S --needed \
+sudo pacman -S \
     firefox kitty rofi waybar lxappearance \
     gnome-keyring seahorse \
     ranger htop neovim vim net-tools \
     grim slurp ffmpeg \
     pipewire pipewire-pulse lib32-pipewire wireplumber \
     xorg-xrandr xorg-xwayland \
-    xdg-desktop-portal xdg-desktop-portal-wlr
+    xdg-desktop-portal \
+    xdg-desktop-portal-hyprland
+    # xdg-desktop-portal-wlr
 
 set_color ECEB7B; echo "[Install development tools]"; set_color normal
-sudo pacman -S --needed python python-pip base-devel cargo
+sudo pacman -S --needed python python-pip base-devel rustup 
 
 set_color ECEB7B; echo "[Install imagemagick and its dependencies]"; set_color normal
 sudo pacman -S --needed imagemagick ghostscript libheif libjxl libraw librsvg libwebp libwmf libxml2 libzip ocl-icd openexr openjpeg2 djvulibre pango
@@ -87,10 +88,6 @@ if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
         rm -rf ~/.config/fish ~/.config/sway ~/.config/swaylock ~/.config/waybar ~/.config/kitty
         echo ">>> Clone QSingularisRicer/fish.git"
         git clone "git@github.com:QSingularisRicer/fish.git" ~/.config/fish
-        echo ">>> Clone QSingularisRicer/sway.git"
-        git clone "git@github.com:QSingularisRicer/sway.git" ~/.config/sway
-        echo ">>> Clone QSingularisRicer/swaylock.git"
-        git clone "git@github.com:QSingularisRicer/swaylock.git" ~/.config/swaylock
         echo ">>> Clone QSingularisRicer/waybar"
         git clone "git@github.com:QSingularisRicer/waybar.git" ~/.config/waybar
         echo ">>> Clone QSingularisRicer/kitty.git"
@@ -99,10 +96,6 @@ if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
         rm -rf ~/.config/fish ~/.config/sway ~/.config/swaylock ~/.config/waybar ~/.config/kitty
         echo ">>> Clone QSingularisRicer/fish.git"
         git clone "https://github.com/QSingularisRicer/fish.git" ~/.config/fish
-        echo ">>> Clone QSingularisRicer/sway.git"
-        git clone "https://github.com/QSingularisRicer/sway" ~/.config/sway
-        echo ">>> Clone QSingularisRicer/swaylock.git"
-        git clone "https://github.com/QSingularisRicer/swaylock" ~/.config/swaylock
         echo ">>> Clone QSingularisRicer/waybar"
         git clone "https://github.com/QSingularisRicer/waybar" ~/.config/waybar
         echo ">>> Clone QSingularisRicer/kitty.git"
