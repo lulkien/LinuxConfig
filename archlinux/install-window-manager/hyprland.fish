@@ -41,11 +41,12 @@ sudo pacman -S \
     ranger htop neovim vim net-tools \
     grim slurp ffmpeg \
     pipewire pipewire-pulse lib32-pipewire wireplumber \
+    wl-clipboard \
     xorg-xrandr xorg-xwayland \
     xdg-desktop-portal \
     xdg-desktop-portal-hyprland
 
-yay -S brave-bin adwaita-dark
+yay -S brave-bin adwaita-dark hybrid-bar wl-color-picker
 
 set_color ECEB7B; echo "[Install development tools]"; set_color normal
 sudo pacman -S --needed python python-pip base-devel rustup 
