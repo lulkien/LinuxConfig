@@ -27,7 +27,7 @@ sudo usermod -aG seat $USER
 
 #Install Hyprland
 set_color ECEB7B; echo "[Install hyprland window manager]"; set_color normal
-sudo pacman -S --needed hyprland
+sudo pacman -S --needed hyprland hyprpaper
 
 # Install fonts
 set_color ECEB7B; echo "[Install some good nerdfonts]"; set_color normal
@@ -35,7 +35,8 @@ sudo pacman -S --needed ttf-jetbrains-mono-nerd ttf-liberation noto-fonts-cjk no
 
 set_color ECEB7B; echo "[Install other applications]"; set_color normal
 sudo pacman -S \
-    firefox kitty rofi waybar lxappearance \
+    firefox kitty rofi waybar \
+    lxappearance nemo \
     gnome-keyring seahorse \
     ranger htop neovim vim net-tools \
     grim slurp ffmpeg \
@@ -43,7 +44,8 @@ sudo pacman -S \
     xorg-xrandr xorg-xwayland \
     xdg-desktop-portal \
     xdg-desktop-portal-hyprland
-    # xdg-desktop-portal-wlr
+
+yay -S brave-bin adwaita-dark
 
 set_color ECEB7B; echo "[Install development tools]"; set_color normal
 sudo pacman -S --needed python python-pip base-devel rustup 
@@ -82,23 +84,11 @@ set_color ECEB7B; echo "[Copy configuration]"; set_color normal
 echo "Do you want to clone configuration? [Y/n] "
 read answer
 if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
-    echo "Using SSH? [Y/n] "
-    read answer
-    if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
-        rm -rf ~/.config/fish ~/.config/sway ~/.config/swaylock ~/.config/waybar ~/.config/kitty
-        echo ">>> Clone QSingularisRicer/fish.git"
-        git clone "git@github.com:QSingularisRicer/fish.git" ~/.config/fish
-        echo ">>> Clone QSingularisRicer/waybar"
-        git clone "git@github.com:QSingularisRicer/waybar.git" ~/.config/waybar
-        echo ">>> Clone QSingularisRicer/kitty.git"
-        git clone "git@github.com:QSingularisRicer/kitty.git" ~/.config/kitty
-    else
-        rm -rf ~/.config/fish ~/.config/sway ~/.config/swaylock ~/.config/waybar ~/.config/kitty
-        echo ">>> Clone QSingularisRicer/fish.git"
-        git clone "https://github.com/QSingularisRicer/fish.git" ~/.config/fish
-        echo ">>> Clone QSingularisRicer/waybar"
-        git clone "https://github.com/QSingularisRicer/waybar" ~/.config/waybar
-        echo ">>> Clone QSingularisRicer/kitty.git"
-        git clone "https://github.com/QSingularisRicer/kitty" ~/.config/kitty
-    end
+    rm -rf ~/.config/fish ~/.config/waybar ~/.config/kitty ~/.config/hypr
+    echo ">>> Clone QSingularisRicer/fish.git"
+    git clone "https://github.com/QSingularisRicer/fish.git" ~/.config/fish
+    echo ">>> Clone QSingularisRicer/waybar"
+    git clone "https://github.com/QSingularisRicer/waybar" ~/.config/waybar
+    echo ">>> Clone QSingularisRicer/kitty.git"
+    git clone "https://github.com/QSingularisRicer/kitty" ~/.config/kitty
 end
