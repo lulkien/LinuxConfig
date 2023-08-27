@@ -46,10 +46,10 @@ sudo pacman -S \
     xdg-desktop-portal \
     xdg-desktop-portal-hyprland
 
-yay -S brave-bin adwaita-dark hybrid-bar wl-color-picker
+yay -S brave-bin adwaita-dark hybrid-bar wl-color-picker swaync
 
 set_color ECEB7B; echo "[Install development tools]"; set_color normal
-sudo pacman -S --needed python python-pip base-devel rustup 
+sudo pacman -S --needed python python-pip base-devel rustup cmake
 
 set_color ECEB7B; echo "[Install imagemagick and its dependencies]"; set_color normal
 sudo pacman -S --needed imagemagick ghostscript libheif libjxl libraw librsvg libwebp libwmf libxml2 libzip ocl-icd openexr openjpeg2 djvulibre pango
