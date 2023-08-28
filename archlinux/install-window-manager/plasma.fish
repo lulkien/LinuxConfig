@@ -23,7 +23,7 @@ sudo pacman -S --needed firefox kitty flatpak \
 
 # Install development tools
 set_color ECEB7B; echo "[Install development tools]"; set_color normal
-sudo pacman -S --needed python python-pip base-devel rustup
+sudo pacman -S --needed python python-pip base-devel rustup npm
 
 # Install fonts
 set_color ECEB7B; echo "[Install some good nerdfonts]"; set_color normal

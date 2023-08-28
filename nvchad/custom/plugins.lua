@@ -6,6 +6,7 @@ local plugins = {
             ensure_installed = {
                 "rust-analyzer",
                 "python-lsp-server",
+                "css-lsp",
             },
         },
     },

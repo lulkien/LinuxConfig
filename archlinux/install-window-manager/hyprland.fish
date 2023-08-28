@@ -35,7 +35,7 @@ sudo pacman -S --needed ttf-jetbrains-mono-nerd ttf-liberation noto-fonts-cjk no
 
 set_color ECEB7B; echo "[Install other applications]"; set_color normal
 sudo pacman -S \
-    firefox kitty rofi waybar \
+    firefox kitty wofi waybar \
     lxappearance nemo \
     gnome-keyring seahorse \
     ranger htop neovim vim net-tools \
@@ -49,7 +49,7 @@ sudo pacman -S \
 yay -S brave-bin adwaita-dark hybrid-bar wl-color-picker swaync
 
 set_color ECEB7B; echo "[Install development tools]"; set_color normal
-sudo pacman -S --needed python python-pip base-devel rustup cmake
+sudo pacman -S --needed python python-pip base-devel rustup cmake npm
 
 set_color ECEB7B; echo "[Install imagemagick and its dependencies]"; set_color normal
 sudo pacman -S --needed imagemagick ghostscript libheif libjxl libraw librsvg libwebp libwmf libxml2 libzip ocl-icd openexr openjpeg2 djvulibre pango
