@@ -6,8 +6,9 @@ function prepare_keyring
     sudo pacman -S --needed archlinux-keyring
 end
 
-function install_yay
+function install_aur_helper
     set_color ECEB7B; echo "[Check yay available]"; set_color normal
+    sudo pacman -S --needed go
     if not command -sq yay
         echo 'yay is not installed. Do you wanna install it? [Y/n]'
         read answer
@@ -21,36 +22,46 @@ function install_yay
     end
 end
 
-function install_seatd
+function install_desktop_environment
     set_color ECEB7B; echo "[Install seatd]"; set_color normal
     echo "Install seatd, enable and add current use to group seat. Swaywm need that."
     sudo pacman -S --needed seatd
     sudo systemctl enable --now seatd
     sudo usermod -aG seat $USER
-end
 
-function install_hyprland
     set_color ECEB7B; echo "[Install hyprland window manager]"; set_color normal
-    sudo pacman -S --needed hyprland hyprpaper
+    sudo pacman -S --needed xorg-xwayland hyprland hyprpaper
 end
 
-function install_fonts
-    set_color ECEB7B; echo "[Install some good nerdfonts]"; set_color normal
-    sudo pacman -S --needed ttf-jetbrains-mono-nerd ttf-liberation noto-fonts-cjk noto-fonts-emoji otf-codenewroman-nerd
-end
+function install_misc
+    set_color ECEB7B; echo "[Install fonts]"; set_color normal
+    sudo pacman -S --needed \
+        ttf-jetbrains-mono-nerd \
+        ttf-liberation \
+        noto-fonts-cjk \
+        noto-fonts-emoji \
+        otf-codenewroman-nerd
 
-function install_applications
     set_color ECEB7B; echo "[Install other applications]"; set_color normal
     sudo pacman -S \
-    firefox kitty wofi waybar \
-    lxappearance nemo gnome-keyring seahorse \
-    ranger htop neovim vim net-tools man unzip \
-    rsync wget curl grim slurp ffmpeg \
-    pipewire pipewire-pulse lib32-pipewire wireplumber \
-    wl-clipboard xorg-xrandr xorg-xwayland \
-    xdg-desktop-portal xdg-desktop-portal-hyprland \
-    fcitx5-im fcitx5-bamboo \
-    python python-pip base-devel rustup cmake npm
+        fish git vim neovim kitty \
+        wofi waybar \
+        unzip unarchiver \
+        firefox flatpak \
+        lxappearance nemo \
+        gnome-keyring seahorse \
+        htop neofetch lsb-release \
+        wget curl openssh rsync \
+        grim slurp ffmpeg \
+        wl-clipboard xorg-xrandr \
+        pipewire pipewire-pulse lib32-pipewire wireplumber \
+        xdg-desktop-portal xdg-desktop-portal-hyprland
+
+    set_color ECEB7B; echo "[Install fcitx5]"; set_color normal
+    sudo pacman -S --needed fcitx5-im fcitx5-bamboo
+
+    set_color ECEB7B; echo "[Install development tools]"; set_color normal
+    sudo pacman -S --needed python python-pip base-devel rustup npm
 
     yay -S brave-bin adwaita-dark wl-color-picker swaync
 end
@@ -98,13 +109,15 @@ function clone_configuations
         rm -rf ~/.config/waybar
         git clone --single-branch --branch hyprland "https://github.com/QSingularisRicer/waybar" ~/.config/waybar
 
+        echo ">>> Clone QSingularisRicer/wofi"
+        rm -rf ~/.config/wofi
+        git clone "https://github.com/QSingularisRicer/wofi.git" ~/.config/wofi
+
         echo ">>> Clone QSingularisRicer/kitty.git"
         rm -rf ~/.config/kitty
         git clone "https://github.com/QSingularisRicer/kitty" ~/.config/kitty
     end
 end
 
-
-
-# MAIN
-prepare_keyring && install_yay && install_seatd && install_hyprland && install_fonts && install_applications && enable_services && clone_configuations
+# MAIN SCRIPT
+prepare_keyring && install_aur_helper && install_desktop_environment && install_misc && enable_services && clone_configuations
