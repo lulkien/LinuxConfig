@@ -4,9 +4,12 @@ local plugins = {
         "williamboman/mason.nvim",
         opts = {
             ensure_installed = {
-                "rust-analyzer",
+                "cmake-language-server",
+                "bash-language-server",
                 "python-lsp-server",
+                "rust-analyzer",
                 "css-lsp",
+                "clangd",
             },
         },
     },
