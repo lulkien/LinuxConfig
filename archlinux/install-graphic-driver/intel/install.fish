@@ -13,7 +13,6 @@ sudo pacman -S --needed \
     mesa-demos lib32-mesa-demos \
     mesa-vdpau lib32-mesa-vdpau \
     libva-mesa-driver lib32-libva-mesa-driver \
-    vulkan-icd-loader lib32-vulkan-icd-loader \
     vulkan-mesa-layers lib32-vulkan-mesa-layers
 
 sudo pacman -S --needed vulkan-intel lib32-vulkan-intel 
