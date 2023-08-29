@@ -1,18 +1,25 @@
 #!/usr/bin/fish
 
-echo "Install mesa, vulkan, libs, etc."
-echo "Is the generation of this processor equal or above gen 8? [Y/n]"
-read answer
-if test -z "$answer" -o "$answer" = 'Y' -o "$answer" = 'y'
-    sudo pacman -S --needed mesa lib32-mesa
-else
-    sudo pacman -S --needed mesa-amber lib32-mesa-amber
+function install_mesa
+    echo "Is the generation of this processor equal or above gen 8? [Y/n]"
+    read answer
+    if test -z "$answer" -o "$answer" = 'Y' -o "$answer" = 'y'
+        sudo pacman -S --needed mesa lib32-mesa
+    else
+        sudo pacman -S --needed mesa-amber lib32-mesa-amber
+    end
+    
+    sudo pacman -S --needed \
+        mesa-demos lib32-mesa-demos \
+        mesa-vdpau lib32-mesa-vdpau \
+        libva-mesa-driver lib32-libva-mesa-driver
 end
 
-sudo pacman -S --needed \
-    mesa-demos lib32-mesa-demos \
-    mesa-vdpau lib32-mesa-vdpau \
-    libva-mesa-driver lib32-libva-mesa-driver \
-    vulkan-mesa-layers lib32-vulkan-mesa-layers
+function install_vulkan_driver
+    sudo pacman -S --needed \
+        vulkan-intel lib32-vulkan-intel \
+        vulkan-mesa-layers lib32-vulkan-mesa-layers
+end
 
-sudo pacman -S --needed vulkan-intel lib32-vulkan-intel 
+# MAIN SCRIPT
+install_mesa && install_vulkan_driver
