@@ -50,7 +50,7 @@ function install_misc
         wofi waybar \
         unzip unarchiver \
         firefox flatpak \
-        nemo gnome-keyring seahorse \
+        nemo gnome-keyring seahorse polkit-gnome \
         htop neofetch lsb-release \
         wget curl openssh rsync \
         grim slurp ffmpeg \
@@ -64,7 +64,7 @@ function install_misc
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
     sudo pacman -S --needed python python-pip base-devel rustup npm
 
-    yay -S brave-bin nwg-look wl-color-picker swaync
+    yay -S brave-bin nwg-look-bin swaync hyprpicker
 end
 
 function enable_services
