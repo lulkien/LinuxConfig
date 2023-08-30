@@ -31,6 +31,7 @@ function install_desktop_environment
 
     set_color ECEB7B; echo "[Install hyprland window manager]"; set_color normal
     sudo pacman -S --needed xorg-xwayland hyprland hyprpaper
+    yay -S swaylock-effects
 end
 
 function install_misc
@@ -45,11 +46,11 @@ function install_misc
     set_color ECEB7B; echo "[Install other applications]"; set_color normal
     sudo pacman -S \
         fish git vim neovim kitty \
+        breeze breeze-dark \
         wofi waybar \
         unzip unarchiver \
         firefox flatpak \
-        lxappearance nemo \
-        gnome-keyring seahorse \
+        nemo gnome-keyring seahorse \
         htop neofetch lsb-release \
         wget curl openssh rsync \
         grim slurp ffmpeg \
@@ -63,7 +64,7 @@ function install_misc
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
     sudo pacman -S --needed python python-pip base-devel rustup npm
 
-    yay -S brave-bin adwaita-dark wl-color-picker swaync
+    yay -S brave-bin nwg-look wl-color-picker swaync
 end
 
 function enable_services
