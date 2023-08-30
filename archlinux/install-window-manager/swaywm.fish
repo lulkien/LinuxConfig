@@ -46,7 +46,7 @@ function install_misc
     set_color ECEB7B; echo "[Install other applications]"; set_color normal
     sudo pacman -S \
         fish git vim neovim kitty \
-        breeze breeze-dark \
+        breeze breeze-gtk \
         wofi waybar \
         unzip unarchiver \
         firefox flatpak \
