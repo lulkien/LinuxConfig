@@ -63,8 +63,9 @@ function install_misc
 
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
     sudo pacman -S --needed python python-pip base-devel rustup npm
+    sudo pacman -S --needed dbus-python python-gobject
 
-    yay -S brave-bin nwg-look-bin swaync hyprpicker
+    yay -S brave-bin nwg-look-bin swaync hyprpicker eww
 end
 
 function enable_services
