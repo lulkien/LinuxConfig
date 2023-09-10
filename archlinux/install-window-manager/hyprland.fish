@@ -69,20 +69,17 @@ function install_misc
 end
 
 function enable_services
+    set_color ECEB7B; echo "[Install network service]"; set_color normal
+    sudo pacman -S --needed dhcpcd networkmanager nm-connection-editor
+    sudo systemctl enable --now dhcpcd
+    sudo systemctl enable --now NetworkManager
+
     set_color ECEB7B; echo "[Install bluetooth service]"; set_color normal
     echo "Do you wanna install bluetooth? [y/N]"
     read answer
     if test "$answer" = "Y" -o "$answer" = "y"
         sudo pacman -S --needed bluez bluez-utils blueman
         systemctl enable --now bluetooth
-    end
-
-    set_color ECEB7B; echo "[Install dhcpcd service]"; set_color normal
-    echo "Do you wanna install dhcpcd? [y/N]"
-    read answer
-    if test "$answer" = "Y" -o "$answer" = "y"
-        sudo pacman -S --needed dhcpcd
-        sudo systemctl enable --now dhcpcd
     end
 
     set_color ECEB7B; echo "[Install iwd service]"; set_color normal
