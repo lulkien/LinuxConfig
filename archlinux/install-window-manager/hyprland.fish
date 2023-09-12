@@ -47,7 +47,7 @@ function install_misc
     sudo pacman -S \
         fish git vim neovim kitty \
         breeze breeze-gtk \
-        wofi waybar \
+        wofi dunst waybar \
         unzip unarchiver \
         firefox flatpak \
         nemo gnome-keyring seahorse polkit-gnome \
@@ -65,7 +65,7 @@ function install_misc
     sudo pacman -S --needed python python-pip base-devel rustup npm
     sudo pacman -S --needed dbus-python python-gobject
 
-    yay -S brave-bin nwg-look-bin swaync hyprpicker eww
+    yay -S brave-bin nwg-look-bin swaync hyprpicker eww-wayland
 end
 
 function enable_services
