@@ -9,14 +9,14 @@ function install_mesa
         sudo pacman -S --needed mesa-amber lib32-mesa-amber
     end
     
-    sudo pacman -S --needed \
+    sudo pacman -S \
         mesa-demos lib32-mesa-demos \
         mesa-vdpau lib32-mesa-vdpau \
         libva-mesa-driver lib32-libva-mesa-driver
 end
 
 function install_vulkan_driver
-    sudo pacman -S --needed \
+    sudo pacman -S \
         vulkan-intel lib32-vulkan-intel \
         vulkan-mesa-layers lib32-vulkan-mesa-layers
 end

@@ -104,6 +104,10 @@ function clone_configuations
         rm -rf ~/.config/hypr
         git clone "https://github.com/QSingularisRicer/hypr.git" ~/.config/hypr
 
+        echo ">>> Clone QSingularisRicer/eww"
+        rm -rf ~/.config/eww
+        git clone "https://github.com/QSingularisRicer/eww.git" ~/.config/eww
+
         echo ">>> Clone QSingularisRicer/waybar"
         rm -rf ~/.config/waybar
         git clone --single-branch --branch hyprland "https://github.com/QSingularisRicer/waybar" ~/.config/waybar
