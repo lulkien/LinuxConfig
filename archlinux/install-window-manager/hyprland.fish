@@ -62,7 +62,7 @@ function install_misc
     sudo pacman -S --needed fcitx5-im fcitx5-bamboo
 
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
-    sudo pacman -S --needed python python-pip base-devel rustup npm
+    sudo pacman -S --needed python python-pip base-devel rustup npm clang
     sudo pacman -S --needed dbus-python python-gobject
 
     yay -S brave-bin nwg-look-bin swaync hyprpicker eww-wayland

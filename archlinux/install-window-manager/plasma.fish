@@ -54,7 +54,7 @@ function install_misc
     echo "XMODIFIERS=@im=fcitx" | sudo tee -a /etc/environment
 
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
-    sudo pacman -S --needed python python-pip base-devel rustup npm
+    sudo pacman -S --needed python python-pip base-devel rustup npm clang
 end
 
 
