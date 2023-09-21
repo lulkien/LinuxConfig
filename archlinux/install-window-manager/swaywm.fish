@@ -126,4 +126,9 @@ function clone_configuations
 end
 
 # MAIN SCRIPT
+echo "DEPRECATED!!!"
+echo "DEPRECATED!!!"
+echo "DEPRECATED!!!"
+echo "DEPRECATED!!!"
+sleep 3
 prepare_keyring && install_aur_helper && install_desktop_environment && install_misc && enable_services && clone_configuations

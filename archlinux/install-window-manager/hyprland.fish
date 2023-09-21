@@ -30,8 +30,23 @@ function install_desktop_environment
     sudo usermod -aG seat $USER
 
     set_color ECEB7B; echo "[Install hyprland window manager]"; set_color normal
-    sudo pacman -S --needed xorg-xwayland hyprland hyprpaper
-    yay -S swaylock-effects
+    sudo pacman -S --needed \
+        xorg-xwayland hyprland hyprpaper \
+        xdg-desktop-portal xdg-desktop-portal-hyprland
+
+    set_color ECEB7B; echo "[Install common components of any window manager]"; set_color normal
+    sudo pacman -S --needed \
+        git fish vim \
+        kitty wofi dunst \
+        wget curl openssh rsync \
+        htop neofetch lsb-release \
+        wl-clipboard unzip unarchiver \
+        nemo gnome-keyring seahorse polkit-gnome \
+        pipewire pipewire-pulse lib32-pipewire wireplumber
+    yay -S swaylock-effects swaync eww-wayland
+
+    set_color ECEB7B; echo "[Install input method]"; set_color normal
+    sudo pacman -S --needed fcitx5-im fcitx5-bamboo
 end
 
 function install_misc
@@ -45,34 +60,23 @@ function install_misc
 
     set_color ECEB7B; echo "[Install other applications]"; set_color normal
     sudo pacman -S \
-        fish git vim neovim kitty \
         breeze breeze-gtk \
-        wofi dunst waybar \
-        unzip unarchiver \
-        firefox flatpak \
-        nemo gnome-keyring seahorse polkit-gnome \
-        htop neofetch lsb-release \
-        wget curl openssh rsync \
         grim slurp ffmpeg \
-        wl-clipboard xorg-xrandr \
-        pipewire pipewire-pulse lib32-pipewire wireplumber \
-        xdg-desktop-portal xdg-desktop-portal-hyprland
-
-    set_color ECEB7B; echo "[Install fcitx5]"; set_color normal
-    sudo pacman -S --needed fcitx5-im fcitx5-bamboo
+        xorg-xrandr flatpak
+    yay -S brave-bin nwg-look-bin hyprpicker
 
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
     sudo pacman -S --needed python python-pip base-devel rustup npm clang
     sudo pacman -S --needed dbus-python python-gobject
-
-    yay -S brave-bin nwg-look-bin swaync hyprpicker eww-wayland
 end
 
 function enable_services
     set_color ECEB7B; echo "[Install network service]"; set_color normal
-    sudo pacman -S --needed dhcpcd networkmanager nm-connection-editor
+    sudo pacman -S --needed dhcpcd
     sudo systemctl enable --now dhcpcd
-    sudo systemctl enable --now NetworkManager
+
+    # sudo pacman -S --needed networkmanager nm-connection-editor
+    # sudo systemctl enable --now NetworkManager
 
     set_color ECEB7B; echo "[Install bluetooth service]"; set_color normal
     echo "Do you wanna install bluetooth? [y/N]"
@@ -106,11 +110,11 @@ function clone_configuations
 
         echo ">>> Clone QSingularisRicer/eww"
         rm -rf ~/.config/eww
-        git clone "https://github.com/QSingularisRicer/eww.git" ~/.config/eww
+        git clone "https://github.com/QSingularisRicer/eww" ~/.config/eww
 
-        echo ">>> Clone QSingularisRicer/waybar"
-        rm -rf ~/.config/waybar
-        git clone --single-branch --branch hyprland "https://github.com/QSingularisRicer/waybar" ~/.config/waybar
+        echo ">>> Clone QSingularisRicer/swaylock"
+        rm -rf ~/.config/swaylock
+        git clone "https://github.com/QSingularisRicer/swaylock" ~/.config/swaylock
 
         echo ">>> Clone QSingularisRicer/wofi"
         rm -rf ~/.config/wofi
