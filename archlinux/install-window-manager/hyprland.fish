@@ -41,7 +41,7 @@ function install_desktop_environment
         wget curl openssh rsync \
         htop neofetch lsb-release \
         wl-clipboard unzip unarchiver \
-        nemo gnome-keyring seahorse polkit-gnome \
+        nemo loupe gnome-keyring seahorse polkit-gnome \
         pipewire pipewire-pulse lib32-pipewire wireplumber
     yay -S swaylock-effects swaync eww-wayland
 
