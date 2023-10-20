@@ -61,7 +61,7 @@ function install_misc
     set_color ECEB7B; echo "[Install other applications]"; set_color normal
     sudo pacman -S \
         breeze breeze-gtk \
-        grim slurp ffmpeg \
+        grim slurp jq ffmpeg \
         xorg-xrandr flatpak
     yay -S brave-bin nwg-look-bin hyprpicker
 
