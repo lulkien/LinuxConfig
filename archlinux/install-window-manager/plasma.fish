@@ -25,7 +25,7 @@ end
 function install_desktop_environment
     set_color ECEB7B; echo "[Install plasma]"; set_color normal
     sudo pacman -S --needed xorg xorg-xwayland sddm plasma plasma-wayland-session
-    sudo pacman -S --needed konsole dolphin kwallet kwalletmanager kate spectacle kdeconnect elisa gwenview ark partitionmanager
+    sudo pacman -S --needed konsole dolphin kwallet5 kwalletmanager kate spectacle kdeconnect elisa gwenview ark partitionmanager
 end
 
 function install_misc
