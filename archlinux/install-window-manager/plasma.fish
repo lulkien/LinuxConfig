@@ -1,4 +1,4 @@
-#!/usr/bin/fish
+#!/usr/bin/env fish
 
 function prepare_keyring
     set_color ECEB7B; echo "[Update package and install latest keyring]"; set_color normal

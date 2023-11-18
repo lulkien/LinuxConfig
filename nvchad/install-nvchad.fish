@@ -1,4 +1,4 @@
-#!/usr/bin/fish
+#!/usr/bin/env fish
 
 # Remove old nchad if possible
 echo "Do you want to remove old nvim config? [y/N]"

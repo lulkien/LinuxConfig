@@ -1,4 +1,4 @@
-#!/usr/bin/fish
+#!/usr/bin/env fish
 
 function install_mesa
     echo "Is the generation of this processor equal or above gen 8? [Y/n]"

@@ -1,4 +1,4 @@
-#!/usr/bin/fish
+#!/usr/bin/env fish
 
 set -g DM       $argv[1]
 set -g flag     $argv[2]

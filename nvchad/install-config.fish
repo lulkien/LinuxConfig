@@ -1,4 +1,4 @@
-#!/usr/bin/fish
+#!/usr/bin/env fish
 
 echo "Remove custom directory"
 rm -r ~/.config/nvim/lua/custom
