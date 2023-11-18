@@ -12,10 +12,17 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking = {
+    hostName = "nixos";
+    wireless = {
+        iwd.enable = true;
+    };
+    networkmanager = {
+        enable = true;
+        wifi.backend = "iwd";
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "Asia/Ho_Chi_Minh";
@@ -45,12 +52,6 @@
     # libinput.enable = true;
   };
 
-  # Enable sound.
-  # sound.enable = true;
-  # hardware.pulseaudio.enable = true;
-  # -> DO NOT uncomment this section because we gonna install pipewire later.
-  # -> This is only meant for ALSA-based configurations
-
   # Vulkan configuration
   hardware.opengl = {
     enable = true;
@@ -67,7 +68,7 @@
   users.users.ark = {
     description = "Ark";
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "seat" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       firefox
       tree
@@ -77,13 +78,62 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    # Must have
     git
     fish
     vim
+
+    # For hyprland
+    seatd
+    xwayland
+    hyprpaper
+    xdg-desktop-portal
+    xdg-desktop-portal-hyprland
+    swaylock-effects
+    eww-wayland
+
+    # Development tools
+    rustup
+    nodejs_20
+    gnat13
+    llvmPackages_rocm.clang
+    python311
+    python311Packages.pip
+    # python311Packages.pydbus
+    python311Packages.pygobject3
+
+    # CLI apps
     neovim
-    wget
     kitty
     wofi
+    dunst
+    wget
+    curl
+    rsync
+    htop
+    neofetch
+    wl-clipboard
+    unzip
+    unar
+    grim
+    slurp
+    jq
+    ffmpeg_6
+    bluez
+    bluez-tools
+
+    # GUI apps
+    cinnamon.nemo-with-extensions
+    gnome.eog
+    gnome.gnome-keyring
+    gnome.seahorse
+    polkit
+    polkit_gnome
+    blueman
+
+    # Misc
+    libsForQt5.breeze-gtk
+    libsForQt5.breeze-icons
   ];
 
   environment.variables = {
@@ -117,6 +167,8 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+
+  services.gnome.gnome-keyring.enable = true;
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
