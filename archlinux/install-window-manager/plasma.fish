@@ -42,16 +42,18 @@ function install_misc
         git fish vim neovim kitty \
         firefox flatpak \
         htop neofetch lsb-release \
-        wget curl openssh rsync \
+        wget curl openssh rsync wl-clipboard \
         gamemode unzip unarchiver \
         pipewire pipewire-pulse lib32-pipewire wireplumber \
-        discord steam-native-runtime piper
+        discord steam-native-runtime
 
     set_color ECEB7B; echo "[Install fcitx5]"; set_color normal
     sudo pacman -S --needed fcitx5 kcm-fcitx5 fcitx5-bamboo fcitx5-im
     echo "GTK_IM_MODULE=fcitx"  | sudo tee -a /etc/environment
     echo "QT_IM_MODULE=fcitx"   | sudo tee -a /etc/environment
     echo "XMODIFIERS=@im=fcitx" | sudo tee -a /etc/environment
+    echo "SDL_IM_MODULE=fcitx"  | sudo tee -a /etc/environment
+    echo "GLFW_IM_MODULE=ibus"  | sudo tee -a /etc/environment
 
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
     sudo pacman -S --needed python python-pip base-devel rustup npm clang
