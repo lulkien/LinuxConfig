@@ -1,6 +1,13 @@
 -- In order to modify the `lspconfig` configuration:
 local plugins = {
     {
+        "jose-elias-alvarez/null-ls.nvim",
+        event = "VeryLazy",
+        opts = function ()
+            return require("custom.configs.null-ls")
+        end,
+    },
+    {
         "williamboman/mason.nvim",
         opts = {
             ensure_installed = {
@@ -10,6 +17,7 @@ local plugins = {
                 "rust-analyzer",
                 "css-lsp",
                 "clangd",
+                "clang-format",
             },
         },
     },
