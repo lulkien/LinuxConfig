@@ -6,8 +6,14 @@ A bunch of scripts to do various things.
 
 ## Features
 
-- Graphic driver installation for Arch Linux: AMD, Intel and Nvdia Laptop
-- Desktop environment installation for Arch Linux: KDE Plasma, Hyprland and Swaywm(deprecated)
+- Graphic driver installation for Arch Linux
+  - AMD
+  - Intel
+  - NVIDIA (Laptop with PRIME)
+- Desktop environment installation for Arch Linux
+  - KDE Plasma
+  - Hyprland
+  - Swaywm (deprecated)
 - NvChad installation and configurations
 - Vim configurations
 - And more ...
