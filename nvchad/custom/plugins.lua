@@ -65,7 +65,7 @@ local plugins = {
             table.insert(M.sources, {name = "crates"})
             return M
         end,
-    }
+    },
 }
 
 return plugins
