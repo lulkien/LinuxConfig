@@ -1,5 +1,7 @@
 # LinuxConfig
 
+[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
+
 A bunch of scripts to do various things.
 
 ## Features
