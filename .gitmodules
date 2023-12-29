@@ -1,0 +1,3 @@
+[submodule "archlinux/dotfiles"]
+	path = archlinux/dotfiles
+	url = https://github.com/lulkien/dotfiles.git
