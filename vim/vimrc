@@ -1,6 +1,6 @@
 " ------------------------------------------ PRE_CONFIG ------------------------------------------
 if &shell =~# 'fish$'
-    set shell=sh
+  set shell=sh
 endif
 " ------------------------------------------ END PRE_CONFIG ------------------------------------------
 
@@ -8,33 +8,35 @@ endif
 call plug#begin('~/.vim/bundle')
 
 " Icons
-    Plug 'ryanoasis/vim-devicons'
+Plug 'ryanoasis/vim-devicons'
 
 " Status bar
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " Systax highlighting
-    Plug 'dag/vim-fish'
-    Plug 'vim-python/python-syntax'
+Plug 'dag/vim-fish'
+Plug 'vim-python/python-syntax'
 
 " Intellisense
-    Plug 'jiangmiao/auto-pairs'
+Plug 'jiangmiao/auto-pairs'
 
 " Colorscheme
-    Plug 'joshdick/onedark.vim'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
 
 call plug#end()
 " ------------------------------------------ END PLUGINS ------------------------------------------
 
 " ------------------------------------------ POST_CONFIG ------------------------------------------
 " Theme
-colorscheme onedark
+colorscheme catppuccin_mocha
+set termguicolors
 let g:python_highlight_all = 1
+let g:airline_theme = 'catppuccin_mocha'
 
 " Highlight the current line
 set cursorline
-:highlight Cursorline cterm=bold " ctermbg=black
+:highlight Cursorline cterm=bold ctermbg=black
 
 " highlight search pattern
 set hlsearch
@@ -68,7 +70,7 @@ set nowb
 
 " Other function
 for funct_file in split(glob('~/.vim/functions/*.vim'))
-    execute 'source' funct_file
+  execute 'source' funct_file
 endfor
 
 " Disable auto comment in newline

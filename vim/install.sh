@@ -8,9 +8,8 @@ echo "wget https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim -
 wget https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim -O ~/.vim/autoload/plug.vim
 echo '--------------------------------'
 
-echo "Copy .vimrc and .vim/ to ~"
-cp -r .vim/ ~/
-cp .vimrc ~/
+echo "Install .vimrc"
+cp vimrc ~/.vimrc
 echo '--------------------------------'
 
 echo "Done"
