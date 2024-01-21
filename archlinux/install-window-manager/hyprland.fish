@@ -7,16 +7,15 @@ function prepare_keyring
 end
 
 function install_aur_helper
-    set_color ECEB7B; echo "[Check yay available]"; set_color normal
-    sudo pacman -S --needed go
-    if not command -sq yay
-        echo 'yay is not installed. Do you wanna install it? [Y/n]'
+    set_color ECEB7B; echo "[Check paru available]"; set_color normal
+    sudo pacman -S --needed base-devel
+    if not command -sq paru
+        echo 'paru is not installed. Do you wanna install it? [Y/n]'
         read answer
-        # If the answer is yes or empty, install yay
+        # If the answer is yes or empty, install paru
         if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
-            # Install yay using pacman
-            git clone https://aur.archlinux.org/yay.git /tmp/yay
-            cd /tmp/yay
+            git clone https://aur.archlinux.org/paru.git /tmp/paru
+            cd /tmp/paru
             makepkg -si
         end
     end
@@ -43,7 +42,7 @@ function install_desktop_environment
         wl-clipboard unzip unarchiver \
         nemo loupe gnome-keyring seahorse polkit-gnome \
         pipewire pipewire-pulse lib32-pipewire wireplumber
-    yay -S swaylock-effects swaync eww-wayland
+    paru -S swaylock-effects swaync eww-wayland
 
     set_color ECEB7B; echo "[Install input method]"; set_color normal
     sudo pacman -S --needed fcitx5-im fcitx5-bamboo
@@ -63,7 +62,7 @@ function install_misc
         breeze breeze-gtk \
         grim slurp jq ffmpeg \
         xorg-xrandr flatpak
-    yay -S brave-bin nwg-look-bin hyprpicker
+    paru -S brave-bin nwg-look-bin hyprpicker
 
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
     sudo pacman -S --needed python python-pip base-devel rustup npm clang

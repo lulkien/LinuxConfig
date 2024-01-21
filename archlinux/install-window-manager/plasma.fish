@@ -7,16 +7,15 @@ function prepare_keyring
 end
 
 function install_aur_helper
-    set_color ECEB7B; echo "[Check yay available]"; set_color normal
-    sudo pacman -S --needed go
-    if not command -sq yay
-        echo 'yay is not installed. Do you wanna install it? [Y/n]'
+    set_color ECEB7B; echo "[Check paru available]"; set_color normal
+    sudo pacman -S --needed base-devel
+    if not command -sq paru
+        echo 'paru is not installed. Do you wanna install it? [Y/n]'
         read answer
-        # If the answer is yes or empty, install yay
+        # If the answer is yes or empty, install paru
         if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
-            # Install yay using pacman
-            git clone https://aur.archlinux.org/yay.git /tmp/yay
-            cd /tmp/yay
+            git clone https://aur.archlinux.org/paru.git /tmp/paru
+            cd /tmp/paru
             makepkg -si
         end
     end
