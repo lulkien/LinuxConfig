@@ -8,7 +8,8 @@ end
 
 function install_aur_helper
     set_color ECEB7B; echo "[Check paru available]"; set_color normal
-    sudo pacman -S --needed base-devel
+    sudo pacman -S --needed base-devel rustup
+    rustup default nightly
     if not command -sq paru
         echo 'paru is not installed. Do you wanna install it? [Y/n]'
         read answer
@@ -42,7 +43,7 @@ function install_desktop_environment
         wl-clipboard unzip unarchiver \
         nemo loupe gnome-keyring seahorse polkit-gnome \
         pipewire pipewire-pulse lib32-pipewire wireplumber
-    paru -S swaylock-effects swaync eww-wayland
+    paru -S eww-wayland swaylock-effect
 
     set_color ECEB7B; echo "[Install input method]"; set_color normal
     sudo pacman -S --needed fcitx5-im fcitx5-bamboo
@@ -65,7 +66,7 @@ function install_misc
     paru -S brave-bin nwg-look-bin hyprpicker
 
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
-    sudo pacman -S --needed python python-pip base-devel rustup npm clang
+    sudo pacman -S --needed python python-pip base-devel npm clang
     sudo pacman -S --needed dbus-python python-gobject
 end
 

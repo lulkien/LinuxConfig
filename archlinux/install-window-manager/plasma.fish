@@ -8,7 +8,8 @@ end
 
 function install_aur_helper
     set_color ECEB7B; echo "[Check paru available]"; set_color normal
-    sudo pacman -S --needed base-devel
+    sudo pacman -S --needed base-devel rustup
+    rustup default nightly
     if not command -sq paru
         echo 'paru is not installed. Do you wanna install it? [Y/n]'
         read answer
@@ -55,7 +56,7 @@ function install_misc
     echo "GLFW_IM_MODULE=ibus"  | sudo tee -a /etc/environment
 
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
-    sudo pacman -S --needed python python-pip base-devel rustup npm clang
+    sudo pacman -S --needed python python-pip base-devel npm clang
 end
 
 
