@@ -48,7 +48,6 @@ function install_desktop_environment
 
     set_color ECEB7B; echo "[Install input method]"; set_color normal
     sudo pacman -S --needed fcitx5-im fcitx5-bamboo
-    echo "GTK_IM_MODULE=fcitx"  | sudo tee -a /etc/environment
     echo "QT_IM_MODULE=fcitx"   | sudo tee -a /etc/environment
     echo "XMODIFIERS=@im=fcitx" | sudo tee -a /etc/environment
     echo "SDL_IM_MODULE=fcitx"  | sudo tee -a /etc/environment

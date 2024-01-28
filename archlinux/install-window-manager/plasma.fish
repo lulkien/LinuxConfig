@@ -49,7 +49,6 @@ function install_misc
 
     set_color ECEB7B; echo "[Install fcitx5]"; set_color normal
     sudo pacman -S --needed fcitx5 kcm-fcitx5 fcitx5-bamboo fcitx5-im
-    echo "GTK_IM_MODULE=fcitx"  | sudo tee -a /etc/environment
     echo "QT_IM_MODULE=fcitx"   | sudo tee -a /etc/environment
     echo "XMODIFIERS=@im=fcitx" | sudo tee -a /etc/environment
     echo "SDL_IM_MODULE=fcitx"  | sudo tee -a /etc/environment
