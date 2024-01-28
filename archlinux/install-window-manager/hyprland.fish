@@ -36,17 +36,33 @@ function install_desktop_environment
 
     set_color ECEB7B; echo "[Install common components of any window manager]"; set_color normal
     sudo pacman -S --needed \
-        git fish vim \
+        git fish vim neovim \
         kitty wofi dunst \
         wget curl openssh rsync \
         htop neofetch lsb-release \
         wl-clipboard unzip unarchiver \
         nemo loupe gnome-keyring seahorse polkit-gnome \
-        pipewire pipewire-pulse lib32-pipewire wireplumber
-    paru -S eww-wayland swaylock-effect
+        pipewire pipewire-pulse lib32-pipewire wireplumber \
+        xorg-xrandr
+    paru -S eww-wayland swaylock-effect hyprdim grimblast nwg-look-bin hyprpicker
 
     set_color ECEB7B; echo "[Install input method]"; set_color normal
     sudo pacman -S --needed fcitx5-im fcitx5-bamboo
+    echo "GTK_IM_MODULE=fcitx"  | sudo tee -a /etc/environment
+    echo "QT_IM_MODULE=fcitx"   | sudo tee -a /etc/environment
+    echo "XMODIFIERS=@im=fcitx" | sudo tee -a /etc/environment
+    echo "SDL_IM_MODULE=fcitx"  | sudo tee -a /etc/environment
+    echo "GLFW_IM_MODULE=ibus"  | sudo tee -a /etc/environment
+
+    set_color ECEB7B; echo "[Install other applications]"; set_color normal
+    sudo pacman -S \
+        breeze breeze-gtk \
+        ffmpeg flatpak
+    paru -S brave-bin
+
+    set_color ECEB7B; echo "[Install development tools]"; set_color normal
+    sudo pacman -S --needed python python-pip base-devel npm clang
+    sudo pacman -S --needed dbus-python python-gobject
 end
 
 function install_misc
@@ -57,17 +73,6 @@ function install_misc
         noto-fonts-cjk \
         noto-fonts-emoji \
         otf-codenewroman-nerd
-
-    set_color ECEB7B; echo "[Install other applications]"; set_color normal
-    sudo pacman -S \
-        breeze breeze-gtk \
-        grim slurp jq ffmpeg \
-        xorg-xrandr flatpak
-    paru -S brave-bin nwg-look-bin hyprpicker
-
-    set_color ECEB7B; echo "[Install development tools]"; set_color normal
-    sudo pacman -S --needed python python-pip base-devel npm clang
-    sudo pacman -S --needed dbus-python python-gobject
 end
 
 function enable_services
@@ -100,29 +105,29 @@ function clone_configuations
     echo "Do you want to clone configuration? [Y/n] "
     read answer
     if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
-        echo ">>> Clone QSingularisRicer/fish.git"
+        echo ">>> Clone QuantaRicer/fish.git"
         rm -rf ~/.config/fish
-        git clone "https://github.com/QSingularisRicer/fish.git" ~/.config/fish
+        git clone "https://github.com/QuantaRicer/fish.git" ~/.config/fish
 
-        echo ">>> Clone QSingularisRicer/hypr"
+        echo ">>> Clone QuantaRicer/hypr"
         rm -rf ~/.config/hypr
-        git clone "https://github.com/QSingularisRicer/hypr.git" ~/.config/hypr
+        git clone "https://github.com/QuantaRicer/hypr.git" ~/.config/hypr
 
-        echo ">>> Clone QSingularisRicer/eww"
+        echo ">>> Clone QuantaRicer/eww"
         rm -rf ~/.config/eww
-        git clone "https://github.com/QSingularisRicer/eww" ~/.config/eww
+        git clone "https://github.com/QuantaRicer/eww" ~/.config/eww
 
-        echo ">>> Clone QSingularisRicer/swaylock"
+        echo ">>> Clone QuantaRicer/swaylock"
         rm -rf ~/.config/swaylock
-        git clone "https://github.com/QSingularisRicer/swaylock" ~/.config/swaylock
+        git clone "https://github.com/QuantaRicer/swaylock" ~/.config/swaylock
 
-        echo ">>> Clone QSingularisRicer/wofi"
+        echo ">>> Clone QuantaRicer/wofi"
         rm -rf ~/.config/wofi
-        git clone "https://github.com/QSingularisRicer/wofi.git" ~/.config/wofi
+        git clone "https://github.com/QuantaRicer/wofi.git" ~/.config/wofi
 
-        echo ">>> Clone QSingularisRicer/kitty.git"
+        echo ">>> Clone QuantaRicer/kitty.git"
         rm -rf ~/.config/kitty
-        git clone "https://github.com/QSingularisRicer/kitty" ~/.config/kitty
+        git clone "https://github.com/QuantaRicer/kitty" ~/.config/kitty
     end
 end
 

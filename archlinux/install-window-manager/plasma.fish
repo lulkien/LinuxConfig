@@ -76,13 +76,13 @@ function clone_configuations
     echo "Do you want to clone configuration? [Y/n] "
     read answer
     if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
-        echo ">>> Clone QSingularisRicer/fish.git"
+        echo ">>> Clone QuantaRicer/fish.git"
         rm -rf ~/.config/fish
-        git clone "https://github.com/QSingularisRicer/fish.git" ~/.config/fish
+        git clone "https://github.com/QuantaRicer/fish.git" ~/.config/fish
 
-        echo ">>> Clone QSingularisRicer/kitty.git"
+        echo ">>> Clone QuantaRicer/kitty.git"
         rm -rf ~/.config/kitty
-        git clone "https://github.com/QSingularisRicer/kitty" ~/.config/kitty
+        git clone "https://github.com/QuantaRicer/kitty" ~/.config/kitty
     end
 end
 
