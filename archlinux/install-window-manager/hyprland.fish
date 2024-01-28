@@ -130,5 +130,18 @@ function clone_configuations
     end
 end
 
+function setup_home_dir
+    set_color ECEB7B; echo "[Setup HOME directory]"; set_color normal
+    if not test -d $HOME/Downloads
+        mkdir $HOME/Downloads
+    end
+
+    if not test -d $HOME/Pictures
+        mkdir $HOME/Pictures
+    end
+
+    echo 'XDG_SCREENSHOTS_DIR="$HOME/Pictures"' > $HOME/.config/user-dirs.dirs
+end
+
 # MAIN SCRIPT
-prepare_keyring && install_aur_helper && install_desktop_environment && install_misc && enable_services && clone_configuations
+prepare_keyring && install_aur_helper && install_desktop_environment && install_misc && enable_services && clone_configuations && setup_home_dir
