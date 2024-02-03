@@ -44,7 +44,7 @@ function install_desktop_environment
         nemo loupe gnome-keyring seahorse polkit-gnome \
         pipewire pipewire-pulse lib32-pipewire wireplumber \
         xorg-xrandr
-    paru -S eww-wayland swaylock-effect hyprdim grimblast nwg-look-bin hyprpicker
+    paru -S eww-wayland swaylock-effects hyprdim grimblast nwg-look-bin hyprpicker
 
     set_color ECEB7B; echo "[Install input method]"; set_color normal
     sudo pacman -S --needed fcitx5-im fcitx5-bamboo
@@ -71,16 +71,14 @@ function install_misc
         ttf-liberation \
         noto-fonts-cjk \
         noto-fonts-emoji \
-        otf-codenewroman-nerd
+        otf-codenewroman-nerd \
+        ttf-cascadia-code-nerd
 end
 
 function enable_services
     set_color ECEB7B; echo "[Install network service]"; set_color normal
     sudo pacman -S --needed dhcpcd
     sudo systemctl enable --now dhcpcd
-
-    # sudo pacman -S --needed networkmanager nm-connection-editor
-    # sudo systemctl enable --now NetworkManager
 
     set_color ECEB7B; echo "[Install bluetooth service]"; set_color normal
     echo "Do you wanna install bluetooth? [y/N]"
@@ -100,33 +98,13 @@ function enable_services
 end
 
 function clone_configuations
-    set_color ECEB7B; echo "[Copy configuration]"; set_color normal
-    echo "Do you want to clone configuration? [Y/n] "
+    set_color ECEB7B; echo "[Clone dotfiles]"; set_color normal
+    echo "Do you want to clone dotfiles? [Y/n] "
     read answer
     if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
-        echo ">>> Clone QuantaRicer/fish.git"
-        rm -rf ~/.config/fish
-        git clone "https://github.com/QuantaRicer/fish.git" ~/.config/fish
-
-        echo ">>> Clone QuantaRicer/hypr"
-        rm -rf ~/.config/hypr
-        git clone "https://github.com/QuantaRicer/hypr.git" ~/.config/hypr
-
-        echo ">>> Clone QuantaRicer/eww"
-        rm -rf ~/.config/eww
-        git clone "https://github.com/QuantaRicer/eww" ~/.config/eww
-
-        echo ">>> Clone QuantaRicer/swaylock"
-        rm -rf ~/.config/swaylock
-        git clone "https://github.com/QuantaRicer/swaylock" ~/.config/swaylock
-
-        echo ">>> Clone QuantaRicer/wofi"
-        rm -rf ~/.config/wofi
-        git clone "https://github.com/QuantaRicer/wofi.git" ~/.config/wofi
-
-        echo ">>> Clone QuantaRicer/kitty.git"
-        rm -rf ~/.config/kitty
-        git clone "https://github.com/QuantaRicer/kitty" ~/.config/kitty
+        rm -rf $HOME/.dotfiles
+        git clone https://github.com/lulkien/dotfiles.git $HOME/.dotfiles
+        echo "Please run setup script in $HOME/.dotfiles"
     end
 end
 
@@ -140,7 +118,10 @@ function setup_home_dir
         mkdir $HOME/Pictures
     end
 
-    echo 'XDG_SCREENSHOTS_DIR="$HOME/Pictures"' > $HOME/.config/user-dirs.dirs
+    echo 'XDG_DOWNLOAD_DIR="$HOME/Downloads"'   > $HOME/.config/user-dirs.dirs
+    echo 'XDG_DOCUMENTS_DIR="$HOME/Documents"'  >> $HOME/.config/user-dirs.dirs
+    echo 'XDG_PICTURES_DIR="$HOME/Pictures"'    >> $HOME/.config/user-dirs.dirs
+    echo 'XDG_SCREENSHOTS_DIR="$HOME/Pictures"' >> $HOME/.config/user-dirs.dirs
 end
 
 # MAIN SCRIPT
