@@ -118,7 +118,8 @@ function setup_home_dir
         mkdir $HOME/Pictures
     end
 
-    echo 'XDG_DOWNLOAD_DIR="$HOME/Downloads"'   > $HOME/.config/user-dirs.dirs
+    echo 'XDG_DESKTOP_DIR="$HOME/Desktop"'      > $HOME/.config/user-dirs.dirs
+    echo 'XDG_DOWNLOAD_DIR="$HOME/Downloads"'   >> $HOME/.config/user-dirs.dirs
     echo 'XDG_DOCUMENTS_DIR="$HOME/Documents"'  >> $HOME/.config/user-dirs.dirs
     echo 'XDG_PICTURES_DIR="$HOME/Pictures"'    >> $HOME/.config/user-dirs.dirs
     echo 'XDG_SCREENSHOTS_DIR="$HOME/Pictures"' >> $HOME/.config/user-dirs.dirs
