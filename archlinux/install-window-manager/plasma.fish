@@ -69,19 +69,14 @@ function enable_services
     end
 end
 
-
 function clone_configuations
-    set_color ECEB7B; echo "[Copy configuration]"; set_color normal
-    echo "Do you want to clone configuration? [Y/n] "
+    set_color ECEB7B; echo "[Clone dotfiles]"; set_color normal
+    echo "Do you want to clone dotfiles? [Y/n] "
     read answer
     if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
-        echo ">>> Clone QuantaRicer/fish.git"
-        rm -rf ~/.config/fish
-        git clone "https://github.com/QuantaRicer/fish.git" ~/.config/fish
-
-        echo ">>> Clone QuantaRicer/kitty.git"
-        rm -rf ~/.config/kitty
-        git clone "https://github.com/QuantaRicer/kitty" ~/.config/kitty
+        rm -rf $HOME/.dotfiles
+        git clone --branch kde-plasma https://github.com/lulkien/dotfiles.git $HOME/.dotfiles
+        echo "Please run setup script in $HOME/.dotfiles"
     end
 end
 
