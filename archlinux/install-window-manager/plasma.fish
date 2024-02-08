@@ -35,7 +35,8 @@ function install_misc
         ttf-liberation \
         noto-fonts-cjk \
         noto-fonts-emoji \
-        otf-codenewroman-nerd
+        otf-codenewroman-nerd \
+        ttf-cascadia-code-nerd
 
     set_color ECEB7B; echo "[Install appliactions]"; set_color normal
     sudo pacman -S --needed \
@@ -75,7 +76,7 @@ function clone_configuations
     read answer
     if test -z "$answer" -o "$answer" = "Y" -o "$answer" = "y"
         rm -rf $HOME/.dotfiles
-        git clone --branch kde-plasma https://github.com/lulkien/dotfiles.git $HOME/.dotfiles
+        git clone https://github.com/lulkien/dotfiles.git $HOME/.dotfiles
         echo "Please run setup script in $HOME/.dotfiles"
     end
 end
