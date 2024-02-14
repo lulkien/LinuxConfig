@@ -41,12 +41,14 @@ function install_misc
     set_color ECEB7B; echo "[Install appliactions]"; set_color normal
     sudo pacman -S --needed \
         git fish vim neovim kitty \
-        firefox flatpak \
+        flatpak \
         htop neofetch lsb-release \
         wget curl openssh rsync wl-clipboard \
         gamemode unzip unarchiver \
         pipewire pipewire-pulse lib32-pipewire wireplumber \
         discord steam-native-runtime
+
+    paru -S floorp-bin
 
     set_color ECEB7B; echo "[Install fcitx5]"; set_color normal
     sudo pacman -S --needed fcitx5 kcm-fcitx5 fcitx5-bamboo fcitx5-im

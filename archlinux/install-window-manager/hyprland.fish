@@ -57,7 +57,7 @@ function install_desktop_environment
     sudo pacman -S \
         breeze breeze-gtk \
         ffmpeg flatpak
-    paru -S brave-bin
+    paru -S floorp-bin
 
     set_color ECEB7B; echo "[Install development tools]"; set_color normal
     sudo pacman -S --needed python python-pip base-devel npm clang
