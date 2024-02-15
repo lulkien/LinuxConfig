@@ -37,7 +37,7 @@ function install_desktop_environment
     set_color ECEB7B; echo "[Install common components of any window manager]"; set_color normal
     sudo pacman -S --needed \
         git fish vim neovim \
-        kitty wofi dunst \
+        alacritty kitty wofi dunst \
         wget curl openssh rsync \
         htop neofetch lsb-release \
         wl-clipboard unzip unarchiver \
