@@ -43,7 +43,7 @@ function install_desktop_environment
         wl-clipboard unzip unarchiver \
         nemo loupe gnome-keyring seahorse polkit-gnome \
         pipewire pipewire-pulse lib32-pipewire wireplumber \
-        xorg-xrandr
+        xorg-xrandr ripgrep
     paru -S eww-wayland swaylock-effects hyprdim grimblast nwg-look-bin hyprpicker
 
     set_color ECEB7B; echo "[Install input method]"; set_color normal
