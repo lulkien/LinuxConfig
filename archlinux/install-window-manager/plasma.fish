@@ -79,16 +79,17 @@ function install_lsp
     set_color normal
     paru -S --needed tree-sitter ripgrep
     paru -S --needed \
-        clang \
         bash-language-server \
+        clang \
+        cmake-language-server \
         lua-language-server \
         pyright \
         rust-analyzer \
+        slint-lsp-bin \
         stylua \
         typescript-language-server \
         vscode-css-languageserver \
-        vscode-json-languageserver \
-        cmake-language-server
+        vscode-json-languageserver
 end
 
 function enable_services
