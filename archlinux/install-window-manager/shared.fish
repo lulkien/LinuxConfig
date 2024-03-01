@@ -39,7 +39,7 @@ function install_general_applications
         wget curl openssh rsync wl-clipboard \
         unzip unarchiver xdg-user-dirs \
         pipewire pipewire-pulse lib32-pipewire wireplumber \
-        ffmpeg flatpak floorp
+        ffmpeg flatpak firefox caprine
     return $status
 end
 
