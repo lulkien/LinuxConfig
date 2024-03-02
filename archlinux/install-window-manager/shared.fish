@@ -113,7 +113,6 @@ end
 function pacman_clean_up
     install_logger "[Clean up]"
     sudo pacman -Rns (pacman -Qdttq)
-    return $status
 end
 
 function clone_dotfiles
