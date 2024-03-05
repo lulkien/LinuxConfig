@@ -40,21 +40,30 @@ function install_general_applications
         unzip unarchiver xdg-user-dirs \
         pipewire pipewire-pulse lib32-pipewire wireplumber \
         ffmpeg flatpak firefox caprine
-    return $status
+    set paru_status $status
+    if test $paru_status -ne 0
+        echo ">>>>>> FAILED <<<<<<"
+        return $paru_status
+    end
 end
 
 function install_dev_tools
     install_logger "[Install development tools]"
-    paru -S --needed base-devel clang \
+    paru -S --needed \
+        base-devel clang \
         python python-pip dbus-python python-gobject \
         lua luajit
-    return $status
+    set paru_status $status
+    if test $paru_status -ne 0
+        echo ">>>>>> FAILED <<<<<<"
+        return $paru_status
+    end
 end
 
 function install_lsp
     install_logger "[Install language server]"
-    paru -S --needed tree-sitter ripgrep
     paru -S --needed \
+        tree-sitter ripgrep \
         astyle \
         bash-language-server \
         clang \
@@ -68,7 +77,11 @@ function install_lsp
         vscode-css-languageserver \
         vscode-json-languageserver \
         yamlfmt
-    return $status
+    set paru_status $status
+    if test $paru_status -ne 0
+        echo ">>>>>> FAILED <<<<<<"
+        return $paru_status
+    end
 end
 
 function install_fonts
@@ -80,12 +93,22 @@ function install_fonts
         noto-fonts-emoji \
         otf-codenewroman-nerd \
         ttf-cascadia-code-nerd
-    return $status
+    set paru_status $status
+    if test $paru_status -ne 0
+        echo ">>>>>> FAILED <<<<<<"
+        return $paru_status
+    end
 end
 
 function install_input_method
     install_fonts "[Install input method]"
     paru -S --needed fcitx5-im fcitx5-bamboo
+    set paru_status $status
+    if test $paru_status -ne 0
+        echo ">>>>>> FAILED <<<<<<"
+        return $paru_status
+    end
+
     echo "QT_IM_MODULE=fcitx" | sudo tee -a /etc/environment
     echo "XMODIFIERS=@im=fcitx" | sudo tee -a /etc/environment
     echo "SDL_IM_MODULE=fcitx" | sudo tee -a /etc/environment
@@ -98,6 +121,11 @@ function install_other_services
     read answer
     if test "$answer" = Y -o "$answer" = y
         paru -S --needed bluez bluez-utils blueman
+        set paru_status $status
+        if test $paru_status -ne 0
+            echo ">>>>>> FAILED <<<<<<"
+            return $paru_status
+        end
         systemctl enable --now bluetooth
     end
 
@@ -106,6 +134,11 @@ function install_other_services
     read answer
     if test "$answer" = Y -o "$answer" = y
         paru -S --needed iwd
+        set paru_status $status
+        if test $paru_status -ne 0
+            echo ">>>>>> FAILED <<<<<<"
+            return $paru_status
+        end
         sudo systemctl enable --now iwd
     end
 end

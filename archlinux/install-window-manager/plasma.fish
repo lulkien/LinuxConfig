@@ -5,9 +5,17 @@ source $SCRIPT_PATH/shared.fish
 
 function install_kde_plasma
     install_logger "[Install KDE Plasma]"
-    paru -S --needed xorg xorg-xwayland sddm plasma plasma-wayland-session
-    paru -S --needed konsole dolphin kwallet5 kwalletmanager kate spectacle kdeconnect elisa gwenview ark partitionmanager
-    paru -S --needed kitty gamemode discord steam-native-runtime
+    paru -S --needed \
+        xorg xorg-xwayland \
+        sddm plasma plasma-wayland-session \
+        konsole dolphin kwallet5 kwalletmanager kate spectacle \
+        kdeconnect elisa gwenview ark partitionmanager \
+        kitty gamemode discord steam-native-runtime
+    set paru_status $status
+    if test $paru_status -ne 0
+        echo ">>>>>> FAILED <<<<<<"
+        return $paru_status
+    end
 end
 
 # MAIN SCRIPT
