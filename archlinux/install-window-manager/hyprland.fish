@@ -18,7 +18,8 @@ function install_hyprland
     paru -S --needed \
         hyprland hyprpaper \
         hyprlock hyprpicker \
-        hyprdim xdg-desktop-portal-hyprland
+        hyprdim hypridle \
+        xdg-desktop-portal-hyprland
     set paru_status $status
     if test $paru_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
@@ -30,7 +31,8 @@ function install_hyprland
         breeze breeze-gtk \
         nemo loupe seahorse nemo-seahorse \
         polkit-gnome gnome-keyring \
-        eww grimblast nwg-look-bin
+        eww grimblast nwg-look-bin \
+        paper-icon-theme
     set paru_status $status
     if test $paru_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
@@ -104,7 +106,7 @@ and install_fonts
 and install_input_method
 and intall_dhcpcd
 and install_other_services
-and install_login_mamanger
+#and install_login_mamanger
 and pacman_clean_up
 and setup_home_dir
 and clone_dotfiles
