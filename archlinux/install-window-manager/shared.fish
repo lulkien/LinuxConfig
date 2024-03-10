@@ -64,15 +64,12 @@ function install_lsp
     install_logger "[Install language server]"
     paru -S --needed \
         tree-sitter ripgrep \
-        astyle \
-        bash-language-server \
-        clang \
+        clang astyle \
+        bash-language-server shfmt \
+        lua-language-server stylua \
+        rust-analyzer slint-lsp-bin \
+        pyright python-black \
         cmake-language-server \
-        lua-language-server \
-        pyright \
-        rust-analyzer \
-        slint-lsp-bin \
-        stylua \
         typescript-language-server \
         vscode-css-languageserver \
         vscode-json-languageserver \
