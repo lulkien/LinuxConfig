@@ -73,6 +73,7 @@ function install_lsp
         typescript-language-server \
         vscode-css-languageserver \
         vscode-json-languageserver \
+        prettierd \
         yamlfmt
     set paru_status $status
     if test $paru_status -ne 0
