@@ -52,7 +52,8 @@ function install_dev_tools
     paru -S --needed \
         base-devel clang \
         python python-pip dbus-python python-gobject \
-        lua luajit
+        lua luajit \
+        dart-sass
     set paru_status $status
     if test $paru_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
