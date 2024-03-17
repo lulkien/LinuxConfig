@@ -31,7 +31,7 @@ function install_hyprland
         breeze breeze-gtk \
         nemo loupe seahorse nemo-seahorse \
         polkit-gnome gnome-keyring \
-        eww grimblast nwg-look-bin \
+        grimblast nwg-look-bin \
         paper-icon-theme
     set paru_status $status
     if test $paru_status -ne 0
@@ -52,30 +52,15 @@ function intall_dhcpcd
     sudo systemctl enable --now dhcpcd
 end
 
-function install_login_mamanger
-    install_logger "[Install login manager]"
-    echo "Do you wanna install sddm? [y/N]"
-    read answer
-    if not test "$answer" = Y -o "$answer" = y
-        return
-    end
-
-    paru -S --needed sddm qt5-graphicaleffects qt5-svg qt5-quickcontrols2
+function install_ags_misc
+    install_logger "[Install ags and stuffs]"
+    paru -S --needed \
+        aylurs-gtk-shell \
+        gnome-bluetooth-3.0
     set paru_status $status
     if test $paru_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
         return $paru_status
-    end
-
-    git clone https://github.com/catppuccin/sddm.git /tmp/catppuccin-sddm
-    sudo cp -r /tmp/catppuccin-sddm/src/catppuccin-mocha /usr/share/sddm/themes
-    if not test -e /etc/sddm.conf
-        echo "[Theme]" | sudo tee /etc/sddm.conf
-        echo "Current=catppuccin-mocha" | sudo tee -a /etc/sddm.conf
-    else
-        echo "[Theme]"
-        echo "Current=catppuccin-mocha"
-        echo "Put this config into file /etc/sddm.conf"
     end
 end
 
@@ -99,6 +84,7 @@ end
 update_keyring
 and install_aur_helper
 and install_hyprland
+and install_ags_misc
 and install_general_applications
 and install_dev_tools
 and install_lsp
@@ -106,7 +92,6 @@ and install_fonts
 and install_input_method
 and intall_dhcpcd
 and install_other_services
-#and install_login_mamanger
 and pacman_clean_up
 and setup_home_dir
 and clone_dotfiles
