@@ -15,55 +15,54 @@ end
 
 function install_aur_helper
     install_logger "[Install aur helper]"
-    sudo pacman -S --needed base-devel rustup
-    rustup default nightly
-    if not command -sq paru
-        echo 'Paru is not installed. Do you wanna install it? [Y/n]'
+    pacman -S --needed git base-devel
+    if not command -sq yay
+        echo 'Yay is not installed. Do you wanna install it? [Y/n]'
         read answer
-        # If the answer is yes or empty, install paru
+        # If the answer is yes or empty, install yay
         if test -z "$answer" -o "$answer" = Y -o "$answer" = y
-            git clone https://aur.archlinux.org/paru.git /tmp/paru
-            cd /tmp/paru
+            git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
+            cd /tmp/yay-bin
             makepkg -si
         end
     else
-        echo "Paru was installed."
+        echo "Yay was installed."
     end
 end
 
 function install_general_applications
     install_logger "[Install general applications]"
-    paru -S --needed \
+    yay -S --needed \
         git fish vim neovim \
         htop neofetch lsb-release openssh \
         wget curl openssh rsync wl-clipboard \
         unzip unarchiver xdg-user-dirs \
         pipewire pipewire-pulse lib32-pipewire wireplumber \
         ffmpeg flatpak firefox caprine
-    set paru_status $status
-    if test $paru_status -ne 0
+    set yay_status $status
+    if test $yay_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $yay_status
     end
 end
 
 function install_dev_tools
     install_logger "[Install development tools]"
-    paru -S --needed \
-        base-devel clang \
+    yay -S --needed \
+        base-devel clang rustup \
         python python-pip dbus-python python-gobject \
         lua luajit \
         dart-sass
-    set paru_status $status
-    if test $paru_status -ne 0
+    set yay_status $status
+    if test $yay_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $yay_status
     end
 end
 
 function install_lsp
     install_logger "[Install language server]"
-    paru -S --needed \
+    yay -S --needed \
         tree-sitter ripgrep \
         clang astyle \
         bash-language-server shfmt \
@@ -76,36 +75,36 @@ function install_lsp
         vscode-json-languageserver \
         prettierd \
         yamlfmt
-    set paru_status $status
-    if test $paru_status -ne 0
+    set yay_status $status
+    if test $yay_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $yay_status
     end
 end
 
 function install_fonts
     install_logger "[Install fonts]"
-    paru -S --needed \
+    yay -S --needed \
         ttf-jetbrains-mono-nerd \
         ttf-liberation \
         noto-fonts-cjk \
         noto-fonts-emoji \
         otf-codenewroman-nerd \
         ttf-cascadia-code-nerd
-    set paru_status $status
-    if test $paru_status -ne 0
+    set yay_status $status
+    if test $yay_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $yay_status
     end
 end
 
 function install_input_method
     install_fonts "[Install input method]"
-    paru -S --needed fcitx5-im fcitx5-bamboo
-    set paru_status $status
-    if test $paru_status -ne 0
+    yay -S --needed fcitx5-im fcitx5-bamboo
+    set yay_status $status
+    if test $yay_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $yay_status
     end
 
     echo "QT_IM_MODULE=fcitx" | sudo tee -a /etc/environment
@@ -119,11 +118,11 @@ function install_other_services
     echo "Do you wanna install bluetooth? [y/N]"
     read answer
     if test "$answer" = Y -o "$answer" = y
-        paru -S --needed bluez bluez-utils blueman
-        set paru_status $status
-        if test $paru_status -ne 0
+        yay -S --needed bluez bluez-utils blueman
+        set yay_status $status
+        if test $yay_status -ne 0
             echo ">>>>>> FAILED <<<<<<"
-            return $paru_status
+            return $yay_status
         end
         systemctl enable --now bluetooth
     end
@@ -132,11 +131,11 @@ function install_other_services
     echo "Do you wanna install iwd? [y/N]"
     read answer
     if test "$answer" = Y -o "$answer" = y
-        paru -S --needed iwd
-        set paru_status $status
-        if test $paru_status -ne 0
+        yay -S --needed iwd
+        set yay_status $status
+        if test $yay_status -ne 0
             echo ">>>>>> FAILED <<<<<<"
-            return $paru_status
+            return $yay_status
         end
         sudo systemctl enable --now iwd
     end
