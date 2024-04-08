@@ -52,6 +52,18 @@ function intall_dhcpcd
     sudo systemctl enable --now dhcpcd
 end
 
+function install_networkmanager
+    install_logger "[Install Network Manager]"
+    paru -S networkmanager
+    set paru_status $status
+    if test $paru_status -ne 0
+        echo ">>>>>> FAILED <<<<<<"
+        return $paru_status
+    end
+
+    sudo systemctl enable --now NetworkManager
+end
+
 function install_ags_misc
     install_logger "[Install ags and stuffs]"
     paru -S --needed \
@@ -90,7 +102,8 @@ and install_dev_tools
 and install_lsp
 and install_fonts
 and install_input_method
-and intall_dhcpcd
+# and intall_dhcpcd
+and install_networkmanager
 and install_other_services
 and pacman_clean_up
 and setup_home_dir

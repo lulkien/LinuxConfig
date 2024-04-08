@@ -39,7 +39,8 @@ function install_general_applications
         wget curl openssh rsync wl-clipboard \
         unzip unarchiver xdg-user-dirs \
         pipewire pipewire-pulse lib32-pipewire wireplumber \
-        ffmpeg flatpak firefox caprine
+        ffmpeg flatpak firefox caprine \
+        libdbusmenu-gtk3
     set paru_status $status
     if test $paru_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
@@ -119,7 +120,9 @@ function install_other_services
     echo "Do you wanna install bluetooth? [y/N]"
     read answer
     if test "$answer" = Y -o "$answer" = y
-        paru -S --needed bluez bluez-utils blueman
+        paru -S --needed \
+            bluez bluez-utils blueman \
+            gnome-bluetooth-3.0
         set paru_status $status
         if test $paru_status -ne 0
             echo ">>>>>> FAILED <<<<<<"
