@@ -54,7 +54,7 @@ function install_dev_tools
         base-devel clang rustup \
         python python-pip dbus-python python-gobject \
         lua luajit \
-        dart-sass
+        bun dart-sass
     set paru_status $status
     if test $paru_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
@@ -89,10 +89,24 @@ function install_fonts
     paru -S --needed \
         ttf-jetbrains-mono-nerd \
         ttf-liberation \
+        noto-fonts \
         noto-fonts-cjk \
         noto-fonts-emoji \
+        noto-fonts-extra \
         otf-codenewroman-nerd \
         ttf-cascadia-code-nerd
+    set paru_status $status
+    if test $paru_status -ne 0
+        echo ">>>>>> FAILED <<<<<<"
+        return $paru_status
+    end
+end
+
+function install_icons
+    install_logger "[Install icons]"
+    paru -S --needed \
+        paper-icon-theme \
+        arc-icon-theme
     set paru_status $status
     if test $paru_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
@@ -131,18 +145,18 @@ function install_other_services
         systemctl enable --now bluetooth
     end
 
-    install_logger "[install iwd service]"
-    echo "Do you wanna install iwd? [y/N]"
-    read answer
-    if test "$answer" = Y -o "$answer" = y
-        paru -S --needed iwd
-        set paru_status $status
-        if test $paru_status -ne 0
-            echo ">>>>>> FAILED <<<<<<"
-            return $paru_status
-        end
-        sudo systemctl enable --now iwd
-    end
+    # install_logger "[install iwd service]"
+    # echo "Do you wanna install iwd? [y/N]"
+    # read answer
+    # if test "$answer" = Y -o "$answer" = y
+    #     paru -S --needed iwd
+    #     set paru_status $status
+    #     if test $paru_status -ne 0
+    #         echo ">>>>>> FAILED <<<<<<"
+    #         return $paru_status
+    #     end
+    #     sudo systemctl enable --now iwd
+    # end
 end
 
 function pacman_clean_up

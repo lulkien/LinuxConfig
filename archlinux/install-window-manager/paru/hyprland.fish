@@ -41,7 +41,9 @@ function install_hyprland
 end
 
 function intall_dhcpcd
-    install_logger "[Install dhcpcd]"
+    install_logger "[Install dhcpcd] DEPRECATED!!!"
+    return
+
     paru -S --needed dhcpcd
     set paru_status $status
     if test $paru_status -ne 0
@@ -101,6 +103,7 @@ and install_general_applications
 and install_dev_tools
 and install_lsp
 and install_fonts
+and install_icons
 and install_input_method
 # and intall_dhcpcd
 and install_networkmanager
