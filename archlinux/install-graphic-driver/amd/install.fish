@@ -13,5 +13,14 @@ function install_vulkan_driver
         vulkan-icd-loader lib32-vulkan-icd-loader
 end
 
+function install_package_for_blender
+    sudo pacman -S hip-runtime-amd
+end
+
 # MAIN SCRIPT
-install_mesa && install_vulkan_driver
+
+sudo pacman -Sy
+
+install_mesa
+and install_vulkan_driver
+and install_package_for_blender
