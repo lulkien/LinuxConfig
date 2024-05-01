@@ -39,7 +39,7 @@ function install_general_applications
         wget curl openssh rsync wl-clipboard \
         unzip unarchiver xdg-user-dirs \
         pipewire pipewire-pulse lib32-pipewire wireplumber \
-        ffmpeg flatpak firefox caprine \
+        ffmpeg flatpak firefox \
         libdbusmenu-gtk3
     set paru_status $status
     if test $paru_status -ne 0
@@ -54,7 +54,7 @@ function install_dev_tools
         base-devel clang rustup \
         python python-pip dbus-python python-gobject \
         lua luajit \
-        bun dart-sass
+        dart-sass
     set paru_status $status
     if test $paru_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
@@ -142,7 +142,7 @@ function install_other_services
             echo ">>>>>> FAILED <<<<<<"
             return $paru_status
         end
-        systemctl enable --now bluetooth
+        # systemctl enable bluetooth
     end
 
     # install_logger "[install iwd service]"

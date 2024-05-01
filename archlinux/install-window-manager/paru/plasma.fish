@@ -7,7 +7,7 @@ function install_kde_plasma
     install_logger "[Install KDE Plasma]"
     paru -S --needed \
         xorg xorg-xwayland \
-        sddm plasma plasma-wayland-session \
+        sddm plasma \
         konsole dolphin kwallet5 kwalletmanager kate spectacle \
         kdeconnect elisa gwenview ark partitionmanager \
         kitty gamemode discord steam-native-runtime
