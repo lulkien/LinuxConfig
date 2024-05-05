@@ -106,6 +106,7 @@ and install_fonts
 and install_icons
 and install_input_method
 # and intall_dhcpcd
+and install_firmware
 and install_networkmanager
 and install_other_services
 and pacman_clean_up

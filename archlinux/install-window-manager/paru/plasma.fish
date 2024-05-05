@@ -28,5 +28,6 @@ and install_lsp
 and install_fonts
 and install_input_method
 and install_other_services
+and install_firmware
 and pacman_clean_up
 and clone_dotfiles

@@ -159,6 +159,16 @@ function install_other_services
     # end
 end
 
+function install_firmware
+    install_logger "[install firmware]"
+    paru -S --needed mkinitcpio-firmware
+    set paru_status $status
+    if test $paru_status -ne 0
+        echo ">>>>>> FAILED <<<<<<"
+        return $paru_status
+    end
+end
+
 function pacman_clean_up
     install_logger "[Clean up]"
     sudo pacman -Rns (pacman -Qdttq)
