@@ -19,7 +19,8 @@ function install_kde_plasma
 end
 
 # MAIN SCRIPT
-update_keyring
+validate_user
+and update_keyring
 and install_aur_helper
 and install_kde_plasma
 and install_general_applications

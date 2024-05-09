@@ -95,7 +95,8 @@ function setup_home_dir
 end
 
 # MAIN SCRIPT
-update_keyring
+validate_user
+and update_keyring
 and install_aur_helper
 and install_hyprland
 and install_ags_misc

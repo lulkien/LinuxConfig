@@ -4,6 +4,16 @@ function install_logger
     set_color normal
 end
 
+function validate_user
+    install_logger "[Validate user]"
+    if test "$USER" = root
+        echo "Please run with non-root user!"
+        return 1
+    else
+        return 0
+    end
+end
+
 function update_keyring
     install_logger "[Update keyring]"
     sudo pacman-key --init
