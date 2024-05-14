@@ -31,9 +31,8 @@ function install_paru
 
         # If the answer is yes or empty, install paru
         if test -z "$ans" -o "$ans" = Y -o "$ans" = y
-            sudo pacman -S --needed base-devel rustup
-            rustup default nightly
-            git clone https://aur.archlinux.org/paru.git /tmp/paru
+            sudo rm -rf /tmp/paru
+            git clone https://aur.archlinux.org/paru-bin.git /tmp/paru
             cd /tmp/paru
             makepkg -si
         end
@@ -51,6 +50,7 @@ function install_yay
 
         # If the answer is yes or empty, install paru
         if test -z "$ans" -o "$ans" = Y -o "$ans" = y
+            sudo rm -rf /tmp/yay
             git clone https://aur.archlinux.org/yay-bin.git /tmp/yay
             cd /tmp/yay
             makepkg -si
@@ -108,6 +108,7 @@ function install_dev_tools
         echo ">>>>>> FAILED <<<<<<"
         return $helper_status
     end
+    rustup default nightly
 end
 
 function install_lsp
