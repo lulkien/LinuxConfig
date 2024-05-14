@@ -23,27 +23,65 @@ function update_keyring
     return $status
 end
 
-function install_aur_helper
-    install_logger "[Install aur helper]"
-    sudo pacman -S --needed base-devel rustup
-    rustup default nightly
+function install_paru
+    set -g AUR_HELPER paru
     if not command -sq paru
-        echo 'Paru is not installed. Do you wanna install it? [Y/n]'
-        read answer
+        echo "$AUR_HELPER is not installed. Do you wanna install it? [Y/n]"
+        read -p 'set_color green; printf "Answer: "; set_color normal' ans
+
         # If the answer is yes or empty, install paru
-        if test -z "$answer" -o "$answer" = Y -o "$answer" = y
+        if test -z "$ans" -o "$ans" = Y -o "$ans" = y
+            sudo pacman -S --needed base-devel rustup
+            rustup default nightly
             git clone https://aur.archlinux.org/paru.git /tmp/paru
             cd /tmp/paru
             makepkg -si
         end
     else
-        echo "Paru was installed."
+        echo "$AUR_HELPER was installed."
+    end
+
+end
+
+function install_yay
+    set -g AUR_HELPER yay
+    if not command -sq $AUR_HELPER
+        echo "$AUR_HELPER is not installed. Do you wanna install it? [Y/n]"
+        read -p 'set_color green; printf "Answer: "; set_color normal' ans
+
+        # If the answer is yes or empty, install paru
+        if test -z "$ans" -o "$ans" = Y -o "$ans" = y
+            git clone https://aur.archlinux.org/yay-bin.git /tmp/yay
+            cd /tmp/yay
+            makepkg -si
+        end
+    else
+        echo "$AUR_HELPER was installed."
+    end
+end
+
+function install_aur_helper
+    install_logger "[Install aur helper]"
+
+    echo "Select an aur helper:"
+    echo "1. paru (default)"
+    echo "2. yay (recommend for low-end device)"
+    read -p 'set_color green; printf "Answer: "; set_color normal' ans
+    if test $status -ne 0
+        echo "Interupted!"
+        return 1
+    end
+
+    if test "$ans" = 2
+        install_yay
+    else
+        install_paru
     end
 end
 
 function install_general_applications
     install_logger "[Install general applications]"
-    paru -S --needed \
+    $AUR_HELPER -S --needed \
         git fish vim neovim \
         htop neofetch lsb-release openssh \
         wget curl openssh rsync wl-clipboard \
@@ -51,30 +89,30 @@ function install_general_applications
         pipewire pipewire-pulse lib32-pipewire wireplumber \
         ffmpeg flatpak firefox \
         libdbusmenu-gtk3
-    set paru_status $status
-    if test $paru_status -ne 0
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 end
 
 function install_dev_tools
     install_logger "[Install development tools]"
-    paru -S --needed \
+    $AUR_HELPER -S --needed \
         base-devel clang rustup \
         python python-pip dbus-python python-gobject \
         lua luajit \
         dart-sass
-    set paru_status $status
-    if test $paru_status -ne 0
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 end
 
 function install_lsp
     install_logger "[Install language server]"
-    paru -S --needed \
+    $AUR_HELPER -S --needed \
         tree-sitter ripgrep \
         clang astyle \
         bash-language-server shfmt \
@@ -87,16 +125,16 @@ function install_lsp
         vscode-json-languageserver \
         prettierd \
         yamlfmt
-    set paru_status $status
-    if test $paru_status -ne 0
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 end
 
 function install_fonts
     install_logger "[Install fonts]"
-    paru -S --needed \
+    $AUR_HELPER -S --needed \
         ttf-jetbrains-mono-nerd \
         ttf-liberation \
         noto-fonts \
@@ -105,32 +143,32 @@ function install_fonts
         noto-fonts-extra \
         otf-codenewroman-nerd \
         ttf-cascadia-code-nerd
-    set paru_status $status
-    if test $paru_status -ne 0
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 end
 
 function install_icons
     install_logger "[Install icons]"
-    paru -S --needed \
+    $AUR_HELPER -S --needed \
         paper-icon-theme \
         arc-icon-theme
-    set paru_status $status
-    if test $paru_status -ne 0
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 end
 
 function install_input_method
     install_fonts "[Install input method]"
-    paru -S --needed fcitx5-im fcitx5-bamboo
-    set paru_status $status
-    if test $paru_status -ne 0
+    $AUR_HELPER -S --needed fcitx5-im fcitx5-bamboo
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 
     echo "QT_IM_MODULE=fcitx" | sudo tee -a /etc/environment
@@ -142,28 +180,27 @@ end
 function install_other_services
     install_logger "[install bluetooth service]"
     echo "Do you wanna install bluetooth? [y/N]"
-    read answer
-    if test "$answer" = Y -o "$answer" = y
-        paru -S --needed \
+    read -p 'set_color green; printf "Answer: "; set_color normal' ans
+    if test "$ans" = Y -o "$ans" = y
+        $AUR_HELPER -S --needed \
             bluez bluez-utils blueman \
             gnome-bluetooth-3.0
-        set paru_status $status
-        if test $paru_status -ne 0
+        set helper_status $status
+        if test $helper_status -ne 0
             echo ">>>>>> FAILED <<<<<<"
-            return $paru_status
+            return $helper_status
         end
-        # systemctl enable bluetooth
     end
 
     # install_logger "[install iwd service]"
     # echo "Do you wanna install iwd? [y/N]"
-    # read answer
-    # if test "$answer" = Y -o "$answer" = y
-    #     paru -S --needed iwd
-    #     set paru_status $status
-    #     if test $paru_status -ne 0
+    # read -p 'set_color green; printf "Answer: "; set_color normal' ans
+    # if test "$ans" = Y -o "$ans" = y
+    #     $AUR_HELPER -S --needed iwd
+    #     set helper_status $status
+    #     if test $helper_status -ne 0
     #         echo ">>>>>> FAILED <<<<<<"
-    #         return $paru_status
+    #         return $helper_status
     #     end
     #     sudo systemctl enable --now iwd
     # end
@@ -171,11 +208,11 @@ end
 
 function install_firmware
     install_logger "[install firmware]"
-    paru -S --needed mkinitcpio-firmware
-    set paru_status $status
-    if test $paru_status -ne 0
+    $AUR_HELPER -S --needed mkinitcpio-firmware
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 end
 
@@ -187,8 +224,8 @@ end
 function clone_dotfiles
     install_logger "[Clone dotfiles]"
     echo "Do you want to clone dotfiles? [Y/n] "
-    read answer
-    if test -z "$answer" -o "$answer" = Y -o "$answer" = y
+    read -p 'set_color green; printf "Answer: "; set_color normal' ans
+    if test -z "$ans" -o "$ans" = Y -o "$ans" = y
         rm -rf $HOME/.dotfiles
         git clone https://github.com/lulkien/dotfiles.git $HOME/.dotfiles
         echo "Please run the setup script in $HOME/.dotfiles"

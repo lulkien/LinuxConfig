@@ -5,38 +5,38 @@ source $SCRIPT_PATH/shared.fish
 
 function install_hyprland
     install_logger "[Install Hyprland]"
-    paru -S --needed seatd
-    set paru_status $status
-    if test $paru_status -ne 0
+    $AUR_HELPER -S --needed seatd
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 
     sudo systemctl enable --now seatd
     sudo usermod -aG seat $USER
 
-    paru -S --needed \
+    $AUR_HELPER -S --needed \
         hyprland hyprpaper \
         hyprlock hyprpicker \
         hyprdim hypridle \
         xdg-desktop-portal-hyprland
-    set paru_status $status
-    if test $paru_status -ne 0
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 
-    paru -S --needed \
+    $AUR_HELPER -S --needed \
         alacritty wofi dunst \
         breeze breeze-gtk \
         nemo loupe seahorse nemo-seahorse \
         polkit-gnome gnome-keyring \
         grimblast nwg-look-bin \
         paper-icon-theme
-    set paru_status $status
-    if test $paru_status -ne 0
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 end
 
@@ -44,11 +44,11 @@ function intall_dhcpcd
     install_logger "[Install dhcpcd] DEPRECATED!!!"
     return
 
-    paru -S --needed dhcpcd
-    set paru_status $status
-    if test $paru_status -ne 0
+    $AUR_HELPER -S --needed dhcpcd
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 
     sudo systemctl enable --now dhcpcd
@@ -56,11 +56,11 @@ end
 
 function install_networkmanager
     install_logger "[Install Network Manager]"
-    paru -S networkmanager
-    set paru_status $status
-    if test $paru_status -ne 0
+    $AUR_HELPER -S networkmanager
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 
     sudo systemctl enable --now NetworkManager
@@ -68,13 +68,13 @@ end
 
 function install_ags_misc
     install_logger "[Install ags and stuffs]"
-    paru -S --needed \
+    $AUR_HELPER -S --needed \
         aylurs-gtk-shell \
         gnome-bluetooth-3.0
-    set paru_status $status
-    if test $paru_status -ne 0
+    set helper_status $status
+    if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
-        return $paru_status
+        return $helper_status
     end
 end
 
