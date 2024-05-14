@@ -220,15 +220,20 @@ end
 function pacman_clean_up
     install_logger "[Clean up]"
     sudo pacman -Rns (pacman -Qdttq)
+    return 0
 end
 
 function clone_dotfiles
     install_logger "[Clone dotfiles]"
-    echo "Do you want to clone dotfiles? [Y/n] "
-    read -p 'set_color green; printf "Answer: "; set_color normal' ans
-    if test -z "$ans" -o "$ans" = Y -o "$ans" = y
-        rm -rf $HOME/.dotfiles
-        git clone https://github.com/lulkien/dotfiles.git $HOME/.dotfiles
-        echo "Please run the setup script in $HOME/.dotfiles"
+    if not test -d $HOME/.dotfiles
+        echo "Do you want to clone dotfiles? [Y/n] "
+        read -p 'set_color green; printf "Answer: "; set_color normal' ans
+        if test -z "$ans" -o "$ans" = Y -o "$ans" = y
+            rm -rf $HOME/.dotfiles
+            git clone https://github.com/lulkien/dotfiles.git $HOME/.dotfiles
+            echo "Please run the setup script in $HOME/.dotfiles"
+        end
+    else
+        echo "$HOME/.dotfiles existed."
     end
 end
