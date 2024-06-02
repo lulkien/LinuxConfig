@@ -125,7 +125,7 @@ function install_lsp
         vscode-css-languageserver \
         vscode-json-languageserver \
         prettierd \
-        yamlfmt
+        yamlfmt taplo-cli
     set helper_status $status
     if test $helper_status -ne 0
         echo ">>>>>> FAILED <<<<<<"
