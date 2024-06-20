@@ -26,7 +26,6 @@ update_keyring() {
 	sudo pacman-key --populate archlinux
 	sudo pacman -Sy
 	sudo pacman -S --needed archlinux-keyring
-	return $?
 }
 
 install_aur_helper() {
@@ -200,7 +199,7 @@ install_other_services() {
 		local packages=(
 			'bluez'
 			'bluez-utils'
-			'gnome-bluetooth-3'
+			'gnome-bluetooth-3.0'
 		)
 		isntall_list_package "${packages[@]}"
 		return $?
@@ -224,7 +223,7 @@ pacman_clean_up() {
 
 clone_dotfiles() {
 	msg_ok "[clone_dotfiles]"
-	if [[ -d $HOME/.dotfiles ]]; then
+	if [[ ! -d $HOME/.dotfiles ]]; then
 		echo "Do you want to clone dotfiles? [Y/n] "
 		read -p 'Answer: ' answer
 		# Lowercase answer
