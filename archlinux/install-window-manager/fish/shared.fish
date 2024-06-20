@@ -6,7 +6,7 @@ end
 
 function validate_user
     install_logger "[Validate user]"
-    if test "$USER" = root
+    if test (whoami) = root
         echo "Please run with non-root user!"
         return 1
     else
@@ -39,7 +39,6 @@ function install_paru
     else
         echo "$AUR_HELPER was installed."
     end
-
 end
 
 function install_yay
