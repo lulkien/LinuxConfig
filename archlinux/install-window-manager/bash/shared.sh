@@ -181,10 +181,18 @@ install_input_method() {
 		return 1
 	fi
 
-	echo "QT_IM_MODULE=fcitx" | sudo tee -a /etc/environment
-	echo "XMODIFIERS=@im=fcitx" | sudo tee -a /etc/environment
-	echo "SDL_IM_MODULE=fcitx" | sudo tee -a /etc/environment
-	echo "GLFW_IM_MODULE=ibus" | sudo tee -a /etc/environment
+	echo "Do you want to append environment for input method? [Y/n]"
+	read -p 'Answer: ' answer
+	# Lowercase answer
+	answer=${answer,,}
+
+	# If the answer is yes or empty, install AUT_HELPER
+	if [[ -z "${answer}" ]] || [[ "${answer}" =~ ^(yes|y)$ ]]; then
+		echo "QT_IM_MODULE=fcitx" | sudo tee -a /etc/environment
+		echo "XMODIFIERS=@im=fcitx" | sudo tee -a /etc/environment
+		echo "SDL_IM_MODULE=fcitx" | sudo tee -a /etc/environment
+		echo "GLFW_IM_MODULE=ibus" | sudo tee -a /etc/environment
+	fi
 }
 
 install_other_services() {
@@ -224,7 +232,7 @@ pacman_clean_up() {
 clone_dotfiles() {
 	msg_ok "[clone_dotfiles]"
 	if [[ ! -d $HOME/.dotfiles ]]; then
-		echo "Do you want to clone dotfiles? [Y/n] "
+		echo "Do you want to clone dotfiles? [Y/n]"
 		read -p 'Answer: ' answer
 		# Lowercase answer
 		answer=${answer,,}
