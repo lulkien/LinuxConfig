@@ -12,6 +12,7 @@ install_hyprland() {
         "hyprdim" "hypridle"
         "xdg-desktop-portal-hyprland"
         "alacritty" "wofi" "dunst"
+        "anyrun-git"
         "breeze" "breeze-gtk"
         "nemo" "loupe" "seahorse" "nemo-seahorse"
         "polkit-gnome" "gnome-keyring"
