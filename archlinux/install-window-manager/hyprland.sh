@@ -34,10 +34,8 @@ setup_home_dir() {
     msg_ok '[setup_home_dir]'
 
     local XDG_LIST=('Downloads' 'Documents' 'Pictures')
-    for xdg_item in $XDG_LIST; do
-        if [ ! -d $HOME/$xdg_item ]; then
-            mkdir $HOME/$xdg_item
-        fi
+    for item in $XDG_LIST; do
+        [[ ! -d $HOME/$item ]] && mkdir $HOME/$item
     done
 
     echo 'XDG_DOWNLOAD_DIR="$HOME/Downloads"' | tee $HOME/.config/user-dirs.dirs
