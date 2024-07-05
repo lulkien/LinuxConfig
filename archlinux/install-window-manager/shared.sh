@@ -218,8 +218,10 @@ install_other_services() {
             'bluez-utils'
         )
         isntall_list_package "${packages[@]}"
-        return $?
+        systemctl enable --now bluetooth
     fi
+
+    systemctl enable --now sshd
 }
 
 install_firmware() {
