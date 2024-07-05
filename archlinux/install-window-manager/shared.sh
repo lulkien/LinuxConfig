@@ -95,13 +95,22 @@ isntall_list_package() {
     fi
 }
 
-install_general_applications() {
-    msg_ok "[install_general_applications]"
+install_command_line_tool() {
+    msg_ok '[install_command_line_tool]'
     local packages=(
-        'git' 'fish' 'neovim'
+        'git' 'fish' 'vim' 'neovim'
         'htop' 'fastfetch' 'lsb-release'
         'openssh' 'wget' 'curl' 'rsync'
         'wl-clipboard' 'unzip' 'unarchiver'
+        'less' 'jq'
+    )
+    isntall_list_package "${packages[@]}"
+    return $?
+}
+
+install_general_applications() {
+    msg_ok "[install_general_applications]"
+    local packages=(
         'xdg-user-dirs' 'pipewire' 'pipewire-pulse'
         'lib32-pipewire' 'wireplumber'
         'ffmpeg' 'flatpak' 'firefox'
@@ -203,7 +212,7 @@ install_other_services() {
     answer=${answer,,}
 
     # If the answer is yes or empty, install AUT_HELPER
-    if [[ -z "${answer}" ]] || [[ "${answer}" =~ ^(yes|y)$ ]]; then
+    if [[ "${answer}" =~ ^(yes|y)$ ]]; then
         local packages=(
             'bluez'
             'bluez-utils'
