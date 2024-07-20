@@ -125,7 +125,7 @@ install_dev_tools() {
     local packages=(
         'base-devel' 'clang' 'rustup'
         'python' 'python-pip' 'dbus-python' 'python-gobject'
-        'lua' 'luajit' 'dart-sass'
+        'lua' 'luajit' 'dart-sass' 'scssc'
     )
     isntall_list_package "${packages[@]}"
     if [[ $? -ne 0 ]]; then

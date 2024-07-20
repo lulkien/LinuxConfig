@@ -9,15 +9,16 @@ install_hyprland() {
         'seatd'
         'hyprland' 'hyprpaper'
         'hyprlock' 'hyprpicker'
-        'hyprdim' 'hypridle'
+        'hyprcursor' 'hyprdim' 'hypridle'
         'xdg-desktop-portal-hyprland'
         'alacritty' 'wofi' 'dunst'
         'anyrun-git' 'eww'
-        'breeze' 'breeze-gtk'
         'nemo' 'loupe' 'seahorse' 'nemo-seahorse'
         'polkit-gnome' 'gnome-keyring'
         'grimblast' 'nwg-look-bin'
-        'paper-icon-theme'
+        'qogir-gtk-theme'
+        'papirus-icon-theme'
+        'catppuccin-cursors-macchiato'
         'dhcpcd' 'iwd'
     )
 
@@ -30,8 +31,8 @@ install_hyprland() {
     sudo systemctl enable --now iwd
 }
 
-setup_home_dir() {
-    msg_ok '[setup_home_dir]'
+post_install() {
+    msg_ok '[post_install]'
 
     local XDG_LIST=('Downloads' 'Documents' 'Pictures')
     for item in $XDG_LIST; do
@@ -42,6 +43,11 @@ setup_home_dir() {
     echo 'XDG_DOCUMENTS_DIR="$HOME/Documents"' | tee -a $HOME/.config/user-dirs.dirs
     echo 'XDG_PICTURES_DIR="$HOME/Pictures"' | tee -a $HOME/.config/user-dirs.dirs
     echo 'XDG_SCREENSHOTS_DIR="$HOME/Pictures"' | tee -a $HOME/.config/user-dirs.dirs
+
+    gsettings set org.gnome.desktop.interface gtk-theme 'Qogir-Dark'
+    gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
+    gsettings set org.gnome.desktop.interface cursor-theme 'catppuccin-macchiato-light-cursors'
+    gsettings set org.gnome.desktop.interface cursor-size 30
 }
 
 validate_user || exit
@@ -58,4 +64,4 @@ install_firmware || exit
 install_hyprland || exit # Everything is done, now install Hyprland
 pacman_clean_up || exit
 clone_dotfiles || exit
-setup_home_dir || exit
+post_install || exit
