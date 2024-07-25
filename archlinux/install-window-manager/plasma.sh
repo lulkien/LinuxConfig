@@ -10,7 +10,7 @@ install_kde_plasma() {
         'sddm' 'plasma'
         'konsole' 'dolphin' 'kwallet5' 'kwalletmanager' 'kate' 'spectacle'
         'kdeconnect' 'elisa' 'gwenview' 'ark' 'partitionmanager'
-        'kitty' 'gamemode' 'discord' 'steam-native-runtime'
+        'gamemode' 'discord' 'steam-native-runtime'
     )
     isntall_list_package "${packages[@]}"
     return $?
