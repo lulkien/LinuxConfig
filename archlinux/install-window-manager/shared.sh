@@ -125,13 +125,13 @@ install_dev_tools() {
     local packages=(
         'base-devel' 'clang' 'rustup'
         'python' 'python-pip' 'dbus-python' 'python-gobject'
-        'lua' 'luajit' 'dart-sass' 'scssc'
+        'lua' 'luajit' 'dart-sass'
     )
     isntall_list_package "${packages[@]}"
     if [[ $? -ne 0 ]]; then
         return 1
     fi
-    rustup default nightly
+    rustup default stable
 }
 
 install_lsp() {
@@ -142,7 +142,6 @@ install_lsp() {
         'lua-language-server' 'stylua'
         'rust-analyzer' 'slint-lsp-bin'
         'pyright' 'python-black'
-        'cmake-language-server'
         'typescript-language-server'
         'vscode-css-languageserver'
         'vscode-json-languageserver'
@@ -220,8 +219,6 @@ install_other_services() {
         isntall_list_package "${packages[@]}"
         systemctl enable --now bluetooth
     fi
-
-    systemctl enable --now sshd
 }
 
 install_firmware() {
