@@ -14,20 +14,22 @@ install_hyprland() {
         'dunst' 'anyrun-git' 'eww'
         'nemo' 'loupe' 'seahorse' 'nemo-seahorse'
         'polkit-gnome' 'gnome-keyring'
+        'thorium-browser'
         'grimblast' 'nwg-look-bin'
         'qogir-gtk-theme'
         'papirus-icon-theme'
         'catppuccin-cursors-macchiato'
+        'networkmanager'
+        'network-manager-applet'
         'dhcpcd' 'iwd'
     )
 
     isntall_list_package "${packages[@]}"
 
-    sudo systemctl enable --now seatd
+    sudo systemctl enable seatd
     sudo usermod -aG seat $USER
 
-    sudo systemctl enable --now dhcpcd
-    sudo systemctl enable --now iwd
+    sudo systemctl enable NetworkManager
 }
 
 post_install() {
@@ -49,6 +51,28 @@ post_install() {
     gsettings set org.gnome.desktop.interface cursor-size 30
 }
 
+# Process arguments
+NO_CONFIRM=false
+NO_FIRMWARE=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+    --no-confirm)
+        NO_CONFIRM=true
+        shift
+        ;;
+    --no-firmware)
+        NO_FIRMWARE=true
+        shift
+        ;;
+    *)
+        echo "Warning: Ignoring invalid argument: $1"
+        shift
+        ;;
+    esac
+done
+
+# MAIN
 validate_user || exit
 update_keyring || exit
 install_package_manager || exit

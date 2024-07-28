@@ -35,44 +35,41 @@ install_aur_helper() {
     fi
 
     msg_ok "[install_${AUR_HELPER}]"
-    if ! command -v ${AUR_HELPER} &>/dev/null; then
-        echo "$AUR_HELPER is not installed. Do you wanna install it? [Y/n]"
-        read -p 'Answer: ' answer
-        # Lowercase answer
-        answer=${answer,,}
-
-        # If the answer is yes or empty, install AUT_HELPER
-        if [[ -z "${answer}" ]] || [[ "${answer}" =~ ^(yes|y)$ ]]; then
-            sudo rm -rf /tmp/${AUR_HELPER}
-            git clone https://aur.archlinux.org/${AUR_HELPER}-bin.git /tmp/${AUR_HELPER}
-            cd /tmp/${AUR_HELPER}
-            makepkg -si
-            return $?
-        fi
-    else
-        echo "${AUR_HELPER} was installed"
-        return 0
-    fi
+    sudo rm -rf /tmp/${AUR_HELPER}
+    git clone https://aur.archlinux.org/${AUR_HELPER}-bin.git /tmp/${AUR_HELPER}
+    cd /tmp/${AUR_HELPER}
+    makepkg -si
+    return $?
 }
 
 install_package_manager() {
     msg_ok '[install_package_manager]'
-    local options=('paru' 'yay')
-    select opt in "${options[@]}"; do
-        case "${REPLY}" in
-        1 | 2)
-            break
-            ;;
-        *)
-            echo "Canceled"
-            return 1
-            ;;
-        esac
-    done
+    if command -v paru &>/dev/null; then
+        AUR_HELPER=paru
+        echo "paru was installed. Use paru as AUR helper."
+        return 0
+    elif command -v yay &>/dev/null; then
+        AUR_HELPER=yay
+        echo "yay was installed. Use yay as AUR helper."
+        return 0
+    else
+        local options=('paru' 'yay')
+        select opt in "${options[@]}"; do
+            case "${REPLY}" in
+            1 | 2)
+                break
+                ;;
+            *)
+                echo "Canceled"
+                return 1
+                ;;
+            esac
+        done
 
-    echo -e "\e[1;33mSelected:\e[00m ${opt}"
-    install_aur_helper ${opt}
-    return $?
+        echo -e "\e[1;33mSelected:\e[00m ${opt}"
+        install_aur_helper ${opt}
+        return $?
+    fi
 }
 
 print_list_package() {
@@ -86,7 +83,11 @@ print_list_package() {
 isntall_list_package() {
     local packages=("$@")
     print_list_package "${packages[@]}"
-    ${AUR_HELPER} -S --needed "${packages[@]}"
+    if $NO_CONFIRM; then
+        ${AUR_HELPER} -S --noconfirm --needed "${packages[@]}"
+    else
+        ${AUR_HELPER} -S --needed "${packages[@]}"
+    fi
     if [[ $? -ne 0 ]]; then
         msg_err ">>>>>> FAILED <<<<<<"
         return 1
@@ -114,7 +115,7 @@ install_general_applications() {
         'xdg-user-dirs' 'pipewire' 'pipewire-pulse'
         'lib32-pipewire' 'wireplumber'
         'ffmpeg' 'flatpak' 'firefox'
-        'thorium-browser' 'libdbusmenu-gtk3'
+        'libdbusmenu-gtk3'
         'kitty'
     )
     isntall_list_package "${packages[@]}"
@@ -141,13 +142,14 @@ install_lsp() {
         'tree-sitter' 'ripgrep'
         'bash-language-server' 'shfmt'
         'lua-language-server' 'stylua'
-        'rust-analyzer' 'slint-lsp-bin'
+        'rust-analyzer'
         'pyright' 'python-black'
         'typescript-language-server'
         'vscode-css-languageserver'
         'vscode-json-languageserver'
         'prettierd'
-        'yamlfmt' 'taplo-cli'
+        'yamlfmt'
+        'taplo-cli'
     )
     isntall_list_package "${packages[@]}"
     return $?
@@ -164,16 +166,6 @@ install_fonts() {
         'noto-fonts-extra'
         'otf-codenewroman-nerd'
         'ttf-cascadia-code-nerd'
-    )
-    isntall_list_package "${packages[@]}"
-    return $?
-}
-
-install_icons() {
-    msg_ok '[install_icons]'
-    local packages=(
-        'paper-icon-theme'
-        'arc-icon-theme'
     )
     isntall_list_package "${packages[@]}"
     return $?
@@ -218,11 +210,16 @@ install_other_services() {
             'bluez-utils'
         )
         isntall_list_package "${packages[@]}"
-        systemctl enable --now bluetooth
+        systemctl enable bluetooth
     fi
 }
 
 install_firmware() {
+    if $NO_FIRMWARE; then
+        # --no-firmware is check
+        return
+    fi
+
     msg_ok '[install_firmware]'
     local packages=(
         'mkinitcpio-firmware'
