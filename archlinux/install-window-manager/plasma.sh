@@ -4,7 +4,7 @@ SCRIPT_PATH=$(dirname "$(realpath "$0")")
 source ${SCRIPT_PATH}/shared.sh
 
 install_kde_plasma() {
-    msg_ok '[install_kde_plasma]'
+    msg_ok '[Install KDE Plasma]'
     local packages=(
         'xorg' 'xorg-xwayland'
         'sddm' 'plasma'

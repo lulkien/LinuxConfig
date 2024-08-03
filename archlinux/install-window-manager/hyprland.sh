@@ -4,12 +4,13 @@ SCRIPT_PATH=$(dirname "$(realpath "$0")")
 source ${SCRIPT_PATH}/shared.sh
 
 install_hyprland() {
-    msg_ok '[install_hyprland]'
+    msg_ok '[Install Hyprland packages]'
     local packages=(
         'seatd'
         'hyprland' 'hyprpaper'
         'hyprlock' 'hyprpicker'
         'hyprcursor' 'hyprdim' 'hypridle'
+        'slurp' 'wf-recorder'
         'xdg-desktop-portal-hyprland'
         'dunst' 'anyrun-git' 'eww'
         'nemo' 'loupe' 'seahorse' 'nemo-seahorse'
@@ -20,6 +21,7 @@ install_hyprland() {
         'papirus-icon-theme'
         'catppuccin-cursors-macchiato'
         'networkmanager'
+        'blueman'
         'network-manager-applet'
         'dhcpcd' 'iwd'
     )
@@ -33,8 +35,7 @@ install_hyprland() {
 }
 
 post_install() {
-    msg_ok '[post_install]'
-
+    msg_ok '[Set up XDG dirs]'
     local XDG_LIST=('Downloads' 'Documents' 'Pictures')
     for item in $XDG_LIST; do
         [[ ! -d $HOME/$item ]] && mkdir $HOME/$item
@@ -45,10 +46,21 @@ post_install() {
     echo 'XDG_PICTURES_DIR="$HOME/Pictures"' | tee -a $HOME/.config/user-dirs.dirs
     echo 'XDG_SCREENSHOTS_DIR="$HOME/Pictures"' | tee -a $HOME/.config/user-dirs.dirs
 
+    msg_ok '[Config XDG themes]'
     gsettings set org.gnome.desktop.interface gtk-theme 'Qogir-Dark'
     gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
     gsettings set org.gnome.desktop.interface cursor-theme 'catppuccin-macchiato-light-cursors'
     gsettings set org.gnome.desktop.interface cursor-size 30
+
+    msg_ok '[Install Hyprvisor]'
+    mkdir /tmp/hyprvisor
+    cd /tmp/hyprvisor
+    wget https://raw.githubusercontent.com/lulkien/dotfiles/master/packages/hyprvisor/PKGBUILD
+    makepkg -si
+
+    if [[ $? -ne 0 ]]; then
+        msg_err 'Something wrong with that PKGBUILD, please fix it yourself.'
+    fi
 }
 
 # Process arguments

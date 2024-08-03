@@ -11,7 +11,7 @@ msg_err() {
 }
 
 validate_user() {
-    msg_ok '[validate_user]'
+    msg_ok '[Validate current user]'
     if [[ $(whoami) = 'root' ]]; then
         echo "Please run this script with non-root user"
         return 1
@@ -21,7 +21,7 @@ validate_user() {
 }
 
 update_keyring() {
-    msg_ok '[update_keyring]'
+    msg_ok '[Update keyring]'
     sudo pacman-key --init
     sudo pacman-key --populate archlinux
     sudo pacman -Sy
@@ -43,7 +43,7 @@ install_aur_helper() {
 }
 
 install_package_manager() {
-    msg_ok '[install_package_manager]'
+    msg_ok '[Install package manager]'
     if command -v paru &>/dev/null; then
         AUR_HELPER=paru
         echo "paru was installed. Use paru as AUR helper."
@@ -97,7 +97,7 @@ isntall_list_package() {
 }
 
 install_command_line_tool() {
-    msg_ok '[install_command_line_tool]'
+    msg_ok '[Install CLI tools]'
     local packages=(
         'git' 'fish' 'vim' 'neovim'
         'htop' 'fastfetch' 'lsb-release'
@@ -110,7 +110,7 @@ install_command_line_tool() {
 }
 
 install_general_applications() {
-    msg_ok "[install_general_applications]"
+    msg_ok "[Install general applications]"
     local packages=(
         'xdg-user-dirs' 'pipewire' 'pipewire-pulse'
         'lib32-pipewire' 'wireplumber'
@@ -123,7 +123,7 @@ install_general_applications() {
 }
 
 install_dev_tools() {
-    msg_ok '[install_dev_tools]'
+    msg_ok '[Install development tools]'
     local packages=(
         'base-devel' 'clang' 'rustup'
         'python' 'python-pip' 'dbus-python' 'python-gobject'
@@ -137,7 +137,7 @@ install_dev_tools() {
 }
 
 install_lsp() {
-    msg_ok '[install_language_servers]'
+    msg_ok '[Install language servers]'
     local packages=(
         'tree-sitter' 'ripgrep'
         'bash-language-server' 'shfmt'
@@ -172,7 +172,7 @@ install_fonts() {
 }
 
 install_input_method() {
-    msg_ok '[install_input_method]'
+    msg_ok '[Install fcitx5]'
     local packages=(
         'fcitx5-im'
         'fcitx5-bamboo'
@@ -197,7 +197,7 @@ install_input_method() {
 }
 
 install_other_services() {
-    msg_ok "[install_other_services]"
+    msg_ok "[Install services]"
     echo "Do you wanna install bluetooth? [y/N]"
     read -p 'Answer: ' answer
     # Lowercase answer
@@ -229,13 +229,13 @@ install_firmware() {
 }
 
 pacman_clean_up() {
-    msg_ok '[pacman_clean_up]'
+    msg_ok '[Clean up]'
     sudo pacman -Rns $(pacman -Qdttq)
     return 0
 }
 
 clone_dotfiles() {
-    msg_ok "[clone_dotfiles]"
+    msg_ok "[Clone dotfiles]"
     if [[ ! -d $HOME/.dotfiles ]]; then
         echo "Do you want to clone dotfiles? [Y/n]"
         read -p 'Answer: ' answer
