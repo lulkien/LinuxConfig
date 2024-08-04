@@ -52,6 +52,29 @@ post_install() {
     gsettings set org.gnome.desktop.interface cursor-theme 'catppuccin-macchiato-light-cursors'
     gsettings set org.gnome.desktop.interface cursor-size 30
 
+    msg_ok '[Setting Catppuccin Mocha for SDDM]'
+    catppuccin_sddm_deps=('qt6-svg' 'qt6-declarative')
+    isntall_list_package "${catppuccin_sddm_deps[@]}"
+
+    wget https://github.com/lulkien/sddm/releases/download/v1.0.0/catppuccin-mocha.zip -O /tmp/catppuccin-mocha.zip
+    if [[ $status -eq 0 ]]; then
+        sudo unar -f /tmp/catppuccin-mocha.zip -o /usr/share/sddm/themes
+        echo "Do you want to setup theme in /etc/sddm.conf? [y/N]"
+        read -p 'Answer: ' answer
+        answer=${answer,,}
+
+        if [[ "${answer}" =~ ^(yes|y)$ ]]; then
+            echo '[Theme]' | sudo tee -a /etc/sddm.conf
+            echo 'Current=catppuccin-mocha' | sudo tee -a /etc/sddm.conf
+        else
+            echo 'Please make sure you have this in /etc/sddm.conf:'
+            echo '[Theme]'
+            echo 'Current=catppuccin-mocha'
+        fi
+    else
+        echo "Cannot download Catppuccin theme for SDDM. Please install it manually."
+    fi
+
     msg_ok '[Install Hyprvisor]'
     mkdir /tmp/hyprvisor
     cd /tmp/hyprvisor
