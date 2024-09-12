@@ -16,7 +16,7 @@ install_hyprland() {
         'nemo' 'loupe' 'seahorse' 'nemo-seahorse'
         'polkit-gnome' 'gnome-keyring'
         'thorium-browser'
-        'grimblast' 'nwg-look-bin'
+        'grimblast' 'nwg-look'
         'qogir-gtk-theme'
         'papirus-icon-theme'
         'catppuccin-cursors-macchiato'
