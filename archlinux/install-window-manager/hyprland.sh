@@ -8,7 +8,7 @@ install_hyprland() {
     local packages=(
         'seatd'
         'hyprland' 'hyprpaper'
-        'hyprlock' 'hyprpicker'
+        'hyprlock' 'hyprpicker' 'hyprutils'
         'hyprcursor' 'hyprdim' 'hypridle'
         'slurp' 'wf-recorder'
         'xdg-desktop-portal-hyprland'
