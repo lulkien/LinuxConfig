@@ -116,7 +116,7 @@ install_general_applications() {
         'lib32-pipewire' 'wireplumber'
         'ffmpeg' 'flatpak' 'firefox'
         'libdbusmenu-gtk3'
-        'kitty'
+        'kitty' 'neovide'
     )
     isntall_list_package "${packages[@]}"
     return $?
