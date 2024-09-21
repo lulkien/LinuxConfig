@@ -127,7 +127,8 @@ install_dev_tools() {
     local packages=(
         'base-devel' 'clang' 'rustup'
         'python' 'python-pip' 'dbus-python' 'python-gobject'
-        'lua' 'luajit' 'dart-sass'
+        'lua' 'lua51' 'luajit' 'luarocks' 'lua-jsregexp'
+        'dart-sass'
     )
     isntall_list_package "${packages[@]}"
     if [[ $? -ne 0 ]]; then
@@ -139,7 +140,7 @@ install_dev_tools() {
 install_lsp() {
     msg_ok '[Install language servers]'
     local packages=(
-        'tree-sitter' 'ripgrep'
+        'tree-sitter' 'tree-sitter-cli' 'ripgrep'
         'bash-language-server' 'shfmt'
         'lua-language-server' 'stylua'
         'rust-analyzer'
