@@ -16,8 +16,29 @@ install_kde_plasma() {
     return $?
 }
 
-# Process arguments
-NO_CONFIRM=false
+setup_sddm_catppuccin() {
+    echo "Do you want to setup catppuccin for SDDM? [Y/n]"
+    read -p 'Answer: ' answer
+    answer=${answer,,}
+    if [[ -z "${answer}" ]] || [[ "${answer}" =~ ^(yes|y)$ ]]; then
+        wget https://github.com/catppuccin/sddm/releases/download/v1.0.0/catppuccin-mocha.zip -O /tmp/catppuccin-mocha.zip
+        cd /tmp
+        unzip catppuccin-mocha.zip
+
+        sudo cp -r /tmp/catppuccin-mocha /usr/share/sddm/themes
+        if [[ ! -e /etc/sddm.conf ]]; then
+            sudo touch /etc/sddm.conf
+            echo "[Theme]" | sudo tee -a /etc/sddm.conf
+            echo "Current=catppuccin-mocha" | sudo tee -a /etc/sddm.conf
+        else
+            echo 'Please make sure you have this in /etc/sddm.conf:'
+            echo '[Theme]'
+            echo 'Current=catppuccin-mocha'
+        fi
+    fi
+}
+
+NO_CONFIRM=false # Process arguments
 NO_FIRMWARE=false
 
 while [[ $# -gt 0 ]]; do
