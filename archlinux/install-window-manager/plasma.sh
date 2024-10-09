@@ -73,3 +73,4 @@ install_firmware || exit
 install_kde_plasma || exit
 pacman_clean_up || exit
 clone_dotfiles || exit
+setup_sddm_catppuccin
