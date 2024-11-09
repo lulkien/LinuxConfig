@@ -24,6 +24,7 @@ install_hyprland() {
         'blueman'
         'network-manager-applet'
         'dhcpcd' 'iwd'
+        'sound-theme-freedesktop'
     )
 
     isntall_list_package "${packages[@]}"
