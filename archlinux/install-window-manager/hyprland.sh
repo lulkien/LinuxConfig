@@ -6,24 +6,15 @@ source ${SCRIPT_PATH}/shared.sh
 install_hyprland() {
     msg_ok '[Install Hyprland packages]'
     local packages=(
-        'seatd'
-        'hyprland' 'hyprpaper'
-        'hyprlock' 'hyprpicker' 'hyprutils'
-        'hyprcursor' 'hyprdim' 'hypridle'
-        'slurp' 'wf-recorder'
+        'seatd' 'sddm'
+        'hyprland' 'hyprpaper' 'hyprlock' 'hyprpicker' 'hyprutils' 'hyprcursor' 'hyprdim' 'hypridle'
         'xdg-desktop-portal-hyprland'
         'dunst' 'anyrun-git' 'eww'
-        'nemo' 'loupe' 'seahorse' 'nemo-seahorse'
+        'slurp' 'wf-recorder' 'grimblast'
+        'nemo' 'loupe' 'seahorse' 'nemo-seahorse' 'nwg-look'
         'polkit-gnome' 'gnome-keyring'
-        'thorium-browser'
-        'grimblast' 'nwg-look'
-        'qogir-gtk-theme'
-        'papirus-icon-theme'
-        'catppuccin-cursors-macchiato'
-        'networkmanager'
-        'blueman'
-        'network-manager-applet'
-        'dhcpcd' 'iwd'
+        'qogir-gtk-theme' 'papirus-icon-theme' 'catppuccin-cursors-macchiato'
+        'blueman' 'dhcpcd' 'iwd' 'iwgtk'
         'sound-theme-freedesktop'
     )
 
@@ -32,7 +23,8 @@ install_hyprland() {
     sudo systemctl enable seatd
     sudo usermod -aG seat $USER
 
-    sudo systemctl enable NetworkManager
+    sudo systemctl enable iwd
+    sudo systemctl enable dhcpcd
 }
 
 post_install() {

@@ -114,9 +114,9 @@ install_general_applications() {
     local packages=(
         'xdg-user-dirs' 'pipewire' 'pipewire-pulse'
         'lib32-pipewire' 'wireplumber'
-        'ffmpeg' 'flatpak' 'firefox'
+        'ffmpeg' 'flatpak' 'firefox' 'thorium-browser'
         'libdbusmenu-gtk3'
-        'kitty' 'neovide'
+        'kitty'
     )
     isntall_list_package "${packages[@]}"
     return $?
