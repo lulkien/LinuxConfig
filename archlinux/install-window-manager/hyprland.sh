@@ -71,7 +71,7 @@ post_install() {
     msg_ok '[Install Hyprvisor]'
     mkdir /tmp/hyprvisor
     cd /tmp/hyprvisor
-    wget https://raw.githubusercontent.com/lulkien/dotfiles/master/packages/hyprvisor/PKGBUILD
+    wget https://raw.githubusercontent.com/lulkien/hyprvisor/refs/heads/master/PKGBUILD
     makepkg -si
 
     if [[ $? -ne 0 ]]; then
