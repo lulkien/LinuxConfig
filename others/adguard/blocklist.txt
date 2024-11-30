@@ -4,3 +4,4 @@
 ||shakingtacklingunpeeled.com^
 ||earringsatisfiedsplice.com^
 ||divisiondrearilyunfiled.com^
+^https?:\/\/ad\.[\w-]+\.[a-z]{2,}\/
