@@ -11,6 +11,8 @@ blender_packages=('hip-runtime-amd')
 is_amd=false
 is_nvidia=false
 
+COLUMNS=30
+
 # Selection
 echo -e '\e[1;32m# Please select an options:\e[00m'
 select opt in "${options[@]}"; do
