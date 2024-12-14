@@ -80,7 +80,7 @@ print_list_package() {
     done
 }
 
-isntall_list_package() {
+install_list_package() {
     local packages=("$@")
     print_list_package "${packages[@]}"
     if $NO_CONFIRM; then
@@ -105,20 +105,19 @@ install_command_line_tool() {
         'wl-clipboard' 'unzip' 'unarchiver'
         'less' 'jq'
     )
-    isntall_list_package "${packages[@]}"
+    install_list_package "${packages[@]}"
     return $?
 }
 
 install_general_applications() {
     msg_ok "[Install general applications]"
     local packages=(
-        'xdg-user-dirs' 'pipewire' 'pipewire-pulse'
-        'lib32-pipewire' 'wireplumber'
+        'pipewire' 'pipewire-pulse' 'lib32-pipewire' 'wireplumber'
         'ffmpeg' 'flatpak' 'firefox' 'thorium-browser'
         'libdbusmenu-gtk3'
         'kitty'
     )
-    isntall_list_package "${packages[@]}"
+    install_list_package "${packages[@]}"
     return $?
 }
 
@@ -130,7 +129,7 @@ install_dev_tools() {
         'lua' 'lua51' 'luajit' 'luarocks' 'lua-jsregexp'
         'dart-sass'
     )
-    isntall_list_package "${packages[@]}"
+    install_list_package "${packages[@]}"
     if [[ $? -ne 0 ]]; then
         return 1
     fi
@@ -152,7 +151,7 @@ install_lsp() {
         'yamlfmt'
         'taplo-cli'
     )
-    isntall_list_package "${packages[@]}"
+    install_list_package "${packages[@]}"
     return $?
 }
 
@@ -168,7 +167,7 @@ install_fonts() {
         'otf-codenewroman-nerd'
         'ttf-cascadia-code-nerd'
     )
-    isntall_list_package "${packages[@]}"
+    install_list_package "${packages[@]}"
     return $?
 }
 
@@ -178,7 +177,7 @@ install_input_method() {
         'fcitx5-im'
         'fcitx5-bamboo'
     )
-    isntall_list_package "${packages[@]}"
+    install_list_package "${packages[@]}"
     if [[ $? -ne 0 ]]; then
         return 1
     fi
@@ -210,7 +209,7 @@ install_other_services() {
             'bluez'
             'bluez-utils'
         )
-        isntall_list_package "${packages[@]}"
+        install_list_package "${packages[@]}"
         systemctl enable bluetooth
     fi
 }
@@ -225,7 +224,7 @@ install_firmware() {
     local packages=(
         'mkinitcpio-firmware'
     )
-    isntall_list_package "${packages[@]}"
+    install_list_package "${packages[@]}"
     return $?
 }
 

@@ -5,14 +5,14 @@ source ${SCRIPT_PATH}/shared.sh
 
 install_kde_plasma() {
     msg_ok '[Install KDE Plasma]'
+
     local packages=(
-        'xorg' 'xorg-xwayland'
         'sddm' 'plasma'
         'konsole' 'dolphin' 'kwallet5' 'kwalletmanager' 'kate' 'spectacle'
         'kdeconnect' 'elisa' 'gwenview' 'ark' 'partitionmanager'
-        'gamemode' 'discord' 'steam-native-runtime'
     )
-    isntall_list_package "${packages[@]}"
+
+    install_list_package "${packages[@]}"
     return $?
 }
 

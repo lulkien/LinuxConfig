@@ -5,20 +5,38 @@ source ${SCRIPT_PATH}/shared.sh
 
 install_hyprland() {
     msg_ok '[Install Hyprland packages]'
-    local packages=(
-        'seatd' 'sddm'
-        'hyprland' 'hyprpaper' 'hyprlock' 'hyprpicker' 'hyprutils' 'hyprcursor' 'hyprdim' 'hypridle'
+
+    local services=(
+        'seatd' 'uwsm'
+        'blueman' 'iwd' 'dhcpcd'
+    )
+    install_list_package "${services[@]}"
+
+    local dependancies=(
+        'qt5-wayland' 'qt6-wayland'
+    )
+    install_list_package "${dependancies[@]}"
+
+    local hyprcore=(
+        'hyprland' 'hyprpaper' 'hyprlock'
+        'hyprpicker' 'hyprutils' 'hyprcursor' 'hypridle'
         'xdg-desktop-portal-hyprland'
+        'hyprland-qtutils-git'
+        'hyprpolkitagent-git'
+        'hyprsysteminfo-git'
+    )
+    install_list_package "${hyprcore[@]}"
+
+    local utilities=(
         'dunst' 'anyrun-git' 'eww'
         'slurp' 'wf-recorder' 'grimblast'
-        'nemo' 'loupe' 'seahorse' 'nemo-seahorse' 'nwg-look'
-        'polkit-gnome' 'gnome-keyring'
-        'qogir-gtk-theme' 'papirus-icon-theme' 'catppuccin-cursors-macchiato'
-        'blueman' 'dhcpcd' 'iwd' 'iwgtk'
+        'nemo' 'nemo-seahorse' 'nwg-look'
+        'loupe' 'seahorse' 'gnome-keyring'
+        'qogir-gtk-theme' 'papirus-icon-theme'
+        'catppuccin-cursors-macchiato'
         'sound-theme-freedesktop'
     )
-
-    isntall_list_package "${packages[@]}"
+    install_list_package "${utilities[@]}"
 
     sudo systemctl enable seatd
     sudo usermod -aG seat $USER
@@ -45,9 +63,21 @@ post_install() {
     gsettings set org.gnome.desktop.interface cursor-theme 'catppuccin-macchiato-light-cursors'
     gsettings set org.gnome.desktop.interface cursor-size 30
 
+    msg_ok '[Install Hyprvisor]'
+    mkdir /tmp/hyprvisor
+    cd /tmp/hyprvisor
+    wget https://raw.githubusercontent.com/lulkien/hyprvisor/refs/heads/master/PKGBUILD
+    makepkg -si
+
+    if [[ $? -ne 0 ]]; then
+        msg_err 'Something wrong with that PKGBUILD, please fix it yourself.'
+    fi
+}
+
+setup_sddm() { # DEPRECATED
     msg_ok '[Setting Catppuccin Mocha for SDDM]'
     catppuccin_sddm_deps=('qt6-svg' 'qt6-declarative')
-    isntall_list_package "${catppuccin_sddm_deps[@]}"
+    install_list_package "${catppuccin_sddm_deps[@]}"
 
     wget https://github.com/lulkien/sddm/releases/download/v1.0.0/catppuccin-mocha.zip -O /tmp/catppuccin-mocha.zip
     if [[ $status -eq 0 ]]; then
@@ -66,16 +96,6 @@ post_install() {
         fi
     else
         echo "Cannot download Catppuccin theme for SDDM. Please install it manually."
-    fi
-
-    msg_ok '[Install Hyprvisor]'
-    mkdir /tmp/hyprvisor
-    cd /tmp/hyprvisor
-    wget https://raw.githubusercontent.com/lulkien/hyprvisor/refs/heads/master/PKGBUILD
-    makepkg -si
-
-    if [[ $? -ne 0 ]]; then
-        msg_err 'Something wrong with that PKGBUILD, please fix it yourself.'
     fi
 }
 
