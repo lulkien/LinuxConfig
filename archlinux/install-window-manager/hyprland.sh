@@ -14,6 +14,9 @@ install_hyprland() {
 
     local dependancies=(
         'qt5-wayland' 'qt6-wayland'
+        'libappindicator-gtk2' 'libappindicator-gtk3'
+        'dbus' 'dbus-broker'
+        'qt5ct' 'ttf-hack' 'kvantum' 'qt6ct-kde'
     )
     install_list_package "${dependancies[@]}"
 
@@ -33,7 +36,10 @@ install_hyprland() {
         'nemo' 'nemo-seahorse' 'nwg-look'
         'loupe' 'seahorse' 'gnome-keyring'
         'qogir-gtk-theme' 'papirus-icon-theme'
+        'breeze-icons' 'breeze'
+        'pavucontrol'
         'catppuccin-cursors-macchiato'
+        'kvantum-theme-catppuccin-git'
         'sound-theme-freedesktop'
     )
     install_list_package "${utilities[@]}"
@@ -72,6 +78,9 @@ post_install() {
     if [[ $? -ne 0 ]]; then
         msg_err 'Something wrong with that PKGBUILD, please fix it yourself.'
     fi
+
+    msg_ok '[Enable user services]'
+    systemctl --user enable --now hyprpolkitagent.service
 }
 
 setup_sddm() { # DEPRECATED
