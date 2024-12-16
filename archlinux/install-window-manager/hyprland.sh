@@ -8,14 +8,14 @@ install_hyprland() {
 
     local services=(
         'seatd' 'uwsm'
-        'blueman' 'iwd' 'dhcpcd'
+        'blueman'
     )
     install_list_package "${services[@]}"
 
     local dependancies=(
         'qt5-wayland' 'qt6-wayland'
         'libappindicator-gtk2' 'libappindicator-gtk3'
-        'dbus' 'dbus-broker'
+        'libdbusmenu-gtk3' 'dbus' 'dbus-broker'
         'qt5ct' 'ttf-hack' 'kvantum' 'qt6ct-kde'
     )
     install_list_package "${dependancies[@]}"
@@ -46,9 +46,6 @@ install_hyprland() {
 
     sudo systemctl enable seatd
     sudo usermod -aG seat $USER
-
-    sudo systemctl enable iwd
-    sudo systemctl enable dhcpcd
 }
 
 post_install() {
