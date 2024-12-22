@@ -35,12 +35,11 @@ install_hyprland() {
         'slurp' 'wf-recorder' 'grimblast'
         'nemo' 'nemo-seahorse' 'nwg-look'
         'loupe' 'seahorse' 'gnome-keyring'
+        'pavucontrol' 'sound-theme-freedesktop'
         'qogir-gtk-theme' 'papirus-icon-theme'
-        'breeze-icons' 'breeze'
-        'pavucontrol'
-        'catppuccin-cursors-macchiato'
-        'kvantum-theme-catppuccin-git'
-        'sound-theme-freedesktop'
+        'catppuccin-gtk-theme-mocha'
+        'catppuccin-cursors-mocha'
+        'papirus-folders-catppuccin-git'
     )
     install_list_package "${utilities[@]}"
 
@@ -50,21 +49,20 @@ install_hyprland() {
 
 post_install() {
     msg_ok '[Set up XDG dirs]'
-    local XDG_LIST=('Downloads' 'Documents' 'Pictures')
+    local XDG_LIST=('Downloads' 'Pictures')
     for item in $XDG_LIST; do
         [[ ! -d $HOME/$item ]] && mkdir $HOME/$item
     done
 
+    [[ ! -d $HOME/Pictures/screenshots ]] && mkdir -p $HOME/Pictures/screenshots
+
     echo 'XDG_DOWNLOAD_DIR="$HOME/Downloads"' | tee $HOME/.config/user-dirs.dirs
-    echo 'XDG_DOCUMENTS_DIR="$HOME/Documents"' | tee -a $HOME/.config/user-dirs.dirs
     echo 'XDG_PICTURES_DIR="$HOME/Pictures"' | tee -a $HOME/.config/user-dirs.dirs
-    echo 'XDG_SCREENSHOTS_DIR="$HOME/Pictures"' | tee -a $HOME/.config/user-dirs.dirs
+    echo 'XDG_SCREENSHOTS_DIR="$HOME/Pictures/screenshots"' | tee -a $HOME/.config/user-dirs.dirs
 
     msg_ok '[Config XDG themes]'
-    gsettings set org.gnome.desktop.interface gtk-theme 'Qogir-Dark'
+    papirus-folders -C cat-mocha-blue --theme Papirus-Dark
     gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
-    gsettings set org.gnome.desktop.interface cursor-theme 'catppuccin-macchiato-light-cursors'
-    gsettings set org.gnome.desktop.interface cursor-size 30
 
     msg_ok '[Install Hyprvisor]'
     mkdir /tmp/hyprvisor
@@ -75,12 +73,9 @@ post_install() {
     if [[ $? -ne 0 ]]; then
         msg_err 'Something wrong with that PKGBUILD, please fix it yourself.'
     fi
-
-    msg_ok '[Enable user services]'
-    systemctl --user enable --now hyprpolkitagent.service
 }
 
-setup_sddm() { # DEPRECATED
+setup_sddm() {
     msg_ok '[Setting Catppuccin Mocha for SDDM]'
     catppuccin_sddm_deps=('qt6-svg' 'qt6-declarative')
     install_list_package "${catppuccin_sddm_deps[@]}"
