@@ -142,18 +142,13 @@ install_dev_tools() {
 }
 
 install_lsp() {
-    msg_ok '[Install language servers]'
+    msg_ok '[Install language servers and formatter]'
 
+    # Only install package which can't be installed by Mason.nvim
     local packages=(
-        'tree-sitter' 'tree-sitter-cli' 'ripgrep'
-        'bash-language-server' 'shfmt'
-        'lua-language-server' 'stylua'
-        'pyright' 'python-black'
-        'typescript-language-server'
-        'vscode-css-languageserver'
-        'vscode-json-languageserver'
-        'prettierd'
-        'yamlfmt'
+        'tree-sitter' 'tree-sitter-cli'
+        'ripgrep'
+        'astyle'
         'taplo-cli'
     )
 
