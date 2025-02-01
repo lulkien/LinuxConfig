@@ -8,12 +8,33 @@
       ./hardware-configuration.nix
     ];
 
+  # -------------------------- NIX SETTINGS --------------------------
+  nix = {
+    # Enable automatic garbage collection
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+
+    settings = {
+      auto-optimise-store = true;
+      keep-derivations = false;
+      keep-outputs = false;
+      min-free = "${toString (100 * 1024 * 1024)}"; # 100 MiB minimum free space
+      max-free = "${toString (1024 * 1024 * 1024)}"; # 1 GiB maximum free space
+    };
+  };
+
 
   # -------------------------- EFI BOOT --------------------------
   # Use the systemd-boot EFI boot loader.
   boot = {
     loader = {
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 3;
+      };
       efi.canTouchEfiVariables = true;
     };
     tmp = {
@@ -114,6 +135,7 @@
       unzip
       unar
       jq
+      llvmPackages_19.clangUseLLVM
       rustup
       python3Full
       luajit
