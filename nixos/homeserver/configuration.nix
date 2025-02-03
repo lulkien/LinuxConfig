@@ -1,16 +1,19 @@
 # NIXOS CONFIGURATION FOR HOME SERVER
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+  ];
 
   # -------------------------- NIX SETTINGS --------------------------
   nix = {
-    # Enable automatic garbage collection
     gc = {
       automatic = true;
       dates = "weekly";
@@ -25,7 +28,6 @@
       max-free = "${toString (1024 * 1024 * 1024)}"; # 1 GiB maximum free space
     };
   };
-
 
   # -------------------------- EFI BOOT --------------------------
   # Use the systemd-boot EFI boot loader.
@@ -42,7 +44,6 @@
     };
   };
 
-
   # -------------------------- NETWORK --------------------------
   networking = {
     hostName = "nixmini";
@@ -58,17 +59,22 @@
     firewall.enable = false;
   };
 
-
   # -------------------------- USERS --------------------------
   users = {
-    users.lhkien = {
-      createHome = true;
-      description = "Kien H. Luu";
-      extraGroups = [ "wheel" "networkmanager" "audio" "docker" ];
-      home = "/home/lhkien";
-      initialPassword = "ark";
-      isNormalUser = true;
-      shell = pkgs.fish;
+    users = {
+      lhkien = {
+        createHome = true;
+        description = "Kien H. Luu";
+        extraGroups = [
+          "wheel"
+          "networkmanager"
+          "docker"
+        ];
+        home = "/home/lhkien";
+        initialPassword = "ark";
+        isNormalUser = true;
+        shell = pkgs.bash;
+      };
     };
   };
 
@@ -113,6 +119,9 @@
       enable = true;
       defaultEditor = true;
     };
+    nix-ld = {
+      enable = true;
+    };
     tmux = {
       enable = true;
     };
@@ -124,10 +133,13 @@
     };
   };
 
-
   # -------------------------- PACKAGES --------------------------
   environment = {
     systemPackages = with pkgs; [
+      # Terminal
+      kitty
+
+      # CLI
       fastfetch
       lsb-release
       wget
@@ -135,13 +147,31 @@
       unzip
       unar
       jq
-      llvmPackages_19.clangUseLLVM
+      ripgrep
+
+      # Development
+      llvmPackages.libcxxClang
+      nodePackages_latest.nodejs
       rustup
       python3Full
       luajit
       dart-sass
+
+      # Syntax, LSP and Formatter
       tree-sitter
-      ripgrep
+      bash-language-server
+      clang-tools
+      lua-language-server
+      nixfmt-rfc-style
+      prettierd
+      ruff
+      shfmt
+      stylua
+      taplo
+      typescript-language-server
+      yaml-language-server
+      yamlfmt
+      vscode-langservers-extracted
     ];
     variables = {
       EDITOR = "nvim";
@@ -149,14 +179,18 @@
     };
   };
 
-
   # -------------------------- SERVICES --------------------------
   services = {
-    # autossh = {
-    #   sessions = {
-    #     # Put sesstion here
-    #   };
-    # };
+    autossh = {
+      sessions = [
+        {
+          name = "Linode-tunnel";
+          user = "lhkien";
+          monitoringPort = 0;
+          extraArguments = "-N -o \"ServerAliveInterval=60\" -o \"ServerAliveCountMax=3\" -R 2222:localhost:22 lhkien@139.162.11.245";
+        }
+      ];
+    };
     dbus = {
       enable = true;
       implementation = "broker";
@@ -192,16 +226,11 @@
     };
   };
 
-
-
-
-
   # -------------------------- MISC --------------------------
   time = {
     hardwareClockInLocalTime = true;
     timeZone = "Asia/Ho_Chi_Minh";
   };
-
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
@@ -212,14 +241,8 @@
     useXkbConfig = true;
   };
 
-
-
-
-
-
   # -------------------------- MUST NOT MODIFY SECTION --------------------------
   # DO NOT modify anything after this line, no matter what.
   system.stateVersion = "24.11"; # Did you read the comment?
 
 }
-
