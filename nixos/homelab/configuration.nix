@@ -44,33 +44,99 @@
     };
   };
 
+  # -------------------------- SYSTEMD --------------------------
+  systemd = {
+    network = {
+      enable = true;
+
+      networks = {
+        "10-wired" = {
+          matchConfig.Name = "enp1s0";
+          networkConfig.DHCP = "yes";
+          dhcpV4Config = {
+            UseDNS = true;
+            RouteMetric = 50;
+          };
+          linkConfig.RequiredForOnline = "routable";
+        };
+
+        "20-wifi" = {
+          matchConfig.Name = "wlp2s0";
+          networkConfig = {
+            DHCP = "yes";
+            IgnoreCarrierLoss = "3s";
+          };
+          dhcpV4Config = {
+            UseDNS = true;
+            RouteMetric = 600;
+          };
+          linkConfig.RequiredForOnline = "routable";
+        };
+
+        "30-wired" = {
+          matchConfig.Name = "enp3s0";
+          networkConfig.DHCP = "yes";
+          dhcpV4Config = {
+            UseDNS = true;
+            RouteMetric = 100;
+          };
+          linkConfig.RequiredForOnline = "no";
+        };
+      };
+    };
+  };
+
   # -------------------------- NETWORK --------------------------
   networking = {
     hostName = "nixmini";
-    networkmanager.enable = true;
 
-    # networking.proxy.default = "http://user:password@proxy:port/";
-    proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+    useNetworkd = true;
+    useDHCP = false; # We gonna control each interface manually.
+    usePredictableInterfaceNames = true;
 
-    # Open ports in the firewall.
-    # networking.firewall.allowedTCPPorts = [ ... ];
-    # networking.firewall.allowedUDPPorts = [ ... ];
-    # Or disable the firewall altogether.
-    firewall.enable = false;
+    wireless = {
+      iwd = {
+        enable = true;
+        settings = {
+          Network = {
+            EnableIPv6 = false;
+          };
+          General = {
+            EnableNetworkConfiguration = true;
+          };
+          Settings = {
+            AutoConnect = true;
+          };
+        };
+      };
+    };
+
+    proxy = {
+      # default = "http://user:password@proxy:port/";
+      noProxy = "127.0.0.1,localhost,internal.domain";
+    };
+
+    firewall = {
+      enable = false;
+
+      # Open ports in the firewall.
+      # allowedTCPPorts = [ ... ];
+      # allowedUDPPorts = [ ... ];
+    };
   };
 
   # -------------------------- USERS --------------------------
   users = {
     users = {
-      lhkien = {
+      homelab = {
         createHome = true;
-        description = "Kien H. Luu";
+        description = "Home server account";
         extraGroups = [
           "wheel"
           "networkmanager"
           "docker"
         ];
-        home = "/home/lhkien";
+        home = "/home/homelab";
         initialPassword = "ark";
         isNormalUser = true;
         shell = pkgs.bash;
@@ -185,7 +251,7 @@
       sessions = [
         {
           name = "Linode-tunnel";
-          user = "lhkien";
+          user = "homelab";
           monitoringPort = 0;
           extraArguments = "-N -o \"ServerAliveInterval=60\" -o \"ServerAliveCountMax=3\" -R 2222:localhost:22 lhkien@139.162.11.245";
         }
@@ -202,6 +268,10 @@
         PermitRootLogin = "no";
         PasswordAuthentication = true;
       };
+    };
+    resolved = {
+      enable = true;
+      dnssec = "true";
     };
     rsyncd = {
       enable = true;
