@@ -133,8 +133,6 @@
         description = "Home server account";
         extraGroups = [
           "wheel"
-          "networkmanager"
-          "docker"
         ];
         home = "/home/homelab";
         initialPassword = "ark";
