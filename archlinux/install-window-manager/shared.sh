@@ -194,6 +194,7 @@ install_other_services() {
     msg_ok "[Install services]"
 
     local packages=()
+    local services=()
 
     echo "Do you wanna install bluetooth? [y/N]"
     read -p 'Answer: ' answer
@@ -203,6 +204,7 @@ install_other_services() {
             'bluez'
             'bluez-utils'
         )
+        services+=('bluetooth')
     fi
 
     echo "Do you wanna install iwd? [y/N]"
@@ -212,12 +214,28 @@ install_other_services() {
         packages+=(
             'iwd'
         )
+        services+=('iwd')
+    fi
+
+    echo "Do you wanna install avahi? [y/N]"
+    read -p 'Answer: ' answer
+
+    if [[ "${answer,,}" =~ ^(yes|y)$ ]]; then
+        packages+=(
+            'avahi'
+            'nss-mdns'
+        )
+        services+=('avahi-daemon')
     fi
 
     install_list_package "${packages[@]}"
     if [[ $? -ne 0 ]]; then
         return 1
     fi
+
+    for service in "${services[@]}"; do
+        sudo systemctl enable --now "${service}"
+    done
 }
 
 install_firmware() {
