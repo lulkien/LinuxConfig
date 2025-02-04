@@ -255,6 +255,18 @@
         }
       ];
     };
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+      ipv4 = true;
+      nssmdns6 = false;
+      ipv6 = false;
+      publish = {
+        enable = true;
+        addresses = true;
+        userServices = true;
+      };
+    };
     dbus = {
       enable = true;
       implementation = "broker";
