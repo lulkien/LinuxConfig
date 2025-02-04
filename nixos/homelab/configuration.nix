@@ -68,7 +68,7 @@
           };
           dhcpV4Config = {
             UseDNS = true;
-            RouteMetric = 600;
+            RouteMetric = 100;
           };
           linkConfig.RequiredForOnline = "routable";
         };
@@ -78,7 +78,7 @@
           networkConfig.DHCP = "yes";
           dhcpV4Config = {
             UseDNS = true;
-            RouteMetric = 100;
+            RouteMetric = 200;
           };
           linkConfig.RequiredForOnline = "no";
         };
@@ -158,14 +158,17 @@
     git = {
       enable = true;
       config = {
-        init = {
-          defaultBranch = "master";
-        };
         color = {
           ui = true;
         };
+        init = {
+          defaultBranch = "master";
+        };
         core = {
           editor = "nvim";
+        };
+        pull = {
+          rebase = true;
         };
         user = {
           name = "lulkien";
@@ -277,6 +280,14 @@
       settings = {
         PermitRootLogin = "no";
         PasswordAuthentication = true;
+      };
+    };
+    openvpn = {
+      servers = {
+        linodeVPN = {
+          config = ''config /etc/openvpn/client/linode_vpn.ovpn ''; # Put your openVPN config here
+          updateResolvConf = true;
+        };
       };
     };
     resolved = {
