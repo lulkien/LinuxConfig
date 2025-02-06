@@ -215,6 +215,7 @@
       unar
       jq
       ripgrep
+      dnsutils
 
       # Development
       llvmPackages.libcxxClang
