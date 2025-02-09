@@ -203,10 +203,20 @@
   # -------------------------- PACKAGES --------------------------
   environment = {
     systemPackages = with pkgs; [
+      # Core
+      pciutils
+      usbutils
+
+      # Networking
+      dnsutils
+      tcpdump
+      lsof
+      cloudflared # Cloudflare tunnel
+
       # Terminal
       kitty
 
-      # CLI
+      # CLI tools
       fastfetch
       lsb-release
       wget
@@ -215,31 +225,39 @@
       unar
       jq
       ripgrep
-      dnsutils
+      transmission_4
+
+      # Libs
+      ffmpeg-headless # Just need headless, we don't do nothing with GUI stuffs here
 
       # Development
       llvmPackages.libcxxClang
       nodePackages_latest.nodejs
       rustup
-      python3Full
       luajit
       dart-sass
 
+      ## Python
+      python3Full
+      python3Packages.pip
+      python3Packages.av
+      python3Packages.python-ffmpeg
+
       # Syntax, LSP and Formatter
       tree-sitter
-      bash-language-server
-      clang-tools
-      lua-language-server
       nixfmt-rfc-style
-      prettierd
-      ruff
-      shfmt
-      stylua
-      taplo
-      typescript-language-server
-      yaml-language-server
-      yamlfmt
-      vscode-langservers-extracted
+      # bash-language-server
+      # clang-tools
+      # lua-language-server
+      # prettierd
+      # ruff
+      # shfmt
+      # stylua
+      # taplo
+      # typescript-language-server
+      # yaml-language-server
+      # yamlfmt
+      # vscode-langservers-extracted
     ];
     variables = {
       EDITOR = "nvim";
@@ -275,6 +293,14 @@
       enable = true;
       implementation = "broker";
     };
+    kavita = {
+      enable = true;
+      tokenKeyFile = "/var/lib/kavita/tokenKey";
+      settings = {
+        IpAddresses = "0.0.0.0,::";
+        Port = 5000;
+      };
+    };
     openssh = {
       enable = true;
       startWhenNeeded = true;
@@ -283,14 +309,15 @@
         PasswordAuthentication = true;
       };
     };
-    openvpn = {
-      servers = {
-        linodeVPN = {
-          config = ''config /etc/openvpn/client/linode_vpn.ovpn ''; # Put your openVPN config here
-          updateResolvConf = true;
-        };
-      };
-    };
+    # openvpn = {
+    #   servers = {
+    #     linodeVPN = {
+    #       config = ''config /etc/openvpn/client/linode_vpn.ovpn ''; # Put your openVPN config here
+    #       autoConnect = false;
+    #       updateResolvConf = true;
+    #     };
+    #   };
+    # };
     resolved = {
       enable = true;
       dnssec = "true";
