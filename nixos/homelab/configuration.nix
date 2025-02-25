@@ -10,6 +10,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./system-configuration.nix
   ];
 
   # -------------------------- NIX SETTINGS --------------------------
@@ -127,21 +128,7 @@
   };
 
   # -------------------------- USERS --------------------------
-  users = {
-    users = {
-      homelab = {
-        createHome = true;
-        description = "Home server account";
-        extraGroups = [
-          "wheel"
-        ];
-        home = "/home/homelab";
-        initialPassword = "ark";
-        isNormalUser = true;
-        shell = pkgs.bash;
-      };
-    };
-  };
+  # system-configuration.nix
 
   # -------------------------- DOCUMENTATION --------------------------
   documentation = {
@@ -154,6 +141,9 @@
   # -------------------------- PROGRAMS --------------------------
   programs = {
     fish = {
+      enable = true;
+    };
+    firefox = {
       enable = true;
     };
     git = {
@@ -170,10 +160,6 @@
         };
         pull = {
           rebase = true;
-        };
-        user = {
-          name = "lulkien";
-          email = "kien.luuhoang.arch@outlook.com";
         };
       };
     };
@@ -198,6 +184,15 @@
     };
     yazi = {
       enable = true;
+    };
+  };
+
+  # -------------------------- VIRTUALISATION --------------------------
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true;
+      defaultNetwork.settings.dns_enabled = true;
     };
   };
 
@@ -231,6 +226,11 @@
 
       # Utils
       transmission_4
+      # tigervnc
+      # novnc
+      # xorg.xinit
+      # xterm
+      podman-compose
 
       # Libs
       ffmpeg-headless # Just need headless, we don't do nothing with GUI stuffs here
@@ -273,16 +273,7 @@
 
   # -------------------------- SERVICES --------------------------
   services = {
-    autossh = {
-      sessions = [
-        {
-          name = "Linode-tunnel";
-          user = "homelab";
-          monitoringPort = 0;
-          extraArguments = "-N -o \"ServerAliveInterval=60\" -o \"ServerAliveCountMax=3\" -R 2222:localhost:22 sshtunuser@139.162.11.245";
-        }
-      ];
-    };
+    # autossh: system-configuration.nix
     avahi = {
       enable = true;
       nssmdns4 = true;
@@ -315,14 +306,12 @@
         PasswordAuthentication = true;
       };
     };
-    # openvpn = {
-    #   servers = {
-    #     linodeVPN = {
-    #       config = ''config /etc/openvpn/client/linode_vpn.ovpn ''; # Put your openVPN config here
-    #       autoConnect = false;
-    #       updateResolvConf = true;
-    #     };
-    #   };
+    # openvpn: system-configuration.nix
+    # pipewire = {
+    #   enable = true;
+    #   alsa.enable = true;
+    #   alsa.support32Bit = true;
+    #   pulse.enable = true;
     # };
     resolved = {
       enable = true;
@@ -346,12 +335,20 @@
     uptimed = {
       enable = true;
     };
+    # xserver = {
+    #   enable = true;
+    #   desktopManager.xfce.enable = true;
+    #   displayManager.lightdm.enable = true;
+    # };
     watchdogd = {
       enable = true;
     };
   };
 
   # -------------------------- MISC --------------------------
+  # security.rtkit.enable = true;
+  # hardware.pulseaudio.enable = false;
+
   time = {
     hardwareClockInLocalTime = true;
     timeZone = "Asia/Ho_Chi_Minh";
