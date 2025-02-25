@@ -22,6 +22,7 @@
 
     settings = {
       auto-optimise-store = true;
+      experimental-features = [ "nix-command" ];
       keep-derivations = false;
       keep-outputs = false;
       min-free = "${toString (100 * 1024 * 1024)}"; # 100 MiB minimum free space
@@ -221,10 +222,14 @@
       lsb-release
       wget
       curl
+      zip
       unzip
       unar
       jq
       ripgrep
+      tree
+
+      # Utils
       transmission_4
 
       # Libs
@@ -234,6 +239,7 @@
       llvmPackages.libcxxClang
       nodePackages_latest.nodejs
       rustup
+      go
       luajit
       dart-sass
 
@@ -273,7 +279,7 @@
           name = "Linode-tunnel";
           user = "homelab";
           monitoringPort = 0;
-          extraArguments = "-N -o \"ServerAliveInterval=60\" -o \"ServerAliveCountMax=3\" -R 2222:localhost:22 lhkien@139.162.11.245";
+          extraArguments = "-N -o \"ServerAliveInterval=60\" -o \"ServerAliveCountMax=3\" -R 2222:localhost:22 sshtunuser@139.162.11.245";
         }
       ];
     };
