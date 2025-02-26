@@ -86,6 +86,28 @@
         };
       };
     };
+
+    timers = {
+      nixos-auto-update = {
+        description = "NixOS auto-update";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "daily";
+          Persistent = true;
+          Unit = "nixos-auto-update.service";
+        };
+      };
+    };
+
+    services = {
+      nixos-auto-update = {
+        description = "NixOS auto-update";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.bash}/bin/bash -c 'nix-channel --update && nixos-rebuild switch --upgrade'";
+        };
+      };
+    };
   };
 
   # -------------------------- NETWORK --------------------------
@@ -189,10 +211,13 @@
 
   # -------------------------- VIRTUALISATION --------------------------
   virtualisation = {
-    podman = {
+    docker = {
       enable = true;
-      dockerCompat = true;
-      defaultNetwork.settings.dns_enabled = true;
+      daemon = {
+        settings = {
+          data-root = "/var/lib/docker-data";
+        };
+      };
     };
   };
 
@@ -230,7 +255,7 @@
       # novnc
       # xorg.xinit
       # xterm
-      podman-compose
+      docker-compose
 
       # Libs
       ffmpeg-headless # Just need headless, we don't do nothing with GUI stuffs here
