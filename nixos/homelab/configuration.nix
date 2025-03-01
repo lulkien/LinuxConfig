@@ -50,41 +50,7 @@
   systemd = {
     network = {
       enable = true;
-
-      networks = {
-        "10-wired" = {
-          matchConfig.Name = "enp1s0";
-          networkConfig.DHCP = "yes";
-          dhcpV4Config = {
-            UseDNS = true;
-            RouteMetric = 50;
-          };
-          linkConfig.RequiredForOnline = "routable";
-        };
-
-        "20-wifi" = {
-          matchConfig.Name = "wlp2s0";
-          networkConfig = {
-            DHCP = "yes";
-            IgnoreCarrierLoss = "3s";
-          };
-          dhcpV4Config = {
-            UseDNS = true;
-            RouteMetric = 100;
-          };
-          linkConfig.RequiredForOnline = "routable";
-        };
-
-        "30-wired" = {
-          matchConfig.Name = "enp3s0";
-          networkConfig.DHCP = "yes";
-          dhcpV4Config = {
-            UseDNS = true;
-            RouteMetric = 200;
-          };
-          linkConfig.RequiredForOnline = "no";
-        };
-      };
+      # networks: system-configuration.nix
     };
 
     timers = {
@@ -109,48 +75,6 @@
       };
     };
   };
-
-  # -------------------------- NETWORK --------------------------
-  networking = {
-    hostName = "nixmini";
-
-    useNetworkd = true;
-    useDHCP = false; # We gonna control each interface manually.
-    usePredictableInterfaceNames = true;
-
-    wireless = {
-      iwd = {
-        enable = true;
-        settings = {
-          Network = {
-            EnableIPv6 = false;
-          };
-          General = {
-            EnableNetworkConfiguration = true;
-          };
-          Settings = {
-            AutoConnect = true;
-          };
-        };
-      };
-    };
-
-    proxy = {
-      # default = "http://user:password@proxy:port/";
-      noProxy = "127.0.0.1,localhost,internal.domain";
-    };
-
-    firewall = {
-      enable = false;
-
-      # Open ports in the firewall.
-      # allowedTCPPorts = [ ... ];
-      # allowedUDPPorts = [ ... ];
-    };
-  };
-
-  # -------------------------- USERS --------------------------
-  # system-configuration.nix
 
   # -------------------------- DOCUMENTATION --------------------------
   documentation = {
@@ -233,6 +157,8 @@
       tcpdump
       lsof
       cloudflared # Cloudflare tunnel
+      openssl
+      certbot
 
       # Terminal
       kitty
@@ -247,38 +173,55 @@
       unar
       jq
       ripgrep
+      fd
       tree
+      tree-sitter
 
       # Utils
       transmission_4
-      # tigervnc
-      # novnc
-      # xorg.xinit
-      # xterm
+      lemonade
+      wl-clipboard-rs
+      wl-clipboard-x11
       docker-compose
 
       # Libs
       ffmpeg-headless # Just need headless, we don't do nothing with GUI stuffs here
 
       # Development
-      llvmPackages.libcxxClang
-      nodePackages_latest.nodejs
+
+      ## C/C++
+      llvmPackages.clangUseLLVM
+      llvmPackages.clang-tools
+
+      ## Rust
       rustup
-      go
-      luajit
-      dart-sass
+      # rustfmt
+      # rust-analyzer
+
+      ## Lua
+      lua51Packages.lua
+      lua51Packages.luarocks
+      lua51Packages.jsregexp
 
       ## Python
-      python3Full
-      python3Packages.pip
-      python3Packages.av
-      python3Packages.python-ffmpeg
+      python312Full
+      python312Packages.pip
+      python312Packages.av
+      python312Packages.python-ffmpeg
 
-      # Syntax, LSP and Formatter
-      tree-sitter
+      ## Nix
       nixfmt-rfc-style
+
+      ## Go
+      go
+
+      ## NodeJS
+      nodePackages_latest.nodejs
+
+      ## Scss
+      dart-sass
+
       # bash-language-server
-      # clang-tools
       # lua-language-server
       # prettierd
       # ruff
@@ -328,7 +271,7 @@
       startWhenNeeded = true;
       settings = {
         PermitRootLogin = "no";
-        PasswordAuthentication = true;
+        PasswordAuthentication = false;
       };
     };
     # openvpn: system-configuration.nix
@@ -360,11 +303,6 @@
     uptimed = {
       enable = true;
     };
-    # xserver = {
-    #   enable = true;
-    #   desktopManager.xfce.enable = true;
-    #   displayManager.lightdm.enable = true;
-    # };
     watchdogd = {
       enable = true;
     };
