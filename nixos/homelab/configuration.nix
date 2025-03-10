@@ -281,10 +281,6 @@
     #   alsa.support32Bit = true;
     #   pulse.enable = true;
     # };
-    resolved = {
-      enable = true;
-      dnssec = "true";
-    };
     rsyncd = {
       enable = true;
       socketActivated = true;
