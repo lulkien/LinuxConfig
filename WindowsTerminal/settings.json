@@ -12,18 +12,6 @@
             "keys": "ctrl+shift+v"
         },
         {
-            "command": {
-                "action": "splitPane",
-                "split": "auto",
-                "splitMode": "duplicate"
-            },
-            "keys": "alt+t"
-        },
-        {
-            "command": "closePane",
-            "keys": "alt+w"
-        },
-        {
             "command": "find",
             "keys": "ctrl+shift+f"
         },
@@ -33,6 +21,42 @@
                 "direction": "down"
             },
             "keys": "alt+j"
+        },
+        {
+            "command": {
+                "action": "splitPane",
+                "split": "down",
+                "splitMode": "duplicate"
+            },
+            "keys": "alt+shift+'"
+        },
+        {
+            "command": {
+                "action": "splitPane",
+                "split": "right",
+                "splitMode": "duplicate"
+            },
+            "keys": "alt+shift+5"
+        },
+        {
+            "command": "closePane",
+            "keys": "alt+x"
+        },
+        {
+            "command": "nextTab",
+            "keys": "alt+n"
+        },
+        {
+            "command": "prevTab",
+            "keys": "alt+p"
+        },
+        {
+            "command": "newTab",
+            "keys": "alt+c"
+        },
+        {
+            "command": "closeTab",
+            "keys": "alt+shift+7"
         },
         {
             "command": {
@@ -54,6 +78,34 @@
                 "direction": "up"
             },
             "keys": "alt+k"
+        },
+        {
+            "command": {
+                "action": "swapPane",
+                "direction": "left"
+            },
+            "keys": "alt+shift+h"
+        },
+        {
+            "command": {
+                "action": "swapPane",
+                "direction": "down"
+            },
+            "keys": "alt+shift+j"
+        },
+        {
+            "command": {
+                "action": "swapPane",
+                "direction": "up"
+            },
+            "keys": "alt+shift+k"
+        },
+        {
+            "command": {
+                "action": "swapPane",
+                "direction": "right"
+            },
+            "keys": "alt+shift+l"
         }
     ],
     "copyOnSelect": true,
