@@ -7,8 +7,7 @@ install_hyprland() {
     msg_ok '[Install Hyprland packages]'
 
     local services=(
-        'seatd' 'uwsm'
-        'blueman'
+        'seatd' 'lemurs' 'uwsm' 'blueman'
     )
     install_list_package "${services[@]}"
 
@@ -43,6 +42,7 @@ install_hyprland() {
     )
     install_list_package "${utilities[@]}"
 
+    sudo systemctl enable lemurs
     sudo systemctl enable seatd
     sudo usermod -aG seat $USER
 }
