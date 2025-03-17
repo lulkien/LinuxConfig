@@ -34,6 +34,11 @@
   # -------------------------- EFI BOOT --------------------------
   # Use the systemd-boot EFI boot loader.
   boot = {
+    kernel = {
+      sysctl = {
+        "net.ipv4.ip_forward" = 1;
+      };
+    };
     loader = {
       systemd-boot = {
         enable = true;
@@ -52,27 +57,14 @@
       enable = true;
       # networks: system-configuration.nix
     };
+  };
 
-    timers = {
-      nixos-auto-update = {
-        description = "NixOS auto-update";
-        wantedBy = [ "timers.target" ];
-        timerConfig = {
-          OnCalendar = "daily";
-          Persistent = true;
-          Unit = "nixos-auto-update.service";
-        };
-      };
-    };
-
-    services = {
-      nixos-auto-update = {
-        description = "NixOS auto-update";
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.bash}/bin/bash -c 'nix-channel --update && nixos-rebuild switch --upgrade'";
-        };
-      };
+  # -------------------------- SYSTEM --------------------------
+  system = {
+    autoUpgrade = {
+      enable = true;
+      dates = "daily";
+      operation = "switch";
     };
   };
 
@@ -87,9 +79,6 @@
   # -------------------------- PROGRAMS --------------------------
   programs = {
     fish = {
-      enable = true;
-    };
-    firefox = {
       enable = true;
     };
     git = {
@@ -136,7 +125,7 @@
   # -------------------------- VIRTUALISATION --------------------------
   virtualisation = {
     docker = {
-      enable = true;
+      enable = false;
       daemon = {
         settings = {
           data-root = "/var/lib/docker-data";
@@ -149,6 +138,7 @@
   environment = {
     systemPackages = with pkgs; [
       # Core
+      uutils-coreutils-noprefix
       pciutils
       usbutils
 
@@ -179,7 +169,6 @@
 
       # Utils
       transmission_4
-      lemonade
       wl-clipboard-rs
       wl-clipboard-x11
       docker-compose
@@ -260,7 +249,7 @@
     };
     kavita = {
       enable = true;
-      tokenKeyFile = "/var/lib/kavita/tokenKey";
+      tokenKeyFile = "/var/lib/kavita/tokenKey"; # Save your tokenKey here
       settings = {
         IpAddresses = "0.0.0.0,::";
         Port = 5000;
@@ -275,12 +264,6 @@
       };
     };
     # openvpn: system-configuration.nix
-    # pipewire = {
-    #   enable = true;
-    #   alsa.enable = true;
-    #   alsa.support32Bit = true;
-    #   pulse.enable = true;
-    # };
     rsyncd = {
       enable = true;
       socketActivated = true;
@@ -305,9 +288,6 @@
   };
 
   # -------------------------- MISC --------------------------
-  # security.rtkit.enable = true;
-  # hardware.pulseaudio.enable = false;
-
   time = {
     hardwareClockInLocalTime = true;
     timeZone = "Asia/Ho_Chi_Minh";
