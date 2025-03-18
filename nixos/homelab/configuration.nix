@@ -51,6 +51,34 @@
     };
   };
 
+  # -------------------------- NETWORKING --------------------------
+  networking = {
+    hostName = lib.mkDefault "nixos";
+
+    useNetworkd = lib.mkDefault true;
+    useDHCP = lib.mkDefault true; # We gonna control each interface manually.
+    usePredictableInterfaceNames = lib.mkDefault true;
+
+    firewall.enable = lib.mkDefault true;
+
+    wireless = {
+      iwd = {
+        enable = lib.mkDefault false;
+        settings = lib.mkDefault {
+          Network = {
+            EnableIPv6 = false;
+          };
+          General = {
+            EnableNetworkConfiguration = true;
+          };
+          Settings = {
+            AutoConnect = false;
+          };
+        };
+      };
+    };
+  };
+
   # -------------------------- SYSTEMD --------------------------
   systemd = {
     network = {
@@ -125,7 +153,7 @@
   # -------------------------- VIRTUALISATION --------------------------
   virtualisation = {
     docker = {
-      enable = false;
+      enable = lib.mkDefault false;
       daemon = {
         settings = {
           data-root = "/var/lib/docker-data";
@@ -207,8 +235,9 @@
       ## NodeJS
       nodePackages_latest.nodejs
 
-      ## Scss
+      ## CSS compiler
       dart-sass
+      # tailwindcss
 
       # bash-language-server
       # lua-language-server
