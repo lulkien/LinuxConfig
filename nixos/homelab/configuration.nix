@@ -52,19 +52,21 @@
   };
 
   # -------------------------- NETWORKING --------------------------
-  networking = {
-    hostName = lib.mkDefault "nixos";
+  networking = lib.mkDefault {
+    hostName = "nixos";
 
-    useNetworkd = lib.mkDefault true;
-    useDHCP = lib.mkDefault true; # We gonna control each interface manually.
-    usePredictableInterfaceNames = lib.mkDefault true;
+    enableIPv6 = false;
 
-    firewall.enable = lib.mkDefault true;
+    useNetworkd = true;
+    useDHCP = true; # We gonna control each interface manually.
+    usePredictableInterfaceNames = true;
+
+    firewall.enable = true;
 
     wireless = {
       iwd = {
-        enable = lib.mkDefault false;
-        settings = lib.mkDefault {
+        enable = false;
+        settings = {
           Network = {
             EnableIPv6 = false;
           };
@@ -153,7 +155,7 @@
   # -------------------------- VIRTUALISATION --------------------------
   virtualisation = {
     docker = {
-      enable = lib.mkDefault false;
+      enable = false;
       daemon = {
         settings = {
           data-root = "/var/lib/docker-data";
@@ -194,12 +196,13 @@
       fd
       tree
       tree-sitter
+      lazygit
 
       # Utils
       transmission_4
       wl-clipboard-rs
       wl-clipboard-x11
-      docker-compose
+      # docker-compose
 
       # Libs
       ffmpeg-headless # Just need headless, we don't do nothing with GUI stuffs here
