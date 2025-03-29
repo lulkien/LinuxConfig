@@ -34,6 +34,9 @@
   # -------------------------- EFI BOOT --------------------------
   # Use the systemd-boot EFI boot loader.
   boot = {
+    kernelParams = [
+      "ipv6.disable=1"
+    ];
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
@@ -175,6 +178,7 @@
       # Networking
       dnsutils
       tcpdump
+      bmon
       lsof
       cloudflared # Cloudflare tunnel
       openssl
@@ -279,13 +283,8 @@
       enable = true;
       implementation = "broker";
     };
-    kavita = {
+    iperf3 = {
       enable = true;
-      tokenKeyFile = "/var/lib/kavita/tokenKey"; # Save your tokenKey here
-      settings = {
-        IpAddresses = "0.0.0.0,::";
-        Port = 5000;
-      };
     };
     openssh = {
       enable = true;
