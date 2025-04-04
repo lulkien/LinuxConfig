@@ -7,6 +7,9 @@
   ...
 }:
 
+let
+  highPrioUutils = pkgs.lib.setPrio 0 pkgs.uutils-coreutils-noprefix;
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -19,6 +22,11 @@
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 7d";
+    };
+
+    optimise = {
+      automatic = true;
+      dates = [ "03:45" ];
     };
 
     settings = {
@@ -88,7 +96,16 @@
   systemd = {
     network = {
       enable = true;
-      # networks: system-configuration.nix
+    };
+    services = {
+      systemd-networkd-wait-online = {
+        serviceConfig = {
+          ExecStart = [
+            "" # Clear the default
+            "${pkgs.systemd}/lib/systemd/systemd-networkd-wait-online --any"
+          ];
+        };
+      };
     };
   };
 
@@ -140,6 +157,8 @@
     neovim = {
       enable = true;
       defaultEditor = true;
+      viAlias = true;
+      vimAlias = true;
     };
     nix-ld = {
       enable = true;
@@ -171,36 +190,37 @@
   environment = {
     systemPackages = with pkgs; [
       # Core
-      uutils-coreutils-noprefix
+      highPrioUutils
       pciutils
       usbutils
 
       # Networking
-      dnsutils
-      tcpdump
       bmon
-      lsof
-      cloudflared # Cloudflare tunnel
-      openssl
       certbot
+      cloudflared
+      dnsutils
+      lsof
+      openssl
+      tcpdump
 
       # Terminal
       kitty
 
       # CLI tools
-      fastfetch
-      lsb-release
-      wget
+      bat
       curl
-      zip
-      unzip
-      unar
-      jq
-      ripgrep
+      fastfetch
       fd
+      jq
+      lazygit
+      lsb-release
+      ripgrep
       tree
       tree-sitter
-      lazygit
+      unzip
+      unar
+      zip
+      wget
 
       # Utils
       transmission_4
@@ -209,54 +229,20 @@
       # docker-compose
 
       # Libs
-      ffmpeg-headless # Just need headless, we don't do nothing with GUI stuffs here
+      ffmpeg-headless
+      libstdcxx5
 
       # Development
-
-      ## C/C++
-      llvmPackages.clangUseLLVM
-      llvmPackages.clang-tools
-
-      ## Rust
+      gnumake
       rustup
-      # rustfmt
-      # rust-analyzer
-
-      ## Lua
+      llvmPackages_19.libcxxClang
+      nodejs_23
+      nixfmt-rfc-style
+      python312Full
+      python312Packages.virtualenv
       lua51Packages.lua
       lua51Packages.luarocks
       lua51Packages.jsregexp
-
-      ## Python
-      python312Full
-      python312Packages.pip
-      python312Packages.av
-      python312Packages.python-ffmpeg
-
-      ## Nix
-      nixfmt-rfc-style
-
-      ## Go
-      go
-
-      ## NodeJS
-      nodePackages_latest.nodejs
-
-      ## CSS compiler
-      dart-sass
-      # tailwindcss
-
-      # bash-language-server
-      # lua-language-server
-      # prettierd
-      # ruff
-      # shfmt
-      # stylua
-      # taplo
-      # typescript-language-server
-      # yaml-language-server
-      # yamlfmt
-      # vscode-langservers-extracted
     ];
     variables = {
       EDITOR = "nvim";
@@ -266,7 +252,6 @@
 
   # -------------------------- SERVICES --------------------------
   services = {
-    # autossh: system-configuration.nix
     avahi = {
       enable = true;
       nssmdns4 = true;
@@ -294,7 +279,6 @@
         PasswordAuthentication = false;
       };
     };
-    # openvpn: system-configuration.nix
     rsyncd = {
       enable = true;
       socketActivated = true;
