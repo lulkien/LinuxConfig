@@ -98,11 +98,11 @@ in
       enable = true;
     };
     services = {
-      systemd-networkd-wait-online = {
+      systemd-networkd-wait-online = lib.mkForce {
         serviceConfig = {
           ExecStart = [
             "" # Clear the default
-            "${pkgs.systemd}/lib/systemd/systemd-networkd-wait-online --any"
+            "${pkgs.systemd}/lib/systemd/systemd-networkd-wait-online --any --timeout=60"
           ];
         };
       };
@@ -282,10 +282,6 @@ in
     rsyncd = {
       enable = true;
       socketActivated = true;
-    };
-    timesyncd = {
-      enable = true;
-      servers = [ "pool.ntp.org" ];
     };
     udev = {
       enable = true;
