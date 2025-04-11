@@ -43,7 +43,7 @@ fi
 
 printf "\n"
 printf "Every body need a good text editor. And I choose neovim <3\n"
-if $(command -v neovim &>/dev/null); then
+if $(command -v nvim &>/dev/null); then
   printf "Wow, already used it? 10 out of 10, no cap.\n"
 else
   printf "Take the ppa, put it there...\n"
