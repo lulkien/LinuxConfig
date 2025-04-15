@@ -24,5 +24,11 @@ tar -C /tmp/ -f /tmp/AdGuardHome_linux_amd64.tar.gz -x -v -z
 echo_green "Copy new AdGuardHome binary to /opt/AdGuardHome"
 sudo -u adguard cp /tmp/AdGuardHome/AdGuardHome /opt/AdGuardHome/AdGuardHome
 
+echo_green "Set cap_net_bind_service=+ep for AdGuardHome binary"
+sudo setcap 'cap_net_bind_service=+ep' /opt/AdGuardHome/AdGuardHome
+
+echo_green "Reset ownership for /opt/AdGuardHome"
+sudo chown adguard: -R /opt/AdGuardHome
+
 echo_green "Start AdGuardHome service"
 sudo systemctl start AdGuardHome.service
