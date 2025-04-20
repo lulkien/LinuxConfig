@@ -16,7 +16,7 @@ WIREGUARD_CONF_FILE=/etc/wireguard/wg0.conf
 PUBLIC_IP_ADDRESS=
 
 echo_green() {
-  echo -e '\e[1;32m'"$@"'\e[00m'}
+  echo -e '\e[1;32m'"$@"'\e[00m'
 }
 
 check_run_as_root() {
@@ -154,11 +154,9 @@ ask_client_name() {
 }
 
 ask_dns_server() {
-  local default_dns="1.1.1.1"
+  read -rp "Enter DNS server IP [Default: $PUBLIC_IP_ADDRESS]: " DNS_SERVER
 
-  read -rp "Enter DNS server IP [Default: $default_dns]: " DNS_SERVER
-
-  DNS_SERVER=${DNS_SERVER:-$default_dns}
+  DNS_SERVER=${DNS_SERVER:-$PUBLIC_IP_ADDRESS}
 
   if [[ ! "$DNS_SERVER" =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
     echo "ERROR: '$DNS_SERVER' is not a valid IPv4 address" >&2
@@ -299,7 +297,11 @@ PersistentKeepalive = 25
   return 0
 }
 
-create_new_client() {
+main() {
+  check_run_as_root || return 1
+  get_ip_address || return 1
+  get_server_info || return 1
+
   ask_client_name || return 1
   ask_dns_server || return 1
 
@@ -312,4 +314,4 @@ create_new_client() {
   return 0
 }
 
-create_new_client
+main
