@@ -6,17 +6,17 @@ WIREGUARD_NFTABLES_DIR=${WIREGUARD_CONF_DIR}/nftables
 WIREGUARD_POSTUP=${WIREGUARD_NFTABLES_DIR}/nftable_up.sh
 WIREGUARD_PREDOWN=${WIREGUARD_NFTABLES_DIR}/nftable_down.sh
 
-SERVER_IP=
-SERVER_PORT=
+SERVER_IP=10.8.0.1
+SERVER_PORT=51820
 SERVER_PRIVATE_KEY=
 SERVER_CONFIGURATION=
 
-WIREGUARD_NETWORK=
+WIREGUARD_NETWORK=10.8.0.0/24
 WIREGUARD_IFACE=wg0
 EXTERNAL_IFACE=$(ip route | awk '/default/ {print $5}' | head -1)
 
 echo_green() {
-  echo -e '\e[1;32m'"$@"'\e[00m'}
+  echo -e '\e[1;32m'"$@"'\e[00m'
 }
 
 check_run_as_root() {
@@ -59,7 +59,8 @@ generate_server_configuration() {
     return 1
   fi
 
-  WG_NETWORK=$(echo "$SERVER_IP" | awk -F. '{print $1"."$2"."$3".0/24"}')
+  WIREGUARD_NETWORK=$(echo "$SERVER_IP" | awk -F. '{print $1"."$2"."$3".0/24"}')
+  echo_green "WIREGUARD_NETWORK = ${WIREGUARD_NETWORK}"
 
   read -p "Enter the listen port (Default: 51820): " port
   SERVER_PORT=${port:-"51820"}
@@ -89,8 +90,9 @@ PreDown = ${WIREGUARD_PREDOWN}"
 
 restart_wireguard() {
   echo_green "Restarting wireguard service..."
-  systemctl enable wg-quick@wg0.service
   systemctl restart wg-quick@wg0.service
+
+  echo "Note: Enable 'wg-quick@wg0.service' if you want to autostart Wireguard with systemd."
 }
 
 create_postup_script() {
@@ -101,21 +103,19 @@ create_postup_script() {
   cat >${WIREGUARD_POSTUP} <<EOF
 #!/usr/bin/env bash
 
-# NAT Masquerade rule
-nft add rule inet nat postrouting ip saddr "$WIREGUARD_NETWORK" oifname "$EXTERNAL_IFACE" masquerade
+# ADD INET NAT POSTROUTING RULE
+nft add rule inet nat postrouting ip saddr ${WIREGUARD_NETWORK} oifname "${EXTERNAL_IFACE}" masquerade
 
-# Iperf3 exception
-nft add rule inet filter input iifname "$WIREGUARD_IFACE" tcp dport 5201 accept comment "Allow Wireguard client to use Iperf3"
+# ADD INET FILTER INPUT RULE
+nft add rule inet filter input udp dport ${SERVER_PORT} accept
+nft add rule inet filter input iifname "${WIREGUARD_IFACE}" tcp dport 5201 accept
 
-# Flowtable configuration
-nft add flowtable inet filter ft { hook ingress priority filter ; devices = { $WIREGUARD_IFACE, $EXTERNAL_IFACE } ; }
-
-# Flowtable rule
+# ADD FLOWTABLE
+nft add flowtable inet filter ft '{ hook ingress priority filter ; devices = { ${WIREGUARD_IFACE}, ${EXTERNAL_IFACE} } ; }'
 nft add rule inet filter forward ip protocol { tcp, udp } flow add @ft
 
-# Forwarding rules
-nft add rule inet filter forward iifname "$WIREGUARD_IFACE" oifname "$EXTERNAL_IFACE" accept comment "Allow traffic from $WIREGUARD_IFACE to $EXTERNAL_IFACE"
-nft add rule inet filter forward iifname "$EXTERNAL_IFACE" oifname "$WIREGUARD_IFACE" drop comment "Block traffic from $EXTERNAL_IFACE to $WIREGUARD_IFACE"
+# ADD INET FILTER FORWARDING RULE
+nft add rule inet filter forward iifname "${WIREGUARD_IFACE}" oifname "${EXTERNAL_IFACE}" accept
 EOF
 
   chmod +x ${WIREGUARD_POSTUP}
@@ -129,23 +129,27 @@ create_predown_script() {
   cat >${WIREGUARD_PREDOWN} <<EOF
 #!/usr/bin/env bash
 
-# Delete masquerade rule
-nft delete rule inet nat postrouting ip saddr "$WIREGUARD_NETWORK" oifname "$EXTERNAL_IFACE" masquerade 2>/dev/null || true
+# DELETE INET NAT POSTROUTING
+HANDLE=\$(nft -a list ruleset | grep 'ip saddr ${WIREGUARD_NETWORK} oifname "${EXTERNAL_IFACE}" masquerade' | awk '{print \$NF}' | tr -d ')')
+[[ -n "\${HANDLE}" ]] && nft delete rule inet nat postrouting handle \${HANDLE}
 
-# Delete iperf3 allow rule
-nft delete rule inet filter input iifname "$WIREGUARD_IFACE" tcp dport 5201 accept 2>/dev/null || true
+# DELETE INET FILTER INPUT
+HANDLE=\$(nft -a list ruleset | grep 'iifname "${WIREGUARD_IFACE}" tcp dport 5201 accept' | awk '{print \$NF}' | tr -d ')')
+[[ -n "\${HANDLE}" ]] && nft delete rule inet filter input handle \${HANDLE}
 
-# Delete flowtable rule
-nft delete rule inet filter forward ip protocol { tcp, udp } flow add @ft 2>/dev/null || true
+HANDLE=\$(nft -a list ruleset | grep 'udp dport ${SERVER_PORT} accept' | awk '{print \$NF}' | tr -d ')')
+[[ -n "\${HANDLE}" ]] && nft delete rule inet filter input handle \${HANDLE}
 
-# Delete forward allow rule
-nft delete rule inet filter forward iifname "$WIREGUARD_IFACE" oifname "$EXTERNAL_IFACE" accept 2>/dev/null || true
+# DELETE INET FILTER FORWARD
+HANDLE=\$(nft -a list ruleset | grep 'ip protocol { tcp, udp } flow add @ft' | awk '{print \$NF}' | tr -d ')')
+[[ -n "\${HANDLE}" ]] && nft delete rule inet filter forward handle \${HANDLE}
 
-# Delete forward block rule
-nft delete rule inet filter forward iifname "$EXTERNAL_IFACE" oifname "$WIREGUARD_IFACE" drop 2>/dev/null || true
+HANDLE=\$(nft -a list ruleset | grep 'iifname "${WIREGUARD_IFACE}" oifname "${EXTERNAL_IFACE}" accept' | awk '{print \$NF}' | tr -d ')')
+[[ -n "\${HANDLE}" ]] && nft delete rule inet filter forward handle \${HANDLE}
 
-# Delete flowtable
-nft delete flowtable inet filter ft 2>/dev/null || true
+# DELETE FLOWTABLE
+HANDLE=\$(nft -a list ruleset | grep 'flowtable ft' | awk '{print \$NF}' | tr -d ')')
+[[ -n "\${HANDLE}" ]] && nft delete flowtable inet filter handle \${HANDLE}
 EOF
 
   chmod +x ${WIREGUARD_PREDOWN}
