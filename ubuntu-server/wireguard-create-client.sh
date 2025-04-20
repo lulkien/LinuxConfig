@@ -297,6 +297,11 @@ PersistentKeepalive = 25
   return 0
 }
 
+restart_wireguard() {
+  echo_green "Restarting wireguard service..."
+  systemctl restart wg-quick@wg0.service
+}
+
 main() {
   check_run_as_root || return 1
   get_ip_address || return 1
@@ -311,7 +316,7 @@ main() {
   add_client_to_server || return 1
   export_client_config || return 1
 
-  return 0
+  restart_wireguard
 }
 
 main
