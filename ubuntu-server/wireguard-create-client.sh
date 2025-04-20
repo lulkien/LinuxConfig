@@ -240,7 +240,7 @@ add_client_to_server() {
     echo "# ${CLIENT_NAME}"
     echo "[Peer]"
     echo "PublicKey = ${CLIENT_PUBKEY}"
-    echo "AllowedIPs = ${CLIENT_ADDRESS}/24"
+    echo "AllowedIPs = ${CLIENT_ADDRESS}/32"
   } | tee -a "$WIREGUARD_CONF_FILE" >/dev/null; then
     echo "ERROR: Failed to write to config file" >&2
     return 1
