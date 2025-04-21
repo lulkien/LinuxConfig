@@ -10,7 +10,7 @@ echo_green() {
 
 # Configuration
 USERNAME="trencher"
-SHELL="/bin/false"
+SHELL="/usr/bin/true"
 HOME_DIR="/home/$USERNAME"
 SSH_GROUP="$USERNAME"
 

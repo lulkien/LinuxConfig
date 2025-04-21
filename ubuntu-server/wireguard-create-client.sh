@@ -281,7 +281,10 @@ PersistentKeepalive = 25
     echo "$client_config" | qrencode -t ansiutf8
   fi
 
-  local config_file="${HOME}/${CLIENT_NAME:-wireguard-client}.conf"
+  local user_home=$(eval echo "~${SUDO_USER:-$(whoami)}")
+
+  local config_file="${user_home}/wireguard-${CLIENT_NAME:-client}.conf"
+
   if echo "$client_config" >"$config_file"; then
     echo
     echo "Configuration saved to:"
