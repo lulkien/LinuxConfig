@@ -31,6 +31,7 @@ tar -C /tmp/ -f /tmp/AdGuardHome_linux_amd64.tar.gz -x -v -z
 echo_green "Copy new AdGuardHome binary to /opt/AdGuardHome"
 cp /tmp/AdGuardHome/AdGuardHome /opt/AdGuardHome/
 cp /tmp/AdGuardHome/AdGuardHome.sig /opt/AdGuardHome/
+cp /tmp/AdGuardHome/CHANGLOG.md /opt/AdGuardHome/
 cp ${BACKUP_DIR}/AdGuardHome.yaml /opt/AdGuardHome/
 cp -r ${BACKUP_DIR}/data /opt/AdGuardHome/
 
