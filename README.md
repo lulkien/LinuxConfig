@@ -27,30 +27,30 @@ Use as a reference, you should create a private config for yourself.
 
 A few scripts to do some repeated work when setup a new ubuntu server.
 
-- adguard-create-system-user.sh
+#### adguard-create-system-user.sh
 
-  I don't want to run AdGuardHome as root, so I create a user with minimum privilege for it.
+  I don't want to run AdGuardHome as root, so I created an user with minimum privilege for it.
 
-- adguard-update.sh
+#### adguard-update.sh
 
-  A script to update AdGuardHome
+  A script to update AdGuardHome.
 
-- install-stuffs.sh
+#### install-stuffs.sh
 
   This script will install: apt-fast, fishshell, neovim, nftables and a few handy tools.
-  It will remove ufw and iptables.
+  It will also remove ufw and iptables, because of we are going to use nftables.
 
-- ssh-create-tunnel-user.sh
+#### ssh-create-tunnel-user.sh
 
   Create an user to allow other machine create a ssh reverse tunnel.
 
-- wireguard-create-client.sh
+#### wireguard-create-client.sh
 
-  Script to create a new wireguard client and export config.
+  Script to create a new WireGuard client and export its configuration.
 
-- wireguard-installer.sh
+#### wireguard-installer.sh
 
-  Ye, for installing wireguard and some nftables rules.
+  Like its name, installing WireGuard and some nftables rules.
 
 ### A few other things
 
@@ -65,11 +65,8 @@ Clone this repository and run the script you want.
 
 ## Disclaimer
 
-**Note: Before using any of the provided scripts, please ensure to review their contents. 
-While efforts have been made to keep the scripts concise and straightforward, it is essential 
-to understand the actions they perform on your system. Use these scripts at your own risk, and 
-make sure they align with your system configuration and requirements. The author is not responsible 
-for any unintended consequences or issues that may arise from the use of these scripts. Always 
-exercise caution and verify the scripts' content before execution.**
+**Kindly take a moment, read through any of the scripts carefully before executing them.
+While the script can be called short and simple, a nearby understanding of its behavior
+and what it does to your system is a requisite. Use these scripts at your own risk.
+In every case, be extra careful and check through any script before running it.**
 
-Thank you for your understanding.
