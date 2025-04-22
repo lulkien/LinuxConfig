@@ -108,18 +108,14 @@ nft list table inet default | grep -q 'chain input' || exit 1
 nft list table inet default | grep -q 'chain forward' || exit 1
 nft list table inet default | grep -q 'chain postrouting' || exit 1
 
-# ADD INET NAT POSTROUTING RULE
 nft add rule inet default postrouting ip saddr ${WIREGUARD_NETWORK} oifname "${EXTERNAL_IFACE}" masquerade
 
-# ADD INET FILTER INPUT RULE
 nft add rule inet default input udp dport ${SERVER_PORT} accept
 nft add rule inet default input iifname "${WIREGUARD_IFACE}" tcp dport 5201 accept
 
-# ADD FLOWTABLE
-nft add flowtable default filter ft '{ hook ingress priority filter ; devices = { ${WIREGUARD_IFACE}, ${EXTERNAL_IFACE} } ; }'
+nft add flowtable inet default ft '{ hook ingress priority filter ; devices = { ${WIREGUARD_IFACE}, ${EXTERNAL_IFACE} } ; }'
 nft add rule inet default forward ip protocol { tcp, udp } flow add @ft
 
-# ADD INET FILTER FORWARDING RULE
 nft add rule inet default forward iifname "${WIREGUARD_IFACE}" oifname "${EXTERNAL_IFACE}" accept
 EOF
 
@@ -134,27 +130,26 @@ create_predown_script() {
   cat >${WIREGUARD_PREDOWN} <<EOF
 #!/usr/bin/env bash
 
-# DELETE INET NAT POSTROUTING
 HANDLE=\$(nft -a list ruleset | grep 'ip saddr ${WIREGUARD_NETWORK} oifname "${EXTERNAL_IFACE}" masquerade' | awk '{print \$NF}' | tr -d ')')
 [[ -n "\${HANDLE}" ]] && nft delete rule inet default postrouting handle \${HANDLE}
 
-# DELETE INET FILTER INPUT
 HANDLE=\$(nft -a list ruleset | grep 'iifname "${WIREGUARD_IFACE}" tcp dport 5201 accept' | awk '{print \$NF}' | tr -d ')')
 [[ -n "\${HANDLE}" ]] && nft delete rule inet default input handle \${HANDLE}
 
 HANDLE=\$(nft -a list ruleset | grep 'udp dport ${SERVER_PORT} accept' | awk '{print \$NF}' | tr -d ')')
 [[ -n "\${HANDLE}" ]] && nft delete rule inet default input handle \${HANDLE}
 
-# DELETE INET FILTER FORWARD
 HANDLE=\$(nft -a list ruleset | grep 'ip protocol { tcp, udp } flow add @ft' | awk '{print \$NF}' | tr -d ')')
 [[ -n "\${HANDLE}" ]] && nft delete rule inet default forward handle \${HANDLE}
 
 HANDLE=\$(nft -a list ruleset | grep 'iifname "${WIREGUARD_IFACE}" oifname "${EXTERNAL_IFACE}" accept' | awk '{print \$NF}' | tr -d ')')
 [[ -n "\${HANDLE}" ]] && nft delete rule inet default forward handle \${HANDLE}
 
-# DELETE FLOWTABLE
 HANDLE=\$(nft -a list ruleset | grep 'flowtable ft' | awk '{print \$NF}' | tr -d ')')
 [[ -n "\${HANDLE}" ]] && nft delete flowtable inet default handle \${HANDLE}
+
+ip link set ${WIREGUARD_IFACE} down
+ip link delete ${WIREGUARD_IFACE}
 EOF
 
   chmod +x ${WIREGUARD_PREDOWN}
