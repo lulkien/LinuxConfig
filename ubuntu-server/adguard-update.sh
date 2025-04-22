@@ -25,11 +25,18 @@ echo_green "Copy new AdGuardHome binary to /opt/AdGuardHome"
 sudo cp /tmp/AdGuardHome/AdGuardHome /opt/AdGuardHome/
 sudo cp /tmp/AdGuardHome/AdGuardHome.sig /opt/AdGuardHome/
 
-echo_green "Set CAP_NET_BIND_SERVICE=+eip for AdGuardHome binary"
-sudo setcap CAP_NET_BIND_SERVICE=+eip /opt/AdGuardHome/AdGuardHome
-
 echo_green "Reset ownership for /opt/AdGuardHome"
 sudo chown adguard: -R /opt/AdGuardHome
 
-echo_green "Start AdGuardHome service"
-sudo systemctl start AdGuardHome.service
+echo_green "Almost done, but there are a few things you MUST do before you start AdGuardHome.service"
+echo_green "If you run AdGuardHome as another user. You have to reset the ownership"
+echo "  sudo chown <your-adguard-user>: -R /opt/AdGuardHome"
+echo
+
+echo_green "And because that user won't have permission to listen on port 53"
+echo_green "This command allow AdGuardHome to listen on that port"
+echo "  sudo setcap CAP_NET_BIND_SERVICE=+eip /opt/AdGuardHome/AdGuardHome"
+echo
+
+echo_green "Then, you can start AdGuardHome.service"
+echo "  sudo systemctl start AdGuardHome.service"
