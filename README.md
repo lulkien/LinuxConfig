@@ -28,29 +28,35 @@ Use as a reference, you should create a private config for yourself.
 A few scripts to do some repeated work when setup a new ubuntu server.
 
 - adguard-create-system-user.sh
+
   I don't want to run AdGuardHome as root, so I create a user with minimum privilege for it.
 
 - adguard-update.sh
+
   A script to update AdGuardHome
 
 - install-stuffs.sh
+
   This script will install: apt-fast, fishshell, neovim, nftables and a few handy tools.
   It will remove ufw and iptables.
 
 - ssh-create-tunnel-user.sh
+
   Create an user to allow other machine create a ssh reverse tunnel.
 
 - wireguard-create-client.sh
+
   Script to create a new wireguard client and export config.
 
 - wireguard-installer.sh
+
   Ye, for installing wireguard and some nftables rules.
 
 ### A few other things
 
-- Windows Terminal config
-- clangd config
-- etc
+- Windows Terminal configuration
+- Commonly used clang-format
+- And some random things
   
 
 ## Usage
