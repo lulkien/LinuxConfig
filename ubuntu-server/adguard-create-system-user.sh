@@ -10,7 +10,7 @@ echo_green() {
 }
 
 echo_red() {
-  echo -e '\e[1;32m'"$@"'\e[00m' >&2
+  echo -e '\e[1;31m'"$@"'\e[00m' >&2
 }
 
 check_run_as_root() {
