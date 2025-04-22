@@ -146,8 +146,10 @@ install_lsp() {
 
     # Only install package which can't be installed by Mason.nvim
     local packages=(
-        'tree-sitter' 'tree-sitter-cli'
+        'tree-sitter'
+        'tree-sitter-cli'
         'ripgrep'
+        'fzf'
         'astyle'
         'taplo-cli'
     )

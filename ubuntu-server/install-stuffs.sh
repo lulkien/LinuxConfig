@@ -84,7 +84,7 @@ printf "REMEMBER TO SETUP YOUR FIREWALL. DO NOT FORGET.\n"
 
 printf "\n"
 printf "Okay. Almost done. Now we do some less serious stuffs.\n"
-sudo apt-fast install build-essential python3-venv unzip npm
+sudo apt-fast install build-essential python3-venv unzip npm fzf
 
 printf "\n"
 printf "All good. Now, let's have fun my friend.\n"

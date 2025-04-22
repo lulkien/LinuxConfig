@@ -48,6 +48,7 @@ in
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
+        "net.ipv4.conf.all.forwarding" = true;
       };
     };
     loader = {
@@ -211,6 +212,7 @@ in
       curl
       fastfetch
       fd
+      fzf
       jq
       lazygit
       lsb-release
