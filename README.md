@@ -27,10 +27,6 @@ Use as a reference, you should create a private config for yourself.
 
 A few scripts to do some repeated work when setup a new ubuntu server.
 
-#### adguard-create-system-user.sh
-
-  I don't want to run AdGuardHome as root, so I created an user with minimum privilege for it.
-
 #### adguard-update.sh
 
   A script to update AdGuardHome.
