@@ -1,12 +1,12 @@
 [Unit]
 After=network.target
-Description=AutoSSH session (linode-tunnel)
+Description=AutoSSH session (reversed-tunnel)
 
 [Service]
 Environment="AUTOSSH_GATETIME=0"
 Environment="AUTOSSH_POLL=30"
 ExecStart=/usr/bin/autossh -M 0 -N -o "ServerAliveInterval=60" -o "ServerAliveCountMax=3" -R 3322:localhost:22 <your-tunnel-user>@<your-server-ip>
-Restart=on-success
+Restart=on-success # tunnel user should use /bin/true as login shell
 User=<your-user>
 
 [Install]
