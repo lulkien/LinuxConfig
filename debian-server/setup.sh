@@ -16,10 +16,11 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 echo_green "Install something"
-apt install -y dnsmasq nftables curl wget
+apt install -y dnsmasq nftables avahi-daemon curl wget
 
 echo_green "Deploy"
 cp ${SCRIPT_DIR}/etc/nftables.conf /etc
 cp ${SCRIPT_DIR}/etc/dnsmasq.d/* /etc/dnsmasq.d
 cp ${SCRIPT_DIR}/etc/systemd/network/* /etc/systemd/network
+cp ${SCRIPT_DIR}/etc/systemd/resolved.conf.d/* /etc/systemd/resolved.conf.d
 cp ${SCRIPT_DIR}/etc/sysctl.d/* /etc/sysctl.d
