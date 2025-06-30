@@ -1,5 +1,0 @@
-[Match]
-Name=enp1s0
-
-[Network]
-Address=10.21.233.1/24
