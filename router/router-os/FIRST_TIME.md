@@ -38,6 +38,12 @@ Example information:
 /ip service set www port=80 disabled=no
 ```
 
+### Enable ssh service
+
+```
+/ip service set ssh port=22 disable=no
+```
+
 ## Secure your router
 
 ### Turn off neighbor discovery
@@ -98,15 +104,6 @@ Example information:
 
 ```console
 /interface print
-```
-
-### Set auto flow control for ethernet interfaces
-
-```console
-/interface ethernet set ether1 tx-flow-control=auto rx-flow-control=auto
-/interface ethernet set ether2 tx-flow-control=auto rx-flow-control=auto
-/interface ethernet set ether3 tx-flow-control=auto rx-flow-control=auto
-/interface ethernet set ether4 tx-flow-control=auto rx-flow-control=auto
 ```
 
 ## Bridge
