@@ -112,6 +112,8 @@ nft add rule inet default postrouting ip saddr ${WIREGUARD_NETWORK} oifname "${E
 
 nft add rule inet default input udp dport ${SERVER_PORT} accept
 nft add rule inet default input iifname "${WIREGUARD_IFACE}" tcp dport 5201 accept
+nft add rule inet default input iifname "${WIREGUARD_IFACE}" tcp dport 53 accept
+nft add rule inet default input iifname "${WIREGUARD_IFACE}" udp dport 53 accept
 
 nft add flowtable inet default ft '{ hook ingress priority filter ; devices = { ${WIREGUARD_IFACE}, ${EXTERNAL_IFACE} } ; }'
 nft add rule inet default forward ip protocol { tcp, udp } flow add @ft
@@ -134,6 +136,12 @@ HANDLE=\$(nft -a list ruleset | grep 'ip saddr ${WIREGUARD_NETWORK} oifname "${E
 [[ -n "\${HANDLE}" ]] && nft delete rule inet default postrouting handle \${HANDLE}
 
 HANDLE=\$(nft -a list ruleset | grep 'iifname "${WIREGUARD_IFACE}" tcp dport 5201 accept' | awk '{print \$NF}' | tr -d ')')
+[[ -n "\${HANDLE}" ]] && nft delete rule inet default input handle \${HANDLE}
+
+HANDLE=\$(nft -a list ruleset | grep 'iifname "${WIREGUARD_IFACE}" tcp dport 53 accept' | awk '{print \$NF}' | tr -d ')')
+[[ -n "\${HANDLE}" ]] && nft delete rule inet default input handle \${HANDLE}
+
+HANDLE=\$(nft -a list ruleset | grep 'iifname "${WIREGUARD_IFACE}" udp dport 53 accept' | awk '{print \$NF}' | tr -d ')')
 [[ -n "\${HANDLE}" ]] && nft delete rule inet default input handle \${HANDLE}
 
 HANDLE=\$(nft -a list ruleset | grep 'udp dport ${SERVER_PORT} accept' | awk '{print \$NF}' | tr -d ')')

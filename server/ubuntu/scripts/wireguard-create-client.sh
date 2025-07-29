@@ -154,9 +154,9 @@ ask_client_name() {
 }
 
 ask_dns_server() {
-  read -rp "Enter DNS server IP [Default: $PUBLIC_IP_ADDRESS]: " DNS_SERVER
+  read -rp "Enter DNS server IP [Default: $SERVER_ADDRESS]: " DNS_SERVER
 
-  DNS_SERVER=${DNS_SERVER:-$PUBLIC_IP_ADDRESS}
+  DNS_SERVER=${DNS_SERVER:-$SERVER_ADDRESS}
 
   if [[ ! "$DNS_SERVER" =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
     echo "ERROR: '$DNS_SERVER' is not a valid IPv4 address" >&2
