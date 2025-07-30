@@ -26,7 +26,7 @@ select opt in "${options[@]}"; do
     2)
         echo
         echo -e "\e[1;32m# Selected:\e[00m $opt"
-        packages+=('mesa' 'libva-mesa-driver' 'vulkan-radeon')
+        packages+=('mesa' 'libva-mesa-driver' 'vulkan-radeon' 'xf86-video-ati' 'xf86-video-amdgpu')
         is_amd=true
         break
         ;;

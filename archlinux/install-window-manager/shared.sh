@@ -100,7 +100,7 @@ install_command_line_tool() {
 
     local packages=(
         'git' 'fish' 'vim' 'neovim'
-        'htop' 'fastfetch' 'lsb-release'
+        'btop' 'fastfetch' 'lsb-release'
         'openssh' 'wget' 'curl' 'rsync'
         'wl-clipboard' 'unzip' 'unarchiver'
         'less' 'jq'
@@ -114,9 +114,20 @@ install_general_applications() {
     msg_ok "[Install general applications]"
 
     local packages=(
-        'pipewire' 'pipewire-pulse' 'lib32-pipewire' 'wireplumber'
         'ffmpeg' 'flatpak' 'firefox' 'thorium-browser'
         'kitty'
+    )
+
+    install_list_package "${packages[@]}"
+    return $?
+}
+
+install_pipewire() {
+    msg_ok "[Install pipewire]"
+
+    local package=(
+        'pipewire' 'pipewire-alsa' 'pipewire-jack'
+        'pipewire-pulse' 'gst-plugin-pipewire' 'libpulse' 'wireplumber'
     )
 
     install_list_package "${packages[@]}"
@@ -149,9 +160,8 @@ install_lsp() {
         'tree-sitter'
         'tree-sitter-cli'
         'ripgrep'
-        'fzf'
-        'astyle'
-        'taplo-cli'
+        'skim'
+        'zellij'
     )
 
     install_list_package "${packages[@]}"
