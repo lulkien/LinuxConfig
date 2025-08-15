@@ -38,11 +38,33 @@ check_wireguard_configurated() {
   fi
 }
 
-install_wireguard() {
-  echo_green "Install Wireguard and tools"
+install_dependencies() {
+  echo_green "Install dependencies"
 
   apt update
-  apt install wireguard wireguard-tools qrencode nftables
+  apt install nftables systemd-resolved qrencode
+
+  if [[ ! -d /etc/systemd/resolved.conf.d ]]; then
+    mkdir -p /etc/systemd/resolved.conf.d
+  fi
+
+  cat >/etc/systemd/resolved.conf.d/10-server.conf <<EOF
+[Resolve]
+DNS=
+FallbackDNS=
+DNSStubListener=no
+EOF
+
+  systemctl restart systemd-resolved
+  systemctl enable systemd-resolved
+
+}
+
+install_wireguard() {
+  echo_green "Install Wireguard"
+
+  apt update
+  apt install wireguard wireguard-tools
 }
 
 enable_ipv4_forwarding() {
@@ -129,11 +151,9 @@ nft list table ${ADDRESS_FAMILY} ${TABLE_NAME} | grep -q 'chain forward {' || ex
 
 # Add wireguard input chain
 nft add chain ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input
-nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input counter
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input udp dport ${SERVER_PORT} accept comment "Wireguard"
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input iifname "${WIREGUARD_IFACE}" tcp dport 53 accept comment "DNS"
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input iifname "${WIREGUARD_IFACE}" udp dport 53 accept comment "DNS"
-nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input iifname "${WIREGUARD_IFACE}" tcp dport 5201 accept comment "Iperf3"
 
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} input jump wg_input
 
@@ -141,7 +161,7 @@ nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} input jump wg_input
 nft add flowtable ${ADDRESS_FAMILY} ${TABLE_NAME} fastnat '{ hook ingress priority filter; devices = { ${WIREGUARD_IFACE}, ${EXTERNAL_IFACE} }; }'
 
 nft add chain ${ADDRESS_FAMILY} ${TABLE_NAME} wg_forward
-nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_forward counter
+nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_forward ip protocol { tcp, udp } flow add @fastnat
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_forward iifname "${WIREGUARD_IFACE}" oifname "${EXTERNAL_IFACE}" accept
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_forward iifname "${EXTERNAL_IFACE}" oifname "${WIREGUARD_IFACE}" drop
 
@@ -194,6 +214,8 @@ main() {
   check_run_as_root || return 1
 
   check_wireguard_configurated || return 1
+
+  install_dependencies || return 1
 
   install_wireguard || return 1
 
