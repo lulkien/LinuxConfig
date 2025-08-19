@@ -44,19 +44,19 @@ install_dependencies() {
   apt update
   apt install nftables systemd-resolved qrencode
 
-  if [[ ! -d /etc/systemd/resolved.conf.d ]]; then
-    mkdir -p /etc/systemd/resolved.conf.d
-  fi
+#   if [[ ! -d /etc/systemd/resolved.conf.d ]]; then
+#     mkdir -p /etc/systemd/resolved.conf.d
+#   fi
 
-  cat >/etc/systemd/resolved.conf.d/10-server.conf <<EOF
-[Resolve]
-DNS=
-FallbackDNS=
-DNSStubListener=no
-EOF
+#   cat >/etc/systemd/resolved.conf.d/10-server.conf <<EOF
+# [Resolve]
+# DNS=
+# FallbackDNS=
+# DNSStubListener=no
+# EOF
 
-  systemctl restart systemd-resolved
-  systemctl enable systemd-resolved
+  systemctl enable --now nftables
+  systemctl enable --now systemd-resolved
 
 }
 
@@ -169,7 +169,7 @@ nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} forward jump wg_forward
 
 # Add wireguard postrouting chain
 nft add chain ${ADDRESS_FAMILY} ${TABLE_NAME} wg_postrouting
-nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_postrouting ip saddr ${WIREGUARD_NETWORK} oifname "${EXTERNAL_IFACE}" masquerade
+nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_postrouting iifname "${WIREGUARD_IFACE}" ip saddr ${WIREGUARD_NETWORK} oifname "${EXTERNAL_IFACE}" masquerade
 
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} postrouting jump wg_postrouting
 EOF
