@@ -1,6 +1,6 @@
 # Configurate network bond with systemd-networkd
 
-[https://wiki.linuxfoundation.org/networking/bonding]
+[https://wiki.linuxfoundation.org/networking/bonding]()
 
 ## /etc/systemd/network/10-bond0.netdev
 
@@ -10,7 +10,7 @@ Name=bond0
 Kind=bond
 
 [Bond]
-Mode=balance-rr
+Mode=balance-alb
 Primary=enp1s0
 MIIMonitorSec=100ms
 FailOverMacPolicy=active
