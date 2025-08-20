@@ -1,143 +1,109 @@
 #!/usr/bin/env bash
 
-WIREGUARD_CONF_DIR=/etc/wireguard
-WIREGUARD_CONF_FILE=${WIREGUARD_CONF_DIR}/wg0.conf
-WIREGUARD_HOOKS=${WIREGUARD_CONF_DIR}/hooks
-WIREGUARD_POSTUP=${WIREGUARD_HOOKS}/nftable_up.sh
-WIREGUARD_POSTDOWN=${WIREGUARD_HOOKS}/nftable_down.sh
-
-SERVER_IP=10.8.0.1
-SERVER_PORT=51820
-SERVER_PRIVATE_KEY=
-SERVER_CONFIGURATION=
-
+WIREGUARD_GATEWAY=10.8.0.1
 WIREGUARD_NETWORK=10.8.0.0/24
+WIREGUARD_PORT=51820
 WIREGUARD_IFACE=wg0
 EXTERNAL_IFACE=$(ip route | awk '/default/ {print $5}' | head -1)
 
-TABLE_NAME=
-ADDRESS_FAMLIFY=
+ADDRESS_FAMLIFY=inet
+TABLE_NAME=filter
 
-echo_green() {
-  echo -e '\e[1;32m'"$@"'\e[00m'
-}
+# ------------------------ DO NOT MODIFY --------------------------
+WIREGUARD_CONF_DIR=/etc/wireguard                                 #
+WIREGUARD_CONF_FILE=${WIREGUARD_CONF_DIR}/${WIREGUARD_IFACE}.conf #
+WIREGUARD_HOOKS=${WIREGUARD_CONF_DIR}/hooks                       #
+WIREGUARD_POSTUP=${WIREGUARD_HOOKS}/nftable_up.sh                 #
+WIREGUARD_POSTDOWN=${WIREGUARD_HOOKS}/nftable_down.sh             #
+# -----------------------------------------------------------------
 
-check_run_as_root() {
-  if [[ $EUID -ne 0 ]]; then
-    echo "ERROR: This script must be run as root (or with sudo)." >&2
-    return 1
-  fi
-}
+DRY_RUN=false
+DEFAULT=false
 
-check_wireguard_configurated() {
-  echo_green "Validating existed Wireguard configuration..."
-
-  if [[ -f ${WIREGUARD_CONF_FILE} ]]; then
-    echo "Wireguard configuration file existed. Please remove it manually to run this script."
-    return 1
-  fi
-}
-
-install_dependencies() {
-  echo_green "Install dependencies"
-
-  apt update
-  apt install nftables systemd-resolved qrencode
-
-#   if [[ ! -d /etc/systemd/resolved.conf.d ]]; then
-#     mkdir -p /etc/systemd/resolved.conf.d
-#   fi
-
-#   cat >/etc/systemd/resolved.conf.d/10-server.conf <<EOF
-# [Resolve]
-# DNS=
-# FallbackDNS=
-# DNSStubListener=no
-# EOF
-
-  systemctl enable --now nftables
-  systemctl enable --now systemd-resolved
-
-}
-
-install_wireguard() {
-  echo_green "Install Wireguard"
-
-  apt update
-  apt install wireguard wireguard-tools
-}
-
-enable_ipv4_forwarding() {
-  echo "net.ipv4.ip_forward=1" | tee /etc/sysctl.d/10-wireguard.conf
-}
+# -----------------------------------------
 
 generate_server_configuration() {
-  echo_green "Generating server configuration..."
+    echo "Generate server configuration."
 
-  local server_ip port
+    echo "  Create server private key"
+    local wg_private_key=$(wg genkey)
 
-  read -p "Enter the WireGuard address (Default: 10.8.0.1): " server_ip
-  SERVER_IP=${server_ip:-"10.8.0.1"}
+    if ! $DEFAULT; then
+        local wg_gateway=
+        local wg_port=
 
-  if [[ ! "$SERVER_IP" =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
-    echo "ERROR: '$SERVER_IP' is not a valid IPv4 address" >&2
-    return 1
-  fi
+        read -p "  Enter the WireGuard gateway address (Default: ${WIREGUARD_GATEWAY}): " wg_gateway
+        WIREGUARD_GATEWAY=${wg_gateway:-${WIREGUARD_GATEWAY}}
 
-  WIREGUARD_NETWORK=$(echo "$SERVER_IP" | awk -F. '{print $1"."$2"."$3".0/24"}')
-  echo_green "WIREGUARD_NETWORK = ${WIREGUARD_NETWORK}"
+        if [[ ! "${WIREGUARD_GATEWAY}" =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
+            echo "    ERROR: '${WIREGUARD_GATEWAY}' is not a valid IPv4 address" >&2
+            return 1
+        fi
 
-  read -p "Enter the listen port (Default: 51820): " port
-  SERVER_PORT=${port:-"51820"}
+        WIREGUARD_NETWORK=$(echo "${WIREGUARD_GATEWAY}" | awk -F. '{print $1"."$2"."$3".0/24"}')
 
-  if [[ ! "$SERVER_PORT" =~ ^[0-9]+$ ]] || ((SERVER_PORT < 1 || SERVER_PORT > 65535)); then
-    echo "ERROR: Port must be between 1-65535" >&2
-    return 1
-  fi
+        read -p "  Enter the listen port (Default: ${WIREGUARD_PORT}): " wg_port
+        WIREGUARD_PORT=${wg_port:-${WIREGUARD_PORT}}
 
-  echo_green "Generating server private key..."
-  SERVER_PRIVATE_KEY=$(wg genkey)
+        if [[ ! "${WIREGUARD_PORT}" =~ ^[0-9]+$ ]] || ((WIREGUARD_PORT < 1 || WIREGUARD_PORT > 65535)); then
+            echo "    ERROR: Port must be between 1-65535" >&2
+            return 1
+        fi
+    else
+        echo "  Use default configuration:"
+    fi
 
-  SERVER_CONFIGURATION="[Interface]
-Address = ${SERVER_IP}/24
-ListenPort = ${SERVER_PORT}
-PrivateKey = ${SERVER_PRIVATE_KEY}
+    echo "    Interface: ${WIREGUARD_IFACE}"
+    echo "    Gateway:   ${WIREGUARD_GATEWAY}"
+    echo "    Network:   ${WIREGUARD_NETWORK}"
+    echo "    Port:      ${WIREGUARD_PORT}"
+
+    if [[ ! -d /etc/wireguard ]]; then
+        mkdir /etc/wireguard || return 1
+    fi
+
+    cat >${WIREGUARD_CONF_FILE} <<EOF
+[Interface]
+Address = ${WIREGUARD_GATEWAY}/24
+ListenPort = ${WIREGUARD_PORT}
+PrivateKey = ${wg_private_key}
 PostUp = ${WIREGUARD_POSTUP}
-PostDown = ${WIREGUARD_POSTDOWN}"
+PostDown = ${WIREGUARD_POSTDOWN}
+EOF
 
-  if [[ ! -d /etc/wireguard ]]; then
-    mkdir /etc/wireguard || return 1
-  fi
-
-  echo "$SERVER_CONFIGURATION" | tee ${WIREGUARD_CONF_FILE}
-  chmod 600 -R ${WIREGUARD_CONF_DIR}
+    chmod 600 -R ${WIREGUARD_CONF_DIR}
 }
 
-restart_wireguard() {
-  echo_green "Restarting wireguard service..."
-  systemctl restart wg-quick@wg0.service
-
-  echo "Note: Enable 'wg-quick@wg0.service' if you want to autostart Wireguard with systemd."
-}
+# -----------------------------------------
 
 ask_nftables_info() {
-  echo_green "Getting nftables info for hooks..."
+    echo "Get nftables info."
 
-  local address_family table
+    if ! $DEFAULT; then
+        local address_family=
+        local table=
 
-  read -p "Enter your default nftables address family (Default: inet):" address_family
-  ADDRESS_FAMILY=${address_family:-"inet"}
+        read -p "  Enter your default nftables address family (Default: ${ADDRESS_FAMILY}):" address_family
+        ADDRESS_FAMILY=${address_family:-${ADDRESS_FAMILY}}
 
-  read -p "Enter your default nftables table (Default: filter):" table 
-  TABLE_NAME=${table:-"filter"}
+        read -p "  Enter your default nftables table (Default: ${TABLE_NAME}):" table
+        TABLE_NAME=${table:-${TABLE_NAME}}
+    else
+        echo "  Use default configuration:"
+    fi
+
+    echo "    Current address family: ${ADDRESS_FAMILY}"
+    echo "    Current table name:     ${TABLE_NAME}"
 }
 
-create_postup_script() {
-  if [[ ! -d ${WIREGUARD_HOOKS} ]]; then
-    mkdir -p ${WIREGUARD_HOOKS}
-  fi
+# -----------------------------------------
 
-  cat >${WIREGUARD_POSTUP} <<EOF
+create_postup_script() {
+    if [[ ! -d ${WIREGUARD_HOOKS} ]]; then
+        mkdir -p ${WIREGUARD_HOOKS}
+    fi
+
+    cat >${WIREGUARD_POSTUP} <<EOF
 #!/usr/bin/env bash
 
 # Create postrouting chain if not existed
@@ -151,7 +117,7 @@ nft list table ${ADDRESS_FAMILY} ${TABLE_NAME} | grep -q 'chain forward {' || ex
 
 # Add wireguard input chain
 nft add chain ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input
-nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input udp dport ${SERVER_PORT} accept comment "Wireguard"
+nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input udp dport ${WIREGUARD_PORT} accept comment "Wireguard"
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input iifname "${WIREGUARD_IFACE}" tcp dport 53 accept comment "DNS"
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input iifname "${WIREGUARD_IFACE}" udp dport 53 accept comment "DNS"
 
@@ -174,15 +140,17 @@ nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} wg_postrouting iifname "${WIREGUAR
 nft add rule  ${ADDRESS_FAMILY} ${TABLE_NAME} postrouting jump wg_postrouting
 EOF
 
-  chmod +x ${WIREGUARD_POSTUP}
+    chmod +x ${WIREGUARD_POSTUP}
 }
 
-create_predown_script() {
-  if [[ ! -d ${WIREGUARD_HOOKS} ]]; then
-    mkdir ${WIREGUARD_HOOKS}
-  fi
+# -----------------------------------------
 
-  cat >${WIREGUARD_POSTDOWN} <<EOF
+create_predown_script() {
+    if [[ ! -d ${WIREGUARD_HOOKS} ]]; then
+        mkdir ${WIREGUARD_HOOKS}
+    fi
+
+    cat >${WIREGUARD_POSTDOWN} <<EOF
 #!/usr/bin/env bash
 
 HANDLE=\$(nft -a list ruleset | grep 'jump wg_input' | awk '{print \$NF}' | tr -d ')')
@@ -205,29 +173,41 @@ ip link set ${WIREGUARD_IFACE} down
 ip link delete ${WIREGUARD_IFACE}
 EOF
 
-  chmod +x ${WIREGUARD_POSTDOWN}
+    chmod +x ${WIREGUARD_POSTDOWN}
 }
 
 # -------------------------------------- MAIN --------------------------------------
 
 main() {
-  check_run_as_root || return 1
+    if [[ $EUID -ne 0 ]]; then
+        echo "ERROR: This script must be run as root (or with sudo)." >&2
+        return 1
+    fi
 
-  check_wireguard_configurated || return 1
+    echo "Validate existed Wireguard configuration."
+    if [[ -f ${WIREGUARD_CONF_FILE} ]]; then
+        echo "  Wireguard configuration file existed."
+        echo "  Please remove it manually to run this script."
+        return 1
+    fi
 
-  install_dependencies || return 1
+    echo "Install wireguard and dependencies."
+    apt update
+    apt install nftables systemd-resolved wireguard wireguard-tools
 
-  install_wireguard || return 1
+    echo "Enable ipv4 forwarding."
+    echo "net.ipv4.ip_forward=1" >/etc/sysctl.d/10-wireguard.conf
 
-  enable_ipv4_forwarding || return 1
+    generate_server_configuration || return 1
 
-  generate_server_configuration || return 1
+    ask_nftables_info || return 1
 
-  ask_nftables_info || return 1
-  create_postup_script || return 1
-  create_predown_script || return 1
+    create_postup_script || return 1
 
-  restart_wireguard
+    create_predown_script || return 1
+
+    echo "Restarting wireguard service..."
+    systemctl restart wg-quick@wg0.service
 }
 
 main
