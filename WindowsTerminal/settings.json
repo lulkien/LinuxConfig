@@ -1,124 +1,64 @@
 {
-    "actions": [
+    "copyFormatting": "none",
+    "copyOnSelect": true,
+    "keybindings": 
+    [
         {
-            "command": {
-                "action": "copy",
-                "singleLine": false
-            },
-            "keys": "ctrl+shift+c"
-        },
-        {
-            "command": "paste",
-            "keys": "ctrl+shift+v"
-        },
-        {
-            "command": "find",
-            "keys": "ctrl+shift+f"
-        },
-        {
-            "command": {
-                "action": "moveFocus",
-                "direction": "down"
-            },
-            "keys": "alt+j"
-        },
-        {
-            "command": {
-                "action": "splitPane",
-                "split": "down",
-                "splitMode": "duplicate"
-            },
-            "keys": "alt+shift+'"
-        },
-        {
-            "command": {
-                "action": "splitPane",
-                "split": "right",
-                "splitMode": "duplicate"
-            },
-            "keys": "alt+shift+5"
-        },
-        {
-            "command": "closePane",
-            "keys": "alt+x"
-        },
-        {
-            "command": "nextTab",
-            "keys": "alt+n"
-        },
-        {
-            "command": "prevTab",
-            "keys": "alt+p"
-        },
-        {
-            "command": "newTab",
-            "keys": "alt+c"
-        },
-        {
-            "command": "closeTab",
-            "keys": "alt+shift+7"
-        },
-        {
-            "command": {
-                "action": "moveFocus",
-                "direction": "left"
-            },
+            "id": "Terminal.SwapPaneLeft",
             "keys": "alt+h"
         },
         {
-            "command": {
-                "action": "moveFocus",
-                "direction": "right"
-            },
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+shift+c"
+        },
+        {
+            "id": "Terminal.ClosePane",
+            "keys": "alt+w"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+shift+v"
+        },
+        {
+            "id": "Terminal.DuplicatePaneRight",
+            "keys": "alt+p"
+        },
+        {
+            "id": "Terminal.FindText",
+            "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "Terminal.DuplicatePaneDown",
+            "keys": "alt+d"
+        },
+        {
+            "id": "Terminal.SwapPaneDown",
+            "keys": "alt+j"
+        },
+        {
+            "id": "Terminal.SwapPaneRight",
             "keys": "alt+l"
         },
         {
-            "command": {
-                "action": "moveFocus",
-                "direction": "up"
-            },
+            "id": "Terminal.SwapPaneUp",
             "keys": "alt+k"
-        },
-        {
-            "command": {
-                "action": "swapPane",
-                "direction": "left"
-            },
-            "keys": "alt+shift+h"
-        },
-        {
-            "command": {
-                "action": "swapPane",
-                "direction": "down"
-            },
-            "keys": "alt+shift+j"
-        },
-        {
-            "command": {
-                "action": "swapPane",
-                "direction": "up"
-            },
-            "keys": "alt+shift+k"
-        },
-        {
-            "command": {
-                "action": "swapPane",
-                "direction": "right"
-            },
-            "keys": "alt+shift+l"
         }
     ],
-    "copyOnSelect": true,
-    "profiles": {
-        "defaults": {
-            "adjustIndistinguishableColors": "always",
-            "colorScheme": "Catppuccin Mocha",
-            "cursorShape": "filledBox",
-            "opacity": 95,
-            "useAcrylic": false
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": 
+    {
+        "defaults": 
+        {
+            "colorScheme": "Catppuccin Mocha"
         }
     },
-    "schemes": [
+    "schemes": 
+    [
         {
             "background": "#1E1E2E",
             "black": "#45475A",
@@ -143,21 +83,29 @@
             "yellow": "#F9E2AF"
         }
     ],
-    "themes": [
+    "themes": 
+    [
         {
             "name": "Catppuccin Mocha",
-            "tab": {
+            "tab": 
+            {
                 "background": "#1E1E2EFF",
+                "iconStyle": "default",
                 "showCloseButton": "always",
                 "unfocusedBackground": null
             },
-            "tabRow": {
+            "tabRow": 
+            {
                 "background": "#181825FF",
                 "unfocusedBackground": "#11111BFF"
             },
-            "window": {
+            "window": 
+            {
                 "applicationTheme": "dark",
-                "useMica": false
+                "experimental.rainbowFrame": false,
+                "frame": null,
+                "unfocusedFrame": null,
+                "useMica": true 
             }
         }
     ],
