@@ -6,7 +6,7 @@ WIREGUARD_PORT=51820
 WIREGUARD_IFACE=wg0
 EXTERNAL_IFACE=$(ip route | awk '/default/ {print $5}' | head -1)
 
-ADDRESS_FAMLIFY=inet
+ADDRESS_FAMILY=inet
 TABLE_NAME=filter
 
 # ------------------------ DO NOT MODIFY --------------------------
@@ -22,10 +22,19 @@ DEFAULT=false
 
 # -----------------------------------------
 
-generate_server_configuration() {
-    echo "Generate server configuration."
+log_fatal() {
+  echo '[FATAL]' "$@" >&2
+  exit 1
+}
 
-    echo "  Create server private key"
+log_info() {
+    echo '[INFO]' "$@"
+}
+
+generate_server_configuration() {
+    log_info "Generate server configuration."
+
+    log_info "  Create server private key"
     local wg_private_key=$(wg genkey)
 
     if ! $DEFAULT; then
@@ -36,8 +45,7 @@ generate_server_configuration() {
         WIREGUARD_GATEWAY=${wg_gateway:-${WIREGUARD_GATEWAY}}
 
         if [[ ! "${WIREGUARD_GATEWAY}" =~ ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
-            echo "    ERROR: '${WIREGUARD_GATEWAY}' is not a valid IPv4 address" >&2
-            return 1
+            log_fatal "    '${WIREGUARD_GATEWAY}' is not a valid IPv4 address"
         fi
 
         WIREGUARD_NETWORK=$(echo "${WIREGUARD_GATEWAY}" | awk -F. '{print $1"."$2"."$3".0/24"}')
@@ -46,17 +54,16 @@ generate_server_configuration() {
         WIREGUARD_PORT=${wg_port:-${WIREGUARD_PORT}}
 
         if [[ ! "${WIREGUARD_PORT}" =~ ^[0-9]+$ ]] || ((WIREGUARD_PORT < 1 || WIREGUARD_PORT > 65535)); then
-            echo "    ERROR: Port must be between 1-65535" >&2
-            return 1
+            log_fatal "    Port must be between 1-65535"
         fi
     else
-        echo "  Use default configuration:"
+        log_info "  Use default configuration:"
     fi
 
-    echo "    Interface: ${WIREGUARD_IFACE}"
-    echo "    Gateway:   ${WIREGUARD_GATEWAY}"
-    echo "    Network:   ${WIREGUARD_NETWORK}"
-    echo "    Port:      ${WIREGUARD_PORT}"
+    log_info "    Interface: ${WIREGUARD_IFACE}"
+    log_info "    Gateway:   ${WIREGUARD_GATEWAY}"
+    log_info "    Network:   ${WIREGUARD_NETWORK}"
+    log_info "    Port:      ${WIREGUARD_PORT}"
 
     if [[ ! -d /etc/wireguard ]]; then
         mkdir /etc/wireguard || return 1
@@ -77,7 +84,7 @@ EOF
 # -----------------------------------------
 
 ask_nftables_info() {
-    echo "Get nftables info."
+    log_info "Get nftables info."
 
     if ! $DEFAULT; then
         local address_family=
@@ -89,11 +96,11 @@ ask_nftables_info() {
         read -p "  Enter your default nftables table (Default: ${TABLE_NAME}):" table
         TABLE_NAME=${table:-${TABLE_NAME}}
     else
-        echo "  Use default configuration:"
+        log_info "  Use default configuration:"
     fi
 
-    echo "    Current address family: ${ADDRESS_FAMILY}"
-    echo "    Current table name:     ${TABLE_NAME}"
+    log_info "    Current address family: ${ADDRESS_FAMILY}"
+    log_info "    Current table name:     ${TABLE_NAME}"
 }
 
 # -----------------------------------------
@@ -165,9 +172,9 @@ HANDLE=\$(nft -a list ruleset | grep 'flowtable fastnat' | awk '{print \$NF}' | 
 HANDLE=\$(nft -a list ruleset | grep 'jump wg_postrouting' | awk '{print \$NF}' | tr -d ')')
 [[ -n "\${HANDLE}" ]] && nft delete rule ${ADDRESS_FAMILY} ${TABLE_NAME} postrouting handle \${HANDLE}
 
-nft delete chain ${ADDRESS_FAMLIFY} ${TABLE_NAME} wg_input
-nft delete chain ${ADDRESS_FAMLIFY} ${TABLE_NAME} wg_forward
-nft delete chain ${ADDRESS_FAMLIFY} ${TABLE_NAME} wg_postrouting
+nft delete chain ${ADDRESS_FAMILY} ${TABLE_NAME} wg_input
+nft delete chain ${ADDRESS_FAMILY} ${TABLE_NAME} wg_forward
+nft delete chain ${ADDRESS_FAMILY} ${TABLE_NAME} wg_postrouting
 
 ip link set ${WIREGUARD_IFACE} down
 ip link delete ${WIREGUARD_IFACE}
@@ -180,22 +187,19 @@ EOF
 
 main() {
     if [[ $EUID -ne 0 ]]; then
-        echo "ERROR: This script must be run as root (or with sudo)." >&2
-        return 1
+        log_fatal "This script must be run as root (or with sudo)."
     fi
 
     echo "Validate existed Wireguard configuration."
     if [[ -f ${WIREGUARD_CONF_FILE} ]]; then
-        echo "  Wireguard configuration file existed."
-        echo "  Please remove it manually to run this script."
-        return 1
+        log_fatal "  Wireguard configuration file existed.\n  Please remove it manually to run this script."
     fi
 
-    echo "Install wireguard and dependencies."
+    log_info "Install wireguard and dependencies."
     apt update
     apt install nftables systemd-resolved wireguard wireguard-tools
 
-    echo "Enable ipv4 forwarding."
+    log_info "Enable ipv4 forwarding."
     echo "net.ipv4.ip_forward=1" >/etc/sysctl.d/10-wireguard.conf
 
     generate_server_configuration || return 1
@@ -206,7 +210,7 @@ main() {
 
     create_predown_script || return 1
 
-    echo "Restarting wireguard service..."
+    log_info "Restarting wireguard service..."
     systemctl restart wg-quick@wg0.service
 }
 
