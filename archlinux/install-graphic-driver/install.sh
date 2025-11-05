@@ -4,7 +4,8 @@ script_path=$(dirname "$(realpath "$0")")
 
 options=('All open-source' 'AMD/ATI (open-source)' 'Intel (open-source)' 'Nvidia (open kernel module for newer GPUs, Turing+ or 16xx+)' 'Nvidia (open-source nouveau driver)' 'Nvidia (proprietary)' 'VMware/VirtualBox (open-source)' 'Cancel')
 
-packages=('xorg-server' 'xorg-xinit')
+# packages=('xorg-server' 'xorg-xinit')
+packages=()
 additional_packages=('vulkan-icd-loader' 'vulkan-tools')
 blender_packages=('hip-runtime-amd')
 
