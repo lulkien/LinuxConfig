@@ -7,7 +7,7 @@
 : "${TUNNEL_SSH_GROUP:=${TUNNEL_USER}}"
 : "${TUNNEL_SSHD_CONFIG_DIR:=/etc/ssh/sshd_config.d}"
 : "${TUNNEL_LIMITS_DIR:=/etc/security/limits.d}"
-: "${TUNNEL_MAX_LOGINS:=1}"
+: "${TUNNEL_MAX_LOGINS:=10}"
 : "${TUNNEL_NPROC:=50}"
 
 echo_red() {
@@ -87,7 +87,7 @@ chmod 700 "$TUNNEL_HOME/.ssh"
 echo "  ✓ Created .ssh directory" >&2
 
 touch "$TUNNEL_HOME/.ssh/authorized_keys"
-chown "$TUNNEL_USER:" "$TUNNEL_HOME/.ssh/authorized_keys"
+chown "$TUNNEL_USER:$TUNNEL_USER" "$TUNNEL_HOME/.ssh/authorized_keys"
 chmod 600 "$TUNNEL_HOME/.ssh/authorized_keys"
 echo "  ✓ Created authorized_keys file" >&2
 
@@ -101,12 +101,12 @@ SSHD_CONFIG="${TUNNEL_SSHD_CONFIG_DIR}/sshtunuser.conf"
 cat >"$SSHD_CONFIG" <<EOF
 # Restrictions for $TUNNEL_USER - Created $(date)
 Match User $TUNNEL_USER
-    PermitOpen localhost:*
+    AuthorizedKeysFile ${TUNNEL_HOME}/.ssh/authorized_keys
+    PermitTTY no
+    X11Forwarding no
     AllowTcpForwarding yes
     PermitTunnel yes
-    X11Forwarding no
-    AllowAgentForwarding no
-    PermitTTY no
+    GatewayPorts yes
     ForceCommand /bin/false
 EOF
 echo "  ✓ Created SSH config: $SSHD_CONFIG" >&2
