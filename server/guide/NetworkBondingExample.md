@@ -11,7 +11,6 @@ Kind=bond
 
 [Bond]
 Mode=balance-alb
-Primary=enp1s0
 MIIMonitorSec=100ms
 FailOverMacPolicy=active
 ```
@@ -26,22 +25,12 @@ Name=bond0
 DHCP=yes
 ```
 
-## /etc/systemd/network/20-enp1s0.network
+## /etc/systemd/network/20-slaves.network
 
 ```
 [Match]
-Name=enp1s0
+Name=enp1s0 enp3s0
 
 [Network]
-Bridge=bond0
-```
-
-## /etc/systemd/network/20-enp3s0.network
-
-```
-[Match]
-Name=enp3s0
-
-[Network]
-Bridge=bond0
+Bond=bond0
 ```
