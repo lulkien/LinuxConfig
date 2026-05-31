@@ -4,10 +4,11 @@ set -euo pipefail
 # --- Configuration ---
 REPO_OWNER="eza-community"
 REPO_NAME="eza"
-ASSET_NAME="eza_x86_64-unknown-linux-musl.tar.gz"
 BINARY_NAME="eza"
 INSTALL_DIR="/usr/local/bin"
-BINARY_PATH="${INSTALL_DIR}/${BINARY_NAME}"
+MAN_BASE="/usr/local/share/man"
+ASSET_BINARY="eza_x86_64-unknown-linux-musl.tar.gz"
+ASSET_MAN_PREFIX="man"
 
 # --- Check root privileges ---
 if [[ $EUID -ne 0 ]]; then
@@ -20,106 +21,202 @@ error_exit() {
     echo "ERROR: $1" >&2
     exit 1
 }
+info() { echo "INFO: $1"; }
+warn() { echo "WARNING: $1" >&2; }
 
-info() {
-    echo "INFO: $1"
+# --- Uninstall function ---
+do_uninstall() {
+    local force="$1"
+    echo "This will remove:"
+    echo "  - ${INSTALL_DIR}/${BINARY_NAME}"
+    echo "  - All eza man pages from ${MAN_BASE}/man1/ and ${MAN_BASE}/man5/"
+    if [[ "$force" != "true" ]]; then
+        read -p "Are you sure? (y/N) " -r confirm
+        if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+            info "Uninstall cancelled."
+            exit 0
+        fi
+    fi
+
+    # Remove binary
+    if [[ -f "${INSTALL_DIR}/${BINARY_NAME}" ]]; then
+        rm -f "${INSTALL_DIR}/${BINARY_NAME}"
+        info "Removed binary: ${INSTALL_DIR}/${BINARY_NAME}"
+    else
+        warn "Binary not found: ${INSTALL_DIR}/${BINARY_NAME}"
+    fi
+
+    # Remove man pages
+    for file in "${MAN_BASE}/man1/eza.1" \
+        "${MAN_BASE}/man5/eza_colors.5" \
+        "${MAN_BASE}/man5/eza_colors-explanation.5"; do
+        if [[ -f "$file" ]]; then
+            rm -f "$file"
+            info "Removed man page: $file"
+        fi
+    done
+    # Remove any stray eza* files (just in case)
+    find "${MAN_BASE}/man1" "${MAN_BASE}/man5" -maxdepth 1 -type f -name "eza*" -delete 2>/dev/null || true
+
+    # Update man database
+    if command -v mandb &>/dev/null; then
+        mandb &>/dev/null && info "Updated man database (mandb)"
+    fi
+
+    info "Uninstall complete."
+    exit 0
 }
 
-# --- Check required commands ---
-for cmd in curl tar; do
-    if ! command -v "$cmd" &>/dev/null; then
-        error_exit "$cmd is required but not installed."
+# --- Installation / Update function ---
+do_install() {
+    # --- Dependencies ---
+    for cmd in curl tar; do
+        if ! command -v "$cmd" &>/dev/null; then
+            error_exit "$cmd is required but not installed."
+        fi
+    done
+
+    # --- Get current eza version ---
+    if ! command -v eza &>/dev/null; then
+        info "eza is not installed. Will install the latest version."
+        CURRENT_VERSION=""
+    else
+        CURRENT_VERSION=$(eza --version 2>/dev/null | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | head -1 | sed 's/^v//')
+        [[ -z "$CURRENT_VERSION" ]] && error_exit "Failed to get current eza version."
+        info "Currently installed version: v$CURRENT_VERSION"
     fi
+
+    # --- Fetch latest release tag ---
+    info "Fetching latest release tag from GitHub API..."
+    API_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases/latest"
+    TEMP_JSON=$(mktemp)
+
+    AUTH_HEADER=()
+    [[ -n "${GITHUB_TOKEN:-}" ]] && AUTH_HEADER=(-H "Authorization: token $GITHUB_TOKEN")
+
+    curl --silent --show-error --fail "${AUTH_HEADER[@]}" -o "$TEMP_JSON" "$API_URL" || error_exit "Failed to fetch release information."
+
+    if command -v jq &>/dev/null; then
+        LATEST_TAG=$(jq -r '.tag_name // empty' "$TEMP_JSON")
+    else
+        LATEST_TAG=$(grep -o '"tag_name"[[:space:]]*:[[:space:]]*"[^"]*"' "$TEMP_JSON" | sed 's/.*"\([^"]*\)"$/\1/' | head -1)
+    fi
+    rm -f "$TEMP_JSON"
+    [[ -z "$LATEST_TAG" ]] && error_exit "Could not determine the latest release tag."
+
+    LATEST_VERSION="${LATEST_TAG#v}"
+    info "Latest release tag: $LATEST_TAG (version $LATEST_VERSION)"
+
+    # --- Version comparison ---
+    version_gt() {
+        test "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" != "$1"
+    }
+    if [[ -n "$CURRENT_VERSION" ]]; then
+        if ! version_gt "$LATEST_VERSION" "$CURRENT_VERSION"; then
+            info "Already up to date (current v$CURRENT_VERSION = latest v$LATEST_VERSION). Exiting."
+            exit 0
+        fi
+        info "Newer version available: v$LATEST_VERSION (current v$CURRENT_VERSION). Updating..."
+    else
+        info "No existing installation found. Installing v$LATEST_VERSION..."
+    fi
+
+    # --- Download and install binary ---
+    BIN_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/download/${LATEST_TAG}/${ASSET_BINARY}"
+    TARBALL_BIN="/tmp/${ASSET_BINARY}"
+
+    info "Downloading binary ${ASSET_BINARY} ..."
+    curl --progress-bar --location --fail -o "$TARBALL_BIN" "$BIN_URL" || error_exit "Binary download failed."
+
+    info "Extracting binary ..."
+    TEMP_BIN=$(mktemp -d)
+    tar -xzf "$TARBALL_BIN" -C "$TEMP_BIN" || error_exit "Binary extraction failed."
+    BINARY_PATH="${INSTALL_DIR}/${BINARY_NAME}"
+    mv "${TEMP_BIN}/${BINARY_NAME}" "$BINARY_PATH" || error_exit "Failed to move binary."
+    chmod +x "$BINARY_PATH"
+    rm -rf "$TEMP_BIN" "$TARBALL_BIN"
+
+    # --- Clean old eza man pages ---
+    info "Cleaning old eza man pages from ${MAN_BASE}..."
+    rm -f "${MAN_BASE}/man1/eza.1" 2>/dev/null || true
+    rm -f "${MAN_BASE}/man5/eza_colors.5" 2>/dev/null || true
+    rm -f "${MAN_BASE}/man5/eza_colors-explanation.5" 2>/dev/null || true
+    find "${MAN_BASE}/man1" "${MAN_BASE}/man5" -maxdepth 1 -type f -name "eza*" -delete 2>/dev/null || true
+
+    # --- Download and install man pages ---
+    MAN_ASSET="${ASSET_MAN_PREFIX}-${LATEST_TAG}.tar.gz"
+    MAN_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/download/${LATEST_TAG}/${MAN_ASSET}"
+    TARBALL_MAN="/tmp/${MAN_ASSET}"
+
+    info "Downloading man pages ${MAN_ASSET} ..."
+    curl --progress-bar --location --fail -o "$TARBALL_MAN" "$MAN_URL" || {
+        info "Man pages not available for this release (skipping)."
+        rm -f "$TARBALL_MAN"
+        exit 0
+    }
+
+    info "Extracting man pages ..."
+    TEMP_MAN=$(mktemp -d)
+    tar -xzf "$TARBALL_MAN" -C "$TEMP_MAN" || error_exit "Man page extraction failed."
+
+    MAN_DIR=$(find "$TEMP_MAN" -maxdepth 1 -type d -name "${ASSET_MAN_PREFIX}-*" | head -1)
+    [[ -z "$MAN_DIR" ]] && MAN_DIR="$TEMP_MAN"
+
+    mkdir -p "${MAN_BASE}/man1" "${MAN_BASE}/man5"
+
+    install_man() {
+        local file="$1"
+        local section="$2"
+        local dest="${MAN_BASE}/man${section}/"
+        if [[ -f "$file" ]]; then
+            cp "$file" "$dest"
+            info "  Installed $(basename "$file") → ${dest}"
+        else
+            error_exit "Man page not found: $file"
+        fi
+    }
+
+    install_man "${MAN_DIR}/eza.1" "1"
+    install_man "${MAN_DIR}/eza_colors.5" "5"
+    install_man "${MAN_DIR}/eza_colors-explanation.5" "5"
+
+    if command -v mandb &>/dev/null; then
+        mandb &>/dev/null && info "Updated man database (mandb)"
+    fi
+
+    rm -rf "$TEMP_MAN" "$TARBALL_MAN"
+
+    info "Installation complete! New version: $(eza --version | head -1)"
+    exit 0
+}
+
+# --- Parse command line arguments ---
+UNINSTALL=false
+FORCE=false
+for arg in "$@"; do
+    case "$arg" in
+    --uninstall) UNINSTALL=true ;;
+    --force) FORCE=true ;;
+    --help | -h)
+        cat <<EOF
+Usage: $0 [--uninstall] [--force]
+
+Options:
+  --uninstall   Remove eza binary and man pages (requires root)
+  --force       Skip confirmation prompt when used with --uninstall
+  --help, -h    Show this help
+
+Without options, the script installs or updates eza.
+EOF
+        exit 0
+        ;;
+    *) error_exit "Unknown argument: $arg. Use --help for usage." ;;
+    esac
 done
 
-# --- Get currently installed version ---
-if ! command -v eza &>/dev/null; then
-    info "eza is not installed. Will install the latest version."
-    CURRENT_VERSION=""
+# --- Main ---
+if [[ "$UNINSTALL" == true ]]; then
+    do_uninstall "$FORCE"
 else
-    # eza --version outputs multiple lines; first line contains version number.
-    # Example: "eza - A modern, maintained replacement for ls"
-    #          "v0.23.4"
-    CURRENT_VERSION=$(eza --version 2>/dev/null | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | head -1 | sed 's/^v//')
-    if [[ -z "$CURRENT_VERSION" ]]; then
-        error_exit "Failed to get current eza version."
-    fi
-    info "Currently installed version: v$CURRENT_VERSION"
+    do_install
 fi
-
-# --- Fetch latest release tag from GitHub ---
-info "Fetching latest release tag from GitHub API..."
-API_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases/latest"
-TEMP_JSON=$(mktemp)
-
-# Optional: use GITHUB_TOKEN from environment for higher rate limit
-AUTH_HEADER=()
-if [[ -n "${GITHUB_TOKEN:-}" ]]; then
-    AUTH_HEADER=(-H "Authorization: token $GITHUB_TOKEN")
-fi
-
-if ! curl --silent --show-error --fail "${AUTH_HEADER[@]}" -o "$TEMP_JSON" "$API_URL"; then
-    error_exit "Failed to fetch release information from GitHub API."
-fi
-
-# Extract tag_name (prefer jq, fallback to grep/sed)
-if command -v jq &>/dev/null; then
-    LATEST_TAG=$(jq -r '.tag_name // empty' "$TEMP_JSON")
-else
-    LATEST_TAG=$(grep -o '"tag_name"[[:space:]]*:[[:space:]]*"[^"]*"' "$TEMP_JSON" | sed 's/.*"\([^"]*\)"$/\1/' | head -1)
-fi
-rm -f "$TEMP_JSON"
-
-if [[ -z "$LATEST_TAG" ]]; then
-    error_exit "Could not determine the latest release tag."
-fi
-
-# Remove leading 'v' for version comparison
-LATEST_VERSION="${LATEST_TAG#v}"
-info "Latest release tag: $LATEST_TAG (version $LATEST_VERSION)"
-
-# --- Version comparison (semver-aware using sort -V) ---
-version_gt() {
-    test "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" != "$1"
-}
-
-if [[ -n "$CURRENT_VERSION" ]]; then
-    if ! version_gt "$LATEST_VERSION" "$CURRENT_VERSION"; then
-        info "Already up to date (current v$CURRENT_VERSION = latest v$LATEST_VERSION). Exiting."
-        exit 0
-    fi
-    info "Newer version available: v$LATEST_VERSION (current v$CURRENT_VERSION). Updating..."
-else
-    info "No existing installation found. Installing v$LATEST_VERSION..."
-fi
-
-# --- Download and install ---
-DOWNLOAD_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/download/${LATEST_TAG}/${ASSET_NAME}"
-TARBALL_PATH="/tmp/${ASSET_NAME}"
-
-info "Downloading ${ASSET_NAME} ..."
-if ! curl --progress-bar --location --fail -o "$TARBALL_PATH" "$DOWNLOAD_URL"; then
-    error_exit "Download failed. Check URL: $DOWNLOAD_URL"
-fi
-
-info "Extracting ..."
-TEMP_EXTRACT_DIR=$(mktemp -d)
-if ! tar -xzf "$TARBALL_PATH" -C "$TEMP_EXTRACT_DIR"; then
-    error_exit "Extraction failed. The file may be corrupted."
-fi
-
-EXTRACTED_BINARY="${TEMP_EXTRACT_DIR}/${BINARY_NAME}"
-if [[ ! -f "$EXTRACTED_BINARY" ]]; then
-    error_exit "Extracted binary not found at $EXTRACTED_BINARY"
-fi
-
-info "Installing to ${BINARY_PATH} ..."
-mv "$EXTRACTED_BINARY" "$BINARY_PATH" || error_exit "Failed to move binary to ${INSTALL_DIR}."
-chmod +x "$BINARY_PATH" || error_exit "Failed to make binary executable."
-
-# --- Clean up ---
-rm -rf "$TEMP_EXTRACT_DIR"
-rm -f "$TARBALL_PATH"
-
-info "Update complete! New version: $(eza --version | head -1)"
-exit 0
