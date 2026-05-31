@@ -144,7 +144,7 @@ do_install() {
     find "${MAN_BASE}/man1" "${MAN_BASE}/man5" -maxdepth 1 -type f -name "eza*" -delete 2>/dev/null || true
 
     # --- Download and install man pages ---
-    MAN_ASSET="${ASSET_MAN_PREFIX}-${LATEST_TAG}.tar.gz"
+    MAN_ASSET="${ASSET_MAN_PREFIX}-${LATEST_VERSION}.tar.gz"
     MAN_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/download/${LATEST_TAG}/${MAN_ASSET}"
     TARBALL_MAN="/tmp/${MAN_ASSET}"
 
