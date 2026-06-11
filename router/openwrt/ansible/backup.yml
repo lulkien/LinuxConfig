@@ -1,0 +1,63 @@
+---
+# backup.yml — Pull config snapshot from router
+#
+# Usage:
+#   ansible-playbook backup.yml -e ansible_host=<ip>
+#   ansible-playbook backup.yml -e ansible_host=<ip> -e backup_tag=pre-upgrade
+
+- name: Pull OpenWRT Config Snapshot
+  hosts: aps
+  gather_facts: false
+
+  vars:
+    backup_tag: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+    backup_dest: "{{ playbook_dir }}/../backups/{{ inventory_hostname }}/{{ backup_tag }}"
+
+  tasks:
+    - name: Check connectivity
+      community.openwrt.ping:
+
+    - name: Gather facts
+      community.openwrt.setup:
+
+    - name: Create remote tarball
+      community.openwrt.command:
+        cmd: sysupgrade --create-backup /tmp/ansible-pull.tar.gz
+
+    - name: Fetch tarball
+      community.openwrt.slurp:
+        src: /tmp/ansible-pull.tar.gz
+      register: _slurp
+
+    - name: Create local backup dir
+      delegate_to: localhost
+      run_once: true
+      file:
+        path: "{{ backup_dest }}"
+        state: directory
+        mode: "0755"
+
+    - name: Save tarball locally
+      delegate_to: localhost
+      copy:
+        content: "{{ _slurp.content | b64decode }}"
+        dest: "{{ backup_dest }}/backup.tar.gz"
+        mode: "0644"
+
+    - name: Extract for inspection
+      delegate_to: localhost
+      ansible.builtin.unarchive:
+        src: "{{ backup_dest }}/backup.tar.gz"
+        dest: "{{ backup_dest }}"
+        remote_src: true
+
+    - name: Clean up remote temp
+      community.openwrt.file:
+        path: /tmp/ansible-pull.tar.gz
+        state: absent
+
+    - name: Summary
+      debug:
+        msg:
+          - "Backup: {{ backup_dest }}"
+          - "Router: {{ inventory_hostname }}"

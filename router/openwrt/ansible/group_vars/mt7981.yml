@@ -1,0 +1,5 @@
+---
+# MediaTek MT7981 (Filogic 820) — Cudy WR3000, GL-MT3000, etc.
+
+wifi_radio0_path: "1e140000.pcie/pci0000:00/0000:00:01.0/0000:02:00.0"
+wifi_radio1_path: "1e140000.pcie/pci0000:00/0000:00:01.0/0000:02:00.0+1"

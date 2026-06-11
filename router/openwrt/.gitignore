@@ -1,0 +1,9 @@
+# Pulled router backups
+backups/
+
+# Ansible retry files
+*.retry
+
+# Encrypted secrets
+host_vars/*vault*
+group_vars/*vault*

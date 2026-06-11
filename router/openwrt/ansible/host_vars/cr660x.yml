@@ -1,0 +1,60 @@
+---
+# openwrt (MT7981)
+
+hostname: "OpenWrt"
+ntp_servers:
+  - "vn.pool.ntp.org"
+
+# ── WiFi radios ──
+radio0:
+  band: "2g"
+  channel: "auto"
+  htmode: "HE20"
+  txpower: 20
+
+radio1:
+  band: "5g"
+  channel: "auto"
+  htmode: "HE80"
+  txpower: 13
+
+# ── SSIDs ──
+ssids:
+  home:
+    radio: "radio1"
+    ssid: "OpenWrt_Home"
+    encryption: "sae"
+    key: "uGMzq*P%g327"
+    vlan: "home"
+    ieee80211r: true
+    mobility_domain: "4663"
+    ft_over_ds: false
+    ocv: false
+
+  iot:
+    radio: "radio0"
+    ssid: "OpenWrt_IoT"
+    encryption: "psk2"
+    key: "VFtw!a%Vby4yNDzH"
+    vlan: "iot"
+    isolate: true
+
+  guest:
+    radio: "radio0"
+    ssid: "OpenWrt_Guest"
+    encryption: "psk2"
+    key: "12345679"
+    vlan: "guest"
+    isolate: true
+    ieee80211r: true
+    mobility_domain: "b00b"
+    ft_over_ds: false
+    ft_psk_generate_local: true
+
+  camera:
+    radio: "radio0"
+    ssid: "OpenWrt_Camera"
+    encryption: "psk2"
+    key: "!$EhvbqFR5AV2&V"
+    vlan: "camera"
+    isolate: true

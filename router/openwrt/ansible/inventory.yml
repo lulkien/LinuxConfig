@@ -1,0 +1,11 @@
+---
+# OpenWRT Router Inventory
+
+all:
+  children:
+    aps:
+      children:
+        mt7981:
+          hosts:
+            cr660x:
+              ansible_user: root

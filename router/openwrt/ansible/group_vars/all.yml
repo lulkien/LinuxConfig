@@ -1,0 +1,57 @@
+---
+# Shared defaults for all OpenWRT dumb APs
+
+timezone: "<+07>-7"
+zonename: "Asia/Ho_Chi_Minh"
+ntp_servers:
+  - "10.21.20.1"
+
+# Services
+dnsmasq_dhcp_enabled: false
+dnsmasq_cachesize: 1000
+
+# Dropbear
+dropbear_port: 22
+dropbear_password_auth: false
+
+# Bridge
+bridge_name: "br-lan"
+bridge_ports:
+  - lan1
+  - lan2
+  - lan3
+  - wan
+
+# VLAN where the AP gets its management IP via DHCP
+management_vlan: 20
+
+# VLAN layout
+#   proto: dhcp → gets IP from core switch (management VLAN)
+#   proto: none → unmanaged, WiFi clients use this
+vlans:
+  home:
+    id: 20
+    proto: dhcp
+    untagged_ports: [lan1, lan2, lan3]
+  server:
+    id: 50
+    proto: none
+    untagged_ports: []
+  camera:
+    id: 100
+    proto: none
+    untagged_ports: []
+  iot:
+    id: 110
+    proto: none
+    untagged_ports: []
+  guest:
+    id: 150
+    proto: none
+    untagged_ports: []
+
+# WiFi defaults
+wifi_radio0_path: ""
+wifi_radio1_path: ""
+wifi_country: "VN"
+wifi_dtim_period: 3

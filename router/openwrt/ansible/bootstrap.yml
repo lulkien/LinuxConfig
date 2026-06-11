@@ -1,0 +1,375 @@
+---
+# bootstrap.yml — Factory OpenWRT → dumb AP with VLANs
+#
+# Based on verified cr660x_dumb_ap_with_vlan.sh
+#
+# Usage:
+#   ansible-playbook bootstrap.yml -e ansible_host=192.168.1.1
+
+- name: "Bootstrap: Factory → Dumb AP"
+  hosts: aps
+  gather_facts: false
+
+  vars:
+    _vlan_ids: "{{ vlans | dict2items | map(attribute='value.id') | list }}"
+
+  tasks:
+    - name: Check connectivity
+      community.openwrt.ping:
+
+    - name: Gather facts
+      community.openwrt.setup:
+
+    - debug:
+        msg: "→ Factory {{ inventory_hostname }} → trunk AP with {{ _vlan_ids | length }} VLANs"
+
+    # ═══════════════════════════════════════════
+    # 1. System
+    # ═══════════════════════════════════════════
+    - name: System — hostname
+      community.openwrt.uci:
+        command: set
+        config: system
+        section: "@system[0]"
+        option: hostname
+        value: "{{ hostname }}"
+
+    - name: System — timezone
+      community.openwrt.uci:
+        command: set
+        config: system
+        section: "@system[0]"
+        option: timezone
+        value: "{{ timezone }}"
+
+    - name: System — zonename
+      community.openwrt.uci:
+        command: set
+        config: system
+        section: "@system[0]"
+        option: zonename
+        value: "{{ zonename }}"
+
+    - name: System — NTP
+      community.openwrt.uci:
+        command: section
+        config: system
+        type: timeserver
+        name: ntp
+        find:
+          type: timeserver
+        value:
+          server: "{{ ntp_servers }}"
+        replace: true
+
+    # ═══════════════════════════════════════════
+    # 2. Dropbear
+    # ═══════════════════════════════════════════
+    - name: Dropbear — key-only auth
+      community.openwrt.uci:
+        command: section
+        config: dropbear
+        type: dropbear
+        name: main
+        find:
+          type: dropbear
+        value:
+          Port: "{{ dropbear_port }}"
+          PasswordAuth: "{{ 'off' if not dropbear_password_auth else 'on' }}"
+        replace: true
+
+    - name: Deploy SSH authorized_keys
+      community.openwrt.copy:
+        src: files/authorized_keys
+        dest: /etc/dropbear/authorized_keys
+        mode: "0600"
+
+    - name: Restart dropbear
+      community.openwrt.service:
+        name: dropbear
+        state: restarted
+
+    # ═══════════════════════════════════════════
+    # 3. Attended sysupgrade
+    # ═══════════════════════════════════════════
+    - name: Disable attended sysupgrade login nag
+      community.openwrt.uci:
+        command: set
+        config: attendedsysupgrade
+        section: "@client[0]"
+        option: login_check_for_upgrades
+        value: "0"
+
+    - community.openwrt.uci:
+        command: commit
+        config: attendedsysupgrade
+
+    # ═══════════════════════════════════════════
+    # 4. Firewall
+    # ═══════════════════════════════════════════
+    - name: Firewall — delete syn_flood option
+      community.openwrt.uci:
+        command: absent
+        config: firewall
+        section: "@defaults[0]"
+        option: syn_flood
+    - name: Firewall — ACCEPT input as default
+      community.openwrt.uci:
+        command: set
+        config: firewall
+        section: "@defaults[0]"
+        option: input
+        value: ACCEPT
+    - name: Firewall — ACCEPT forward as default
+      community.openwrt.uci:
+        command: set
+        config: firewall
+        section: "@defaults[0]"
+        option: forward
+        value: ACCEPT
+
+    - name: Firewall — ACCEPT input on wan zone
+      community.openwrt.uci:
+        command: set
+        config: firewall
+        section: "@zone[1]"
+        option: input
+        value: ACCEPT
+    - name: Firewall — ACCEPT forward on wan zone
+      community.openwrt.uci:
+        command: set
+        config: firewall
+        section: "@zone[1]"
+        option: forward
+        value: ACCEPT
+    - name: Firewall — diable masquerading on wan zone
+      community.openwrt.uci:
+        command: absent
+        config: firewall
+        section: "@zone[1]"
+        option: masq
+
+    - name: Firewall — Unassign wan from zone[1]
+      community.openwrt.uci:
+        command: del_list
+        config: firewall
+        section: "@zone[1]"
+        option: network
+        value: wan
+      ignore_errors: true
+    - name: Firewall — Unassign wan6 from zone[1]
+      community.openwrt.uci:
+        command: del_list
+        config: firewall
+        section: "@zone[1]"
+        option: network
+        value: wan6
+      ignore_errors: true
+
+    - name: Firewall — Unassign lan from zone[0]
+      community.openwrt.uci:
+        command: del_list
+        config: firewall
+        section: "@zone[0]"
+        option: network
+        value: lan
+      ignore_errors: true
+
+    - community.openwrt.uci:
+        command: commit
+        config: firewall
+
+    # ═══════════════════════════════════════════
+    # 5. Services
+    # ═══════════════════════════════════════════
+    - name: Stop firewall service
+      community.openwrt.command:
+        cmd: service firewall stop
+
+    - name: Disable firewall service
+      community.openwrt.command:
+        cmd: service firewall disable
+
+    - name: Stop odhcpd service
+      community.openwrt.command:
+        cmd: service odhcpd stop
+
+    - name: Disable odhcpd service
+      community.openwrt.command:
+        cmd: service odhcpd disable
+
+    # ═══════════════════════════════════════════
+    # 6. Network
+    # ═══════════════════════════════════════════
+    - name: Remove WAN DHCP config
+      community.openwrt.uci:
+        command: absent
+        config: dhcp
+        section: wan
+      ignore_errors: true
+
+    - name: Remove WAN interface
+      community.openwrt.uci:
+        command: absent
+        config: network
+        section: wan
+      ignore_errors: true
+
+    - name: Remove WAN6 interface
+      community.openwrt.uci:
+        command: absent
+        config: network
+        section: wan6
+      ignore_errors: true
+
+    - name: Add physical wan port to br-lan bridge
+      community.openwrt.uci:
+        command: add_list
+        config: network
+        section: "@device[0]"
+        option: ports
+        value: wan
+
+    - community.openwrt.uci:
+        command: commit
+        config: network
+    - community.openwrt.uci:
+        command: commit
+        config: dhcp
+
+    - name: DHCP — disable server on lan
+      community.openwrt.uci:
+        command: set
+        config: dhcp
+        section: lan
+        option: ignore
+        value: "1"
+
+    - name: DHCP — disable dhcpv4
+      community.openwrt.uci:
+        command: set
+        config: dhcp
+        section: lan
+        option: dhcpv4
+        value: disabled
+
+    - name: DHCP — remove ra_slaac
+      community.openwrt.uci:
+        command: absent
+        config: dhcp
+        section: lan
+        option: ra_slaac
+      ignore_errors: true
+
+    - name: DHCP — set ra_preference
+      community.openwrt.uci:
+        command: set
+        config: dhcp
+        section: lan
+        option: ra_preference
+        value: medium
+
+    - name: Network — create bridge VLANs
+      ansible.builtin.raw: |
+        {% for v in vlans | dict2items %}
+        uci add network bridge-vlan
+        uci set network.@bridge-vlan[-1].device='{{ bridge_name }}'
+        uci set network.@bridge-vlan[-1].vlan='{{ v.value.id }}'
+        uci add_list network.@bridge-vlan[-1].ports='{{ bridge_name }}.{{ v.value.id }}:t'
+        {% for p in v.value.untagged_ports %}
+        uci add_list network.@bridge-vlan[-1].ports='{{ p }}'
+        {% endfor %}
+        uci add_list network.@bridge-vlan[-1].ports='wan:t'
+        {% endfor %}
+        echo "done"
+
+    - name: Network — attach VLAN sub-interfaces to br-lan
+      ansible.builtin.raw: |
+        {% for vid in _vlan_ids %}
+        uci add_list network.@device[0].ports='{{ bridge_name }}.{{ vid }}'
+        {% endfor %}
+        echo "done"
+
+    - name: Network — VLAN interfaces
+      ansible.builtin.raw: |
+        {% for v in vlans | dict2items %}
+        uci set network.VLAN_{{ v.key | upper }}=interface
+        uci set network.VLAN_{{ v.key | upper }}.device='{{ bridge_name }}.{{ v.value.id }}'
+        {% if v.value.proto is defined %}
+        uci set network.VLAN_{{ v.key | upper }}.proto='{{ v.value.proto }}'
+        {% else %}
+        uci set network.VLAN_{{ v.key | upper }}.proto='none'
+        {% endif %}
+        {% endfor %}
+        echo "done"
+
+    - name: Network — strip lan ipaddr
+      community.openwrt.uci:
+        command: absent
+        config: network
+        section: lan
+        option: ipaddr
+      ignore_errors: true
+
+    - name: Network — strip lan multipath
+      community.openwrt.uci:
+        command: absent
+        config: network
+        section: lan
+        option: multipath
+      ignore_errors: true
+
+    - name: Network — strip lan ip6assign
+      community.openwrt.uci:
+        command: absent
+        config: network
+        section: lan
+        option: ip6assign
+      ignore_errors: true
+
+    - name: Network — set lan proto none
+      community.openwrt.uci:
+        command: set
+        config: network
+        section: lan
+        option: proto
+        value: none
+
+    - name: Network — set lan multipath off
+      community.openwrt.uci:
+        command: set
+        config: network
+        section: lan
+        option: multipath
+        value: "off"
+
+    - community.openwrt.uci:
+        command: commit
+        config: network
+    - community.openwrt.uci:
+        command: commit
+        config: dhcp
+
+    # ═══════════════════════════════════════════
+    # 7. Restart
+    # ═══════════════════════════════════════════
+    - debug:
+        msg: "All config deployed. Restarting network."
+
+    - name: "⚡ Restart network — then unplug LAN, plug trunk into WAN"
+      ansible.builtin.raw: |
+        sh -c 'sleep 1; /etc/init.d/network restart' &
+      ignore_errors: true
+
+    - pause:
+        seconds: 2
+
+    - debug:
+        msg:
+          - "──────────────────────────────────────────"
+          - "  Bootstrap complete."
+          - "  1. Unplug from LAN port"
+          - "  2. Plug trunk link into WAN port"
+          - "  3. Device gets DHCP on VLAN {{ management_vlan }}"
+          - "  4. ansible-playbook setup-wireless.yml -e ansible_host=<IP>"
+          - "──────────────────────────────────────────"

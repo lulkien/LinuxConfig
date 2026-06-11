@@ -1,0 +1,104 @@
+---
+# setup-wireless.yml — Configure WiFi radios + SSIDs
+#
+# Run AFTER bootstrap (device is online via trunk, VLAN interfaces exist).
+#
+# Usage:
+#   ansible-playbook setup-wireless.yml -e ansible_host=<ip>
+
+- name: Setup Wireless
+  hosts: aps
+  gather_facts: false
+
+  handlers:
+    - name: reload network
+      community.openwrt.service:
+        name: network
+        state: reloaded
+
+  tasks:
+    - name: Gather facts
+      community.openwrt.setup:
+
+    - debug:
+        msg:
+          - "➜ {{ inventory_hostname }} ({{ ansible_host }})"
+          - "  Setting up WiFi..."
+
+    - name: Wireless — radio0
+      community.openwrt.uci:
+        command: section
+        config: wireless
+        type: wifi-device
+        name: radio0
+        find:
+          path: "{{ wifi_radio0_path }}"
+        value:
+          type: mac80211
+          path: "{{ wifi_radio0_path }}"
+          band: "{{ radio0.band }}"
+          channel: "{{ radio0.channel }}"
+          htmode: "{{ radio0.htmode }}"
+          country: "{{ wifi_country }}"
+          txpower: "{{ radio0.txpower | string }}"
+          cell_density: "0"
+        replace: true
+      when: wifi_radio0_path | length > 0
+      notify: reload network
+
+    - name: Wireless — radio1
+      community.openwrt.uci:
+        command: section
+        config: wireless
+        type: wifi-device
+        name: radio1
+        find:
+          path: "{{ wifi_radio1_path }}"
+        value:
+          type: mac80211
+          path: "{{ wifi_radio1_path }}"
+          band: "{{ radio1.band }}"
+          channel: "{{ radio1.channel }}"
+          htmode: "{{ radio1.htmode }}"
+          country: "{{ wifi_country }}"
+          txpower: "{{ radio1.txpower | string }}"
+          cell_density: "0"
+        replace: true
+      when: wifi_radio1_path | length > 0
+      notify: reload network
+
+    - name: Wireless — SSIDs
+      community.openwrt.uci:
+        command: section
+        config: wireless
+        type: wifi-iface
+        name: "wifi_{{ item.key }}"
+        find:
+          device: "{{ item.value.radio }}"
+          ssid: "{{ item.value.ssid }}"
+        value:
+          device: "{{ item.value.radio }}"
+          mode: ap
+          ssid: "{{ item.value.ssid }}"
+          encryption: "{{ item.value.encryption }}"
+          key: "{{ item.value.key }}"
+          network: "VLAN_{{ item.value.vlan | upper }}"
+          dtim_period: "{{ wifi_dtim_period }}"
+          isolate: "{{ '1' if item.value.isolate | default(false) else omit }}"
+          ieee80211r: "{{ '1' if item.value.ieee80211r | default(false) else omit }}"
+          mobility_domain: "{{ item.value.mobility_domain | default(omit) }}"
+          ft_over_ds: "{{ '0' if item.value.ft_over_ds is defined and not item.value.ft_over_ds else omit }}"
+          ocv: "{{ item.value.ocv | default(omit) | string if item.value.ocv is defined else omit }}"
+          ft_psk_generate_local: "{{ '1' if item.value.ft_psk_generate_local | default(false) else omit }}"
+        replace: true
+      loop: "{{ ssids | dict2items }}"
+      loop_control:
+        label: "{{ item.value.ssid }}"
+      no_log: true
+      notify: reload network
+
+    - name: Apply WiFi
+      meta: flush_handlers
+
+    - debug:
+        msg: "✓ WiFi configured — {{ ssids | length }} SSIDs active"
