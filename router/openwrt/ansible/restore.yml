@@ -1,0 +1,44 @@
+---
+# restore.yml — Push config backup to router
+#
+# Usage:
+#   ansible-playbook restore.yml -e ansible_host=<ip> -e backup_file=/tmp/openwrt_backup_cr660x_backup.tar.gz
+
+- name: Restore OpenWRT Config
+  hosts: aps
+  gather_facts: false
+
+  tasks:
+    - name: Check connectivity
+      community.openwrt.ping:
+
+    - name: Gather facts
+      community.openwrt.setup:
+
+    - debug:
+        msg: "→ Restoring {{ backup_file }} to {{ inventory_hostname }}"
+
+    - name: Push backup to router
+      community.openwrt.copy:
+        src: "{{ backup_file }}"
+        dest: /tmp/ansible-restore.tar.gz
+        mode: "0600"
+
+    - name: Restore config
+      community.openwrt.command:
+        cmd: sysupgrade --restore-backup /tmp/ansible-restore.tar.gz
+
+    - name: Clean up remote
+      community.openwrt.file:
+        path: /tmp/ansible-restore.tar.gz
+        state: absent
+
+    - name: Reboot router
+      community.openwrt.command:
+        cmd: reboot
+      async: 0
+      poll: 0
+      ignore_errors: true
+
+    - debug:
+        msg: "✓ Restore complete. Router rebooting."

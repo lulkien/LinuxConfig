@@ -351,14 +351,16 @@
         config: dhcp
 
     # ═══════════════════════════════════════════
-    # 7. Restart
+    # 7. Reboot
     # ═══════════════════════════════════════════
     - debug:
-        msg: "All config deployed. Restarting network."
+        msg: "All config deployed. Rebooting — SSH will drop."
 
-    - name: "⚡ Restart network — then unplug LAN, plug trunk into WAN"
-      ansible.builtin.raw: |
-        sh -c 'sleep 1; /etc/init.d/network restart' &
+    - name: "⚡ Reboot — then unplug LAN, plug trunk into WAN"
+      community.openwrt.command:
+        cmd: reboot
+      async: 0
+      poll: 0
       ignore_errors: true
 
     - pause:
