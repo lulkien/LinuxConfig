@@ -4,11 +4,7 @@
 timezone: "<+07>-7"
 zonename: "Asia/Ho_Chi_Minh"
 ntp_servers:
-  - "10.21.20.1"
-
-# Services
-dnsmasq_dhcp_enabled: false
-dnsmasq_cachesize: 1000
+  - "vn.pool.ntp.org"
 
 # Dropbear
 dropbear_port: 22
@@ -51,7 +47,4 @@ vlans:
     untagged_ports: []
 
 # WiFi defaults
-wifi_radio0_path: ""
-wifi_radio1_path: ""
 wifi_country: "VN"
-wifi_dtim_period: 3

@@ -1,73 +1,69 @@
 ---
 # setup-wireless.yml — Configure WiFi radios + SSIDs
 #
-# Run AFTER bootstrap (device is online via trunk, VLAN interfaces exist).
+# Run AFTER bootstrap (device online via trunk, VLAN interfaces exist).
 #
 # Usage:
 #   ansible-playbook setup-wireless.yml -e ansible_host=<ip>
 
-- name: Setup Wireless
+- name: Setup OpenWRT Wireless
   hosts: aps
   gather_facts: false
 
-  handlers:
-    - name: reload network
-      community.openwrt.service:
-        name: network
-        state: reloaded
-
   tasks:
+    - name: Check connectivity
+      community.openwrt.ping:
+
     - name: Gather facts
       community.openwrt.setup:
 
     - debug:
-        msg:
-          - "➜ {{ inventory_hostname }} ({{ ansible_host }})"
-          - "  Setting up WiFi..."
+        msg: "→ {{ inventory_hostname }} — configure wireless"
 
-    - name: Wireless — radio0
+    # ── 1. Remove factory defaults ──
+    - name: Remove default radio1
       community.openwrt.uci:
-        command: section
+        command: absent
         config: wireless
-        type: wifi-device
-        name: radio0
-        find:
-          path: "{{ wifi_radio0_path }}"
-        value:
-          type: mac80211
-          path: "{{ wifi_radio0_path }}"
-          band: "{{ radio0.band }}"
-          channel: "{{ radio0.channel }}"
-          htmode: "{{ radio0.htmode }}"
-          country: "{{ wifi_country }}"
-          txpower: "{{ radio0.txpower | string }}"
-          cell_density: "0"
-        replace: true
-      when: wifi_radio0_path | length > 0
-      notify: reload network
+        section: default_radio1
+      ignore_errors: true
 
-    - name: Wireless — radio1
+    - name: Remove default radio0
       community.openwrt.uci:
-        command: section
+        command: absent
         config: wireless
-        type: wifi-device
-        name: radio1
-        find:
-          path: "{{ wifi_radio1_path }}"
-        value:
-          type: mac80211
-          path: "{{ wifi_radio1_path }}"
-          band: "{{ radio1.band }}"
-          channel: "{{ radio1.channel }}"
-          htmode: "{{ radio1.htmode }}"
-          country: "{{ wifi_country }}"
-          txpower: "{{ radio1.txpower | string }}"
-          cell_density: "0"
-        replace: true
-      when: wifi_radio1_path | length > 0
-      notify: reload network
+        section: default_radio0
+      ignore_errors: true
 
-    - name: Wireless — SSIDs
+    # ── 2. Radio config ──
+    - name: Configure radio0
+      community.openwrt.uci:
+        command: set
+        config: wireless
+        section: radio0
+        option: "{{ item.opt }}"
+        value: "{{ item.val }}"
+      loop:
+        - { opt: channel, val: auto }
+        - { opt: txpower, val: "{{ radio0.txpower | string }}" }
+        - { opt: country, val: "{{ wifi_country }}" }
+        - { opt: cell_density, val: "0" }
+
+    - name: Configure radio1
+      community.openwrt.uci:
+        command: set
+        config: wireless
+        section: radio1
+        option: "{{ item.opt }}"
+        value: "{{ item.val }}"
+      loop:
+        - { opt: channel, val: auto }
+        - { opt: txpower, val: "{{ radio1.txpower | string }}" }
+        - { opt: country, val: "{{ wifi_country }}" }
+        - { opt: cell_density, val: "0" }
+
+    # ── 3. SSIDs ──
+    - name: Create SSID interfaces
       community.openwrt.uci:
         command: section
         config: wireless
@@ -83,22 +79,28 @@
           encryption: "{{ item.value.encryption }}"
           key: "{{ item.value.key }}"
           network: "VLAN_{{ item.value.vlan | upper }}"
-          dtim_period: "{{ wifi_dtim_period }}"
           isolate: "{{ '1' if item.value.isolate | default(false) else omit }}"
           ieee80211r: "{{ '1' if item.value.ieee80211r | default(false) else omit }}"
           mobility_domain: "{{ item.value.mobility_domain | default(omit) }}"
-          ft_over_ds: "{{ '0' if item.value.ft_over_ds is defined and not item.value.ft_over_ds else omit }}"
-          ocv: "{{ item.value.ocv | default(omit) | string if item.value.ocv is defined else omit }}"
+          ft_over_ds: "{{ '0' if item.value.ft_over_ds | default(true) else omit }}"
           ft_psk_generate_local: "{{ '1' if item.value.ft_psk_generate_local | default(false) else omit }}"
+          ocv: "{{ item.value.ocv | default(omit) | string if item.value.ocv is defined else omit }}"
+          dtim_period: "{{ item.value.dtim_period | default(omit) | string }}"
         replace: true
       loop: "{{ ssids | dict2items }}"
       loop_control:
         label: "{{ item.value.ssid }}"
       no_log: true
-      notify: reload network
 
-    - name: Apply WiFi
-      meta: flush_handlers
+    # ── 4. Commit + reload ──
+    - community.openwrt.uci:
+        command: commit
+        config: wireless
+
+    - name: Reload network
+      community.openwrt.service:
+        name: network
+        state: reloaded
 
     - debug:
-        msg: "✓ WiFi configured — {{ ssids | length }} SSIDs active"
+        msg: "✓ {{ inventory_hostname }} wireless configured"

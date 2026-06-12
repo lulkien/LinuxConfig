@@ -1,9 +1,5 @@
 ---
-# openwrt (MT7981)
-
-hostname: "OpenWrt"
-ntp_servers:
-  - "vn.pool.ntp.org"
+# cr660x (MT7981)
 
 # ── WiFi radios ──
 radio0:
@@ -16,20 +12,22 @@ radio1:
   band: "5g"
   channel: "auto"
   htmode: "HE80"
-  txpower: 13
+  txpower: 10
 
 # ── SSIDs ──
 ssids:
-  home:
-    radio: "radio1"
-    ssid: "OpenWrt_Home"
-    encryption: "sae"
-    key: "uGMzq*P%g327"
-    vlan: "home"
+  camera:
+    radio: "radio0"
+    ssid: "OpenWrt_Camera"
+    encryption: "psk2"
+    key: "!$EhvbqFR5AV2&V"
+    vlan: "camera"
+    isolate: true
     ieee80211r: true
-    mobility_domain: "4663"
+    mobility_domain: "caca"
     ft_over_ds: false
-    ocv: false
+    ft_psk_generate_local: true
+    dtim_period: 3
 
   iot:
     radio: "radio0"
@@ -38,6 +36,11 @@ ssids:
     key: "VFtw!a%Vby4yNDzH"
     vlan: "iot"
     isolate: true
+    ieee80211r: true
+    mobility_domain: "abab"
+    ft_over_ds: false
+    ft_psk_generate_local: true
+    dtim_period: 3
 
   guest:
     radio: "radio0"
@@ -47,14 +50,19 @@ ssids:
     vlan: "guest"
     isolate: true
     ieee80211r: true
-    mobility_domain: "b00b"
+    mobility_domain: "adad"
     ft_over_ds: false
     ft_psk_generate_local: true
+    dtim_period: 3
 
-  camera:
-    radio: "radio0"
-    ssid: "OpenWrt_Camera"
-    encryption: "psk2"
-    key: "!$EhvbqFR5AV2&V"
-    vlan: "camera"
-    isolate: true
+  home:
+    radio: "radio1"
+    ssid: "OpenWrt_Home"
+    encryption: "sae"
+    key: "uGMzq*P%g327"
+    vlan: "home"
+    ieee80211r: true
+    mobility_domain: "efef"
+    ft_over_ds: false
+    ocv: false
+    dtim_period: 3

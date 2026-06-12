@@ -5,11 +5,10 @@ OpenWRT dumb AP + VLAN management for Xiaomi CR660x (MT7981).
 ## Playbooks
 
 | Playbook | What | When |
-|---|---|---|
+| -------- | ---- | ---- |
 | `bootstrap.yml` | Factory → trunk AP | Fresh/reset router, fresh OpenWRT |
 | `setup-wireless.yml` | WiFi radios + SSIDs | After bootstrap, reachable via VLAN trunk |
 | `backup.yml` | Pull config tarball | Before risky changes |
-| `restore.yml` | Push + apply config | Rollback |
 
 ## Quickstart
 
@@ -22,14 +21,11 @@ ansible-playbook setup-wireless.yml -e ansible_host=<dhcp_ip>
 
 # Backup:
 ansible-playbook backup.yml -e ansible_host=<ip>
-
-# Restore:
-ansible-playbook restore.yml -e ansible_host=<ip> -e backup_file=/path/to/backup.tar.gz
 ```
 
 ## Bootstrap order
 
-1. System — hostname, timezone, NTP
+1. System — timezone, NTP
 2. Dropbear — SSH keys, key-only auth
 3. Attended sysupgrade — disable login nag
 4. Firewall — ACCEPT all, unassign zones, stop + disable
@@ -40,7 +36,7 @@ ansible-playbook restore.yml -e ansible_host=<ip> -e backup_file=/path/to/backup
 ## VLAN layout
 
 | VLAN | Name | ID | Purpose |
-|---|---|---|---|
+| ---- | ---- | -- | ------- |
 | HOME | VLAN_HOME | 20 | Management (DHCP) + LAN clients |
 | SERVER | VLAN_SERVER | 50 | Servers |
 | CAMERA | VLAN_CAMERA | 100 | Cameras |
@@ -54,7 +50,6 @@ ansible/
 ├── bootstrap.yml
 ├── setup-wireless.yml
 ├── backup.yml
-├── restore.yml
 ├── inventory.yml
 ├── ansible.cfg
 ├── group_vars/

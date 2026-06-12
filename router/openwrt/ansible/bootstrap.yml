@@ -26,14 +26,6 @@
     # ═══════════════════════════════════════════
     # 1. System
     # ═══════════════════════════════════════════
-    - name: System — hostname
-      community.openwrt.uci:
-        command: set
-        config: system
-        section: "@system[0]"
-        option: hostname
-        value: "{{ hostname }}"
-
     - name: System — timezone
       community.openwrt.uci:
         command: set
