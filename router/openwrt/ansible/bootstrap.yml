@@ -42,17 +42,25 @@
         option: zonename
         value: "{{ zonename }}"
 
-    - name: System — NTP
+    - name: System — clear default NTP servers
       community.openwrt.uci:
-        command: section
+        command: absent
         config: system
-        type: timeserver
-        name: ntp
-        find:
-          type: timeserver
-        value:
-          server: "{{ ntp_servers }}"
-        replace: true
+        section: "@timeserver[0]"
+        option: server
+
+    - name: System — set NTP servers
+      community.openwrt.uci:
+        command: add_list
+        config: system
+        section: "@timeserver[0]"
+        option: server
+        value: "{{ item }}"
+      loop: "{{ ntp_servers }}"
+
+    - community.openwrt.uci:
+        command: commit
+        config: system
 
     # ═══════════════════════════════════════════
     # 2. Dropbear
@@ -345,18 +353,18 @@
     # ═══════════════════════════════════════════
     # 7. Reboot
     # ═══════════════════════════════════════════
-    - debug:
-        msg: "All config deployed. Rebooting — SSH will drop."
+    # - debug:
+    #     msg: "All config deployed. Rebooting — SSH will drop."
 
-    - name: "⚡ Reboot — then unplug LAN, plug trunk into WAN"
-      community.openwrt.command:
-        cmd: reboot
-      async: 0
-      poll: 0
-      ignore_errors: true
+    # - name: "⚡ Reboot — then unplug LAN, plug trunk into WAN"
+    #   community.openwrt.command:
+    #     cmd: reboot
+    #   async: 0
+    #   poll: 0
+    #   ignore_errors: true
 
-    - pause:
-        seconds: 2
+    # - pause:
+    #     seconds: 2
 
     - debug:
         msg:

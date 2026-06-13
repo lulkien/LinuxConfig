@@ -45,6 +45,8 @@
         value: "{{ item.val }}"
       loop:
         - { opt: channel, val: auto }
+        - { opt: htmode, val: "{{ radio0.htmode }}" }
+        - { opt: band, val: "{{ radio0.band }}" }
         - { opt: txpower, val: "{{ radio0.txpower | string }}" }
         - { opt: country, val: "{{ wifi_country }}" }
         - { opt: cell_density, val: "0" }
@@ -58,6 +60,8 @@
         value: "{{ item.val }}"
       loop:
         - { opt: channel, val: auto }
+        - { opt: htmode, val: "{{ radio1.htmode }}" }
+        - { opt: band, val: "{{ radio1.band }}" }
         - { opt: txpower, val: "{{ radio1.txpower | string }}" }
         - { opt: country, val: "{{ wifi_country }}" }
         - { opt: cell_density, val: "0" }
@@ -79,12 +83,13 @@
           encryption: "{{ item.value.encryption }}"
           key: "{{ item.value.key }}"
           network: "VLAN_{{ item.value.vlan | upper }}"
+          disabled: "1"
           isolate: "{{ '1' if item.value.isolate | default(false) else omit }}"
           ieee80211r: "{{ '1' if item.value.ieee80211r | default(false) else omit }}"
           mobility_domain: "{{ item.value.mobility_domain | default(omit) }}"
           ft_over_ds: "{{ '0' if item.value.ft_over_ds | default(true) else omit }}"
           ft_psk_generate_local: "{{ '1' if item.value.ft_psk_generate_local | default(false) else omit }}"
-          ocv: "{{ item.value.ocv | default(omit) | string if item.value.ocv is defined else omit }}"
+          ocv: "{{ '1' if item.value.ocv | default(false) else omit }}"
           dtim_period: "{{ item.value.dtim_period | default(omit) | string }}"
         replace: true
       loop: "{{ ssids | dict2items }}"
