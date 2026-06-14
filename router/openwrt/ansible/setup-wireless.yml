@@ -89,7 +89,7 @@
           mobility_domain: "{{ item.value.mobility_domain | default(omit) }}"
           ft_over_ds: "{{ '0' if item.value.ft_over_ds | default(true) else omit }}"
           ft_psk_generate_local: "{{ '1' if item.value.ft_psk_generate_local | default(false) else omit }}"
-          ocv: "{{ '1' if item.value.ocv | default(false) else omit }}"
+          ocv: "{{ item.value.ocv | string if 'ocv' in item.value else omit }}"
           dtim_period: "{{ item.value.dtim_period | default(omit) | string }}"
         replace: true
       loop: "{{ ssids | dict2items }}"

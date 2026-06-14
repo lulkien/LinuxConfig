@@ -353,18 +353,15 @@
     # ═══════════════════════════════════════════
     # 7. Reboot
     # ═══════════════════════════════════════════
-    # - debug:
-    #     msg: "All config deployed. Rebooting — SSH will drop."
+    - debug:
+        msg: "All config deployed. Rebooting — SSH will drop."
 
-    # - name: "⚡ Reboot — then unplug LAN, plug trunk into WAN"
-    #   community.openwrt.command:
-    #     cmd: reboot
-    #   async: 0
-    #   poll: 0
-    #   ignore_errors: true
+    - name: "⚡ Reboot — then unplug LAN, plug trunk into WAN"
+      ansible.builtin.raw: sh -c 'sleep 1 && reboot' &
+      ignore_errors: true
 
-    # - pause:
-    #     seconds: 2
+    - pause:
+        seconds: 2
 
     - debug:
         msg:

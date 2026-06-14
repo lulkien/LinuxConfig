@@ -64,5 +64,5 @@ ssids:
     ieee80211r: true
     mobility_domain: "efef"
     ft_over_ds: false
-    ocv: false
+    ocv: 0
     dtim_period: 3
